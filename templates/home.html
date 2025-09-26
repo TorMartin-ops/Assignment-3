@@ -1,6 +1,75 @@
 {% extends "base.html" %}
 
+{% block title %}Home - Recipe Sharing Platform{% endblock %}
+
 {% block content %}
-<h1>Welcome to Recipe Sharing</h1>
-<p>This is a demonstration of XSS vulnerabilities and their mitigation.</p>
+<div class="row">
+    <div class="col-12">
+        <div class="jumbotron bg-primary text-white p-5 rounded mb-4">
+            <h1 class="display-4">Welcome to Recipe Sharing!</h1>
+            <p class="lead">Discover amazing recipes and share your own culinary creations with our community.</p>
+            <a class="btn btn-light btn-lg" href="{{ url_for('home') }}" role="button">
+                <i class="fas fa-plus"></i> Share Your Recipe (Coming Soon)
+            </a>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-12">
+        <h2 class="mb-4">
+            <i class="fas fa-fire text-danger"></i> Latest Recipes
+        </h2>
+    </div>
+</div>
+
+<div class="row">
+    {% if recipes %}
+        {% for recipe in recipes %}
+        <div class="col-md-6 col-lg-4 mb-4">
+            <div class="card h-100 shadow-sm">
+                <div class="card-body">
+                    <h5 class="card-title">
+                        <i class="fas fa-utensils text-warning"></i>
+                        {{ recipe.title }}
+                    </h5>
+                    <p class="card-text">{{ recipe.description[:100] }}{% if recipe.description|length > 100 %}...{% endif %}</p>
+                    <p class="text-muted small">
+                        <i class="fas fa-user"></i> By {{ recipe.username }}
+                        <br>
+                        <i class="fas fa-clock"></i> {{ recipe.created_at }}
+                    </p>
+                </div>
+                <div class="card-footer bg-transparent">
+                    <a href="{{ url_for('recipe_detail', recipe_id=recipe.id) }}" class="btn btn-primary">
+                        <i class="fas fa-eye"></i> View Recipe
+                    </a>                    </a>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    {% else %}
+        <div class="col-12">
+            <div class="alert alert-info text-center" role="alert">
+                <h4><i class="fas fa-info-circle"></i> No recipes yet!</h4>
+                <p>Be the first to share a delicious recipe with our community.</p>
+                <a href="{{ url_for('home') }}" class="btn btn-primary">
+                    <i class="fas fa-plus"></i> Add First Recipe (Coming Soon)
+                </a>
+            </div>
+        </div>
+    {% endif %}
+</div>
+
+<!-- XSS Warning Banner (for demonstration purposes) -->
+<div class="row mt-5">
+    <div class="col-12">
+        <div class="alert alert-warning" role="alert">
+            <h5><i class="fas fa-exclamation-triangle"></i> Educational Notice</h5>
+            <p><strong>This application contains intentional XSS vulnerabilities for educational purposes.</strong></p>
+            <p>This is a demonstration of Cross-Site Scripting vulnerabilities and their mitigation techniques. 
+               In a real application, all user input would be properly sanitized and validated.</p>
+        </div>
+    </div>
+</div>
 {% endblock %}
