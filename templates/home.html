@@ -1,24 +1,75 @@
 {% extends "base.html" %}
 
-{% block title %}Home - Recipe Sharing Platform{% endblock %}
+{% block title %}Home - RecipeShare Platform{% endblock %}
 
 {% block content %}
-<div class="row">
+<!-- Hero Section -->
+<div class="row mb-4">
     <div class="col-12">
-        <div class="jumbotron bg-primary text-white p-5 rounded mb-4">
-            <h1 class="display-4">Welcome to Recipe Sharing!</h1>
-            <p class="lead">Discover amazing recipes and share your own culinary creations with our community.</p>
-            <a class="btn btn-light btn-lg" href="{{ url_for('home') }}" role="button">
-                <i class="fas fa-plus"></i> Share Your Recipe (Coming Soon)
+        <div class="bg-primary text-white p-5 rounded shadow">
+            <h1 class="display-4"><i class="fas fa-utensils"></i> Welcome to RecipeShare!</h1>
+            <p class="lead">Discover, share, and rate amazing recipes from our community of food lovers.</p>
+            {% if session.user_id %}
+            <a class="btn btn-light btn-lg" href="{{ url_for('add_recipe') }}">
+                <i class="fas fa-plus"></i> Share Your Recipe
             </a>
+            {% else %}
+            <a class="btn btn-light btn-lg" href="{{ url_for('register') }}">
+                <i class="fas fa-user-plus"></i> Join Our Community
+            </a>
+            {% endif %}
         </div>
     </div>
 </div>
 
-<div class="row">
+<!-- Search and Filter -->
+<div class="row mb-4">
+    <div class="col-12">
+        <div class="card shadow-sm">
+            <div class="card-body">
+                <form method="GET" action="{{ url_for('home') }}">
+                    <div class="row g-3">
+                        <div class="col-md-5">
+                            <input type="text" class="form-control" name="search" 
+                                   placeholder="Search recipes..." value="{{ search }}">
+                        </div>
+                        <div class="col-md-3">
+                            <select class="form-select" name="category">
+                                <option value="">All Categories</option>
+                                {% for cat in categories %}
+                                <option value="{{ cat.category }}" {% if current_category == cat.category %}selected{% endif %}>
+                                    {{ cat.category }}
+                                </option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="col-md-2">
+                            <select class="form-select" name="difficulty">
+                                <option value="">All Levels</option>
+                                <option value="Easy" {% if current_difficulty == 'Easy' %}selected{% endif %}>Easy</option>
+                                <option value="Medium" {% if current_difficulty == 'Medium' %}selected{% endif %}>Medium</option>
+                                <option value="Hard" {% if current_difficulty == 'Hard' %}selected{% endif %}>Hard</option>
+                            </select>
+                        </div>
+                        <div class="col-md-2">
+                            <button type="submit" class="btn btn-primary w-100">
+                                <i class="fas fa-search"></i> Search
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Recipes Grid -->
+<div class="row mb-3">
     <div class="col-12">
         <h2 class="mb-4">
-            <i class="fas fa-fire text-danger"></i> Latest Recipes
+            <i class="fas fa-fire text-danger"></i> 
+            {% if search %}Search Results{% else %}Latest Recipes{% endif %}
+            <span class="badge bg-secondary">{{ recipes|length }}</span>
         </h2>
     </div>
 </div>
@@ -27,23 +78,69 @@
     {% if recipes %}
         {% for recipe in recipes %}
         <div class="col-md-6 col-lg-4 mb-4">
-            <div class="card h-100 shadow-sm">
+            <div class="card recipe-card shadow-sm">
+                {% if recipe.image_url %}
+                <img src="{{ recipe.image_url }}" class="card-img-top recipe-image" alt="{{ recipe.title }}">
+                {% else %}
+                <div class="card-img-top recipe-image bg-secondary d-flex align-items-center justify-content-center">
+                    <i class="fas fa-utensils fa-4x text-white"></i>
+                </div>
+                {% endif %}
                 <div class="card-body">
-                    <h5 class="card-title">
-                        <i class="fas fa-utensils text-warning"></i>
-                        {{ recipe.title }}
-                    </h5>
+                    <div class="d-flex justify-content-between align-items-start mb-2">
+                        <h5 class="card-title mb-0">{{ recipe.title }}</h5>
+                        {% if recipe.difficulty %}
+                        <span class="badge bg-{% if recipe.difficulty == 'Easy' %}success{% elif recipe.difficulty == 'Medium' %}warning{% else %}danger{% endif %}">
+                            {{ recipe.difficulty }}
+                        </span>
+                        {% endif %}
+                    </div>
+                    
+                    <div class="mb-2">
+                        {% if recipe.avg_rating > 0 %}
+                        <span class="star-rating">
+                            {% for i in range(5) %}
+                                {% if i < recipe.avg_rating %}
+                                <i class="fas fa-star"></i>
+                                {% else %}
+                                <i class="far fa-star"></i>
+                                {% endif %}
+                            {% endfor %}
+                        </span>
+                        <small class="text-muted">({{ recipe.rating_count }})</small>
+                        {% else %}
+                        <span class="text-muted"><small>No ratings yet</small></span>
+                        {% endif %}
+                    </div>
+                    
                     <p class="card-text">{{ recipe.description[:100] }}{% if recipe.description|length > 100 %}...{% endif %}</p>
-                    <p class="text-muted small">
-                        <i class="fas fa-user"></i> By {{ recipe.username }}
-                        <br>
-                        <i class="fas fa-clock"></i> {{ recipe.created_at }}
+                    
+                    {% if recipe.category %}
+                    <span class="badge bg-info text-dark me-1">
+                        <i class="fas fa-tag"></i> {{ recipe.category }}
+                    </span>
+                    {% endif %}
+                    
+                    {% if recipe.prep_time or recipe.cook_time %}
+                    <div class="text-muted small mt-2">
+                        {% if recipe.prep_time %}
+                        <i class="fas fa-clock"></i> Prep: {{ recipe.prep_time }}min
+                        {% endif %}
+                        {% if recipe.cook_time %}
+                        | Cook: {{ recipe.cook_time }}min
+                        {% endif %}
+                    </div>
+                    {% endif %}
+                    
+                    <p class="text-muted small mb-0 mt-2">
+                        <i class="fas fa-user"></i> By 
+                        <a href="{{ url_for('profile', username=recipe.username) }}">{{ recipe.username }}</a>
                     </p>
                 </div>
                 <div class="card-footer bg-transparent">
-                    <a href="{{ url_for('recipe_detail', recipe_id=recipe.id) }}" class="btn btn-primary">
+                    <a href="{{ url_for('recipe_detail', recipe_id=recipe.id) }}" class="btn btn-primary w-100">
                         <i class="fas fa-eye"></i> View Recipe
-                    </a>                    </a>
+                    </a>
                 </div>
             </div>
         </div>
@@ -51,24 +148,38 @@
     {% else %}
         <div class="col-12">
             <div class="alert alert-info text-center" role="alert">
-                <h4><i class="fas fa-info-circle"></i> No recipes yet!</h4>
-                <p>Be the first to share a delicious recipe with our community.</p>
+                <h4><i class="fas fa-info-circle"></i> No recipes found!</h4>
+                {% if search %}
+                <p>Try adjusting your search criteria.</p>
                 <a href="{{ url_for('home') }}" class="btn btn-primary">
-                    <i class="fas fa-plus"></i> Add First Recipe (Coming Soon)
+                    <i class="fas fa-refresh"></i> Clear Filters
                 </a>
+                {% else %}
+                <p>Be the first to share a delicious recipe with our community.</p>
+                {% if session.user_id %}
+                <a href="{{ url_for('add_recipe') }}" class="btn btn-primary">
+                    <i class="fas fa-plus"></i> Add First Recipe
+                </a>
+                {% else %}
+                <a href="{{ url_for('register') }}" class="btn btn-primary">
+                    <i class="fas fa-user-plus"></i> Register to Add Recipes
+                </a>
+                {% endif %}
+                {% endif %}
             </div>
         </div>
     {% endif %}
 </div>
 
-<!-- XSS Warning Banner (for demonstration purposes) -->
+<!-- XSS Warning Banner -->
 <div class="row mt-5">
     <div class="col-12">
-        <div class="alert alert-warning" role="alert">
+        <div class="alert alert-warning xss-warning" role="alert">
             <h5><i class="fas fa-exclamation-triangle"></i> Educational Notice</h5>
             <p><strong>This application contains intentional XSS vulnerabilities for educational purposes.</strong></p>
             <p>This is a demonstration of Cross-Site Scripting vulnerabilities and their mitigation techniques. 
                In a real application, all user input would be properly sanitized and validated.</p>
+            <p class="mb-0"><strong>Vulnerability Location:</strong> Comment system on recipe detail pages</p>
         </div>
     </div>
 </div>

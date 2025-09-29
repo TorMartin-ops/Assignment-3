@@ -1,41 +1,146 @@
 {% extends "base.html" %}
 
-{% block title %}{{ recipe.title }} - Recipe Sharing Platform{% endblock %}
+{% block title %}{{ recipe.title }} - RecipeShare{% endblock %}
 
 {% block content %}
-<div class="row">
+<div class="row mb-3">
     <div class="col-12">
-        <a href="{{ url_for('home') }}" class="btn btn-secondary mb-3">
+        <a href="{{ url_for('home') }}" class="btn btn-secondary">
             <i class="fas fa-arrow-left"></i> Back to Recipes
+        </a>
+        <a href="{{ url_for('profile', username=recipe.username) }}" class="btn btn-outline-primary">
+            <i class="fas fa-user"></i> View {{ recipe.username }}'s Profile
         </a>
     </div>
 </div>
 
 <div class="row">
     <div class="col-lg-8">
-        <!-- Recipe Details -->
+        <!-- Recipe Card -->
         <div class="card shadow-sm mb-4">
-            <div class="card-header bg-primary text-white">
-                <h1 class="card-title mb-0">{{ recipe.title }}</h1>
-                <p class="mb-0">By {{ recipe.username }} | {{ recipe.created_at }}</p>
+            {% if recipe.image_url %}
+            <img src="{{ recipe.image_url }}" class="card-img-top" style="max-height: 400px; object-fit: cover; width: 100%;" alt="{{ recipe.title }}">
+            {% else %}
+            <div class="bg-secondary d-flex align-items-center justify-content-center" style="height: 300px;">
+                <i class="fas fa-utensils fa-5x text-white"></i>
             </div>
-            <div class="card-body">
-                <div class="mb-4">
-                    <h3>Description</h3>
-                    <p class="lead">{{ recipe.description }}</p>
+            {% endif %}
+            
+            <div class="card-header bg-primary text-white">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <h1 class="card-title mb-1">{{ recipe.title }}</h1>
+                        <p class="mb-0">
+                            By <a href="{{ url_for('profile', username=recipe.username) }}" class="text-white text-decoration-underline">
+                                {{ recipe.username }}
+                            </a> | {{ recipe.created_at }}
+                        </p>
+                    </div>
+                    {% if session.user_id %}
+                    <form method="POST" action="{{ url_for('toggle_favorite', recipe_id=recipe.id) }}">
+                        <button type="submit" class="btn btn-light">
+                            <i class="fa{% if is_favorited %}s{% else %}r{% endif %} fa-heart text-danger"></i>
+                            {% if is_favorited %}Favorited{% else %}Favorite{% endif %}
+                        </button>
+                    </form>
+                    {% endif %}
                 </div>
-                
-                <div class="mb-4">
-                    <h3>Ingredients</h3>
-                    <div class="bg-light p-3 rounded">
-                        {{ recipe.ingredients }}
+            </div>
+            
+            <div class="card-body">
+                <!-- Rating Display -->
+                <div class="mb-3 p-3 bg-light rounded">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <h5 class="mb-1">Rating</h5>
+                            <div class="star-rating fs-4">
+                                {% if recipe.avg_rating > 0 %}
+                                    {% for i in range(5) %}
+                                        {% if i < recipe.avg_rating %}
+                                        <i class="fas fa-star"></i>
+                                        {% else %}
+                                        <i class="far fa-star"></i>
+                                        {% endif %}
+                                    {% endfor %}
+                                    <span class="text-muted ms-2">({{ recipe.rating_count }} ratings)</span>
+                                {% else %}
+                                    <span class="text-muted">No ratings yet</span>
+                                {% endif %}
+                            </div>
+                        </div>
+                        
+                        {% if session.user_id and session.user_id != recipe.author_id %}
+                        <div>
+                            <form method="POST" action="{{ url_for('rate_recipe', recipe_id=recipe.id) }}" class="d-inline">
+                                <select name="rating" class="form-select form-select-sm d-inline w-auto" onchange="this.form.submit()">
+                                    <option value="">Rate this recipe</option>
+                                    <option value="5" {% if user_rating == 5 %}selected{% endif %}>⭐⭐⭐⭐⭐ Excellent</option>
+                                    <option value="4" {% if user_rating == 4 %}selected{% endif %}>⭐⭐⭐⭐ Great</option>
+                                    <option value="3" {% if user_rating == 3 %}selected{% endif %}>⭐⭐⭐ Good</option>
+                                    <option value="2" {% if user_rating == 2 %}selected{% endif %}>⭐⭐ Fair</option>
+                                    <option value="1" {% if user_rating == 1 %}selected{% endif %}>⭐ Poor</option>
+                                </select>
+                            </form>
+                        </div>
+                        {% endif %}
                     </div>
                 </div>
                 
+                <!-- Recipe Info -->
+                <div class="row mb-3">
+                    {% if recipe.category %}
+                    <div class="col-md-3">
+                        <strong><i class="fas fa-tag"></i> Category:</strong><br>
+                        {{ recipe.category }}
+                    </div>
+                    {% endif %}
+                    {% if recipe.difficulty %}
+                    <div class="col-md-3">
+                        <strong><i class="fas fa-signal"></i> Difficulty:</strong><br>
+                        <span class="badge bg-{% if recipe.difficulty == 'Easy' %}success{% elif recipe.difficulty == 'Medium' %}warning{% else %}danger{% endif %}">
+                            {{ recipe.difficulty }}
+                        </span>
+                    </div>
+                    {% endif %}
+                    {% if recipe.prep_time %}
+                    <div class="col-md-3">
+                        <strong><i class="fas fa-clock"></i> Prep Time:</strong><br>
+                        {{ recipe.prep_time }} minutes
+                    </div>
+                    {% endif %}
+                    {% if recipe.cook_time %}
+                    <div class="col-md-3">
+                        <strong><i class="fas fa-fire"></i> Cook Time:</strong><br>
+                        {{ recipe.cook_time }} minutes
+                    </div>
+                    {% endif %}
+                </div>
+                
+                {% if recipe.servings %}
+                <div class="mb-3">
+                    <strong><i class="fas fa-users"></i> Servings:</strong> {{ recipe.servings }}
+                </div>
+                {% endif %}
+                
+                <!-- Description -->
                 <div class="mb-4">
-                    <h3>Instructions</h3>
+                    <h3><i class="fas fa-info-circle"></i> Description</h3>
+                    <p class="lead">{{ recipe.description }}</p>
+                </div>
+                
+                <!-- Ingredients -->
+                <div class="mb-4">
+                    <h3><i class="fas fa-shopping-basket"></i> Ingredients</h3>
                     <div class="bg-light p-3 rounded">
-                        {{ recipe.instructions }}
+                        <pre style="white-space: pre-wrap; font-family: inherit;">{{ recipe.ingredients }}</pre>
+                    </div>
+                </div>
+                
+                <!-- Instructions -->
+                <div class="mb-4">
+                    <h3><i class="fas fa-list-ol"></i> Instructions</h3>
+                    <div class="bg-light p-3 rounded">
+                        <pre style="white-space: pre-wrap; font-family: inherit;">{{ recipe.instructions }}</pre>
                     </div>
                 </div>
             </div>
@@ -44,65 +149,115 @@
     
     <div class="col-lg-4">
         <!-- XSS Warning -->
-        <div class="alert alert-danger mb-4" role="alert">
+        <div class="alert alert-danger mb-4 xss-warning" role="alert">
             <h5><i class="fas fa-exclamation-triangle"></i> XSS Vulnerability!</h5>
             <p><strong>Comments are NOT sanitized!</strong></p>
-            <p>This is intentional for educational demonstration.</p>
+            <p>This is intentional for educational demonstration. Comments are rendered using the <code>|safe</code> filter without any input validation or output encoding.</p>
+            <p class="mb-0"><small><strong>Try the test payloads below</strong></small></p>
         </div>
         
         <!-- Add Comment Form -->
-        <div class="card shadow-sm">
+        {% if session.user_id %}
+        <div class="card shadow-sm mb-4">
             <div class="card-header bg-success text-white">
-                <h4 class="mb-0">Add Comment</h4>
+                <h4 class="mb-0"><i class="fas fa-comment"></i> Add Comment</h4>
             </div>
             <div class="card-body">
                 <form action="{{ url_for('add_comment', recipe_id=recipe.id) }}" method="POST">
                     <div class="mb-3">
-                        <textarea class="form-control" name="content" rows="3" 
-                                placeholder="Share your thoughts..."></textarea>
+                        <textarea class="form-control" name="content" rows="4" 
+                                placeholder="Share your thoughts..." required></textarea>
                     </div>
-                    <button type="submit" class="btn btn-success w-100">Post Comment</button>
+                    <button type="submit" class="btn btn-success w-100">
+                        <i class="fas fa-paper-plane"></i> Post Comment
+                    </button>
                 </form>
                 
                 <!-- XSS Test Payloads -->
-                <div class="mt-3">
-                    <h6 class="text-danger">XSS Test Payloads:</h6>
-                    <small>Copy these to test XSS:</small>
-                    <div class="bg-light p-2 rounded mt-2">
-                        <code>&lt;script&gt;alert('XSS!')&lt;/script&gt;</code>
+                <div class="mt-4">
+                    <h6 class="text-danger"><i class="fas fa-bug"></i> XSS Test Payloads:</h6>
+                    <small class="text-muted">Copy & paste to test XSS:</small>
+                    
+                    <div class="mt-2">
+                        <small class="d-block text-muted mb-1">Alert Box:</small>
+                        <div class="bg-light p-2 rounded">
+                            <code style="font-size: 0.7rem; word-break: break-all;">&lt;script&gt;alert('XSS Attack!')&lt;/script&gt;</code>
+                        </div>
                     </div>
-                    <div class="bg-light p-2 rounded mt-1">
-                        <code>&lt;img src=x onerror=alert('Image XSS')&gt;</code>
+                    
+                    <div class="mt-2">
+                        <small class="d-block text-muted mb-1">Image XSS:</small>
+                        <div class="bg-light p-2 rounded">
+                            <code style="font-size: 0.7rem; word-break: break-all;">&lt;img src=x onerror=alert('Image XSS')&gt;</code>
+                        </div>
+                    </div>
+                    
+                    <div class="mt-2">
+                        <small class="d-block text-muted mb-1">Cookie Stealer:</small>
+                        <div class="bg-light p-2 rounded">
+                            <code style="font-size: 0.7rem; word-break: break-all;">&lt;script&gt;alert(document.cookie)&lt;/script&gt;</code>
+                        </div>
+                    </div>
+                    
+                    <div class="mt-2">
+                        <small class="d-block text-muted mb-1">SVG XSS:</small>
+                        <div class="bg-light p-2 rounded">
+                            <code style="font-size: 0.7rem; word-break: break-all;">&lt;svg onload=alert('SVG XSS')&gt;</code>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
+        {% else %}
+        <div class="alert alert-info" role="alert">
+            <i class="fas fa-info-circle"></i>
+            <a href="{{ url_for('login') }}">Login</a> or 
+            <a href="{{ url_for('register') }}">Register</a> to comment and rate recipes!
+        </div>
+        {% endif %}
     </div>
 </div>
 
 <!-- Comments Section - VULNERABLE TO XSS -->
-<div class="row mt-4">
+<div class="row">
     <div class="col-12">
         <div class="card shadow-sm">
             <div class="card-header bg-info text-white">
-                <h3 class="mb-0">Comments ({{ comments|length }})</h3>
+                <h3 class="mb-0">
+                    <i class="fas fa-comments"></i> Comments ({{ comments|length }})
+                </h3>
             </div>
             <div class="card-body">
                 {% if comments %}
                     {% for comment in comments %}
-                    <div class="border-bottom pb-3 mb-3">
-                        <h6 class="mb-1">{{ comment.username }} <small class="text-muted">{{ comment.created_at }}</small></h6>
+                    <div class="border-bottom pb-3 mb-3 {% if loop.last %}border-0{% endif %}">
+                        <div class="d-flex justify-content-between align-items-start mb-2">
+                            <h6 class="mb-0">
+                                <a href="{{ url_for('profile', username=comment.username) }}">
+                                    <i class="fas fa-user-circle"></i> {{ comment.username }}
+                                </a>
+                            </h6>
+                            <small class="text-muted">{{ comment.created_at }}</small>
+                        </div>
                         <!-- CRITICAL XSS VULNERABILITY: Direct output without escaping -->
-                        <div class="comment-content">
+                        <div class="comment-content p-2 bg-light rounded">
                             {{ comment.content|safe }}
                         </div>
                     </div>
                     {% endfor %}
                 {% else %}
-                    <p class="text-muted">No comments yet. Be the first!</p>
+                    <p class="text-muted text-center">
+                        <i class="fas fa-comment-slash"></i> No comments yet. Be the first to comment!
+                    </p>
                 {% endif %}
             </div>
         </div>
     </div>
 </div>
 {% endblock %}
+
+<style>
+.star-rating {
+    color: #ffc107;
+}
+</style>
