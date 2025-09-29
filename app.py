@@ -74,4 +74,4 @@ def add_comment(recipe_id):
     return redirect(url_for('recipe_detail', recipe_id=recipe_id))
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(host='0.0.0.0', port=5000, debug=True)
