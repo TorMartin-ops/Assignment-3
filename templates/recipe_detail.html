@@ -148,14 +148,6 @@
     </div>
     
     <div class="col-lg-4">
-        <!-- XSS Warning -->
-        <div class="alert alert-danger mb-4 xss-warning" role="alert">
-            <h5><i class="fas fa-exclamation-triangle"></i> XSS Vulnerability!</h5>
-            <p><strong>Comments are NOT sanitized!</strong></p>
-            <p>This is intentional for educational demonstration. Comments are rendered using the <code>|safe</code> filter without any input validation or output encoding.</p>
-            <p class="mb-0"><small><strong>Try the test payloads below</strong></small></p>
-        </div>
-        
         <!-- Add Comment Form -->
         {% if session.user_id %}
         <div class="card shadow-sm mb-4">
@@ -172,40 +164,6 @@
                         <i class="fas fa-paper-plane"></i> Post Comment
                     </button>
                 </form>
-                
-                <!-- XSS Test Payloads -->
-                <div class="mt-4">
-                    <h6 class="text-danger"><i class="fas fa-bug"></i> XSS Test Payloads:</h6>
-                    <small class="text-muted">Copy & paste to test XSS:</small>
-                    
-                    <div class="mt-2">
-                        <small class="d-block text-muted mb-1">Alert Box:</small>
-                        <div class="bg-light p-2 rounded">
-                            <code style="font-size: 0.7rem; word-break: break-all;">&lt;script&gt;alert('XSS Attack!')&lt;/script&gt;</code>
-                        </div>
-                    </div>
-                    
-                    <div class="mt-2">
-                        <small class="d-block text-muted mb-1">Image XSS:</small>
-                        <div class="bg-light p-2 rounded">
-                            <code style="font-size: 0.7rem; word-break: break-all;">&lt;img src=x onerror=alert('Image XSS')&gt;</code>
-                        </div>
-                    </div>
-                    
-                    <div class="mt-2">
-                        <small class="d-block text-muted mb-1">Cookie Stealer:</small>
-                        <div class="bg-light p-2 rounded">
-                            <code style="font-size: 0.7rem; word-break: break-all;">&lt;script&gt;alert(document.cookie)&lt;/script&gt;</code>
-                        </div>
-                    </div>
-                    
-                    <div class="mt-2">
-                        <small class="d-block text-muted mb-1">SVG XSS:</small>
-                        <div class="bg-light p-2 rounded">
-                            <code style="font-size: 0.7rem; word-break: break-all;">&lt;svg onload=alert('SVG XSS')&gt;</code>
-                        </div>
-                    </div>
-                </div>
             </div>
         </div>
         {% else %}
@@ -218,7 +176,7 @@
     </div>
 </div>
 
-<!-- Comments Section - VULNERABLE TO XSS -->
+<!-- Comments Section -->
 <div class="row">
     <div class="col-12">
         <div class="card shadow-sm">
@@ -239,9 +197,8 @@
                             </h6>
                             <small class="text-muted">{{ comment.created_at }}</small>
                         </div>
-                        <!-- CRITICAL XSS VULNERABILITY: Direct output without escaping -->
                         <div class="comment-content p-2 bg-light rounded">
-                            {{ comment.content|safe }}
+                            {{ comment.content }}
                         </div>
                     </div>
                     {% endfor %}

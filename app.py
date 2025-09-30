@@ -2,12 +2,28 @@ from flask import Flask, render_template, request, redirect, url_for, session, f
 from werkzeug.security import generate_password_hash, check_password_hash
 from database import get_db_connection, init_database
 from functools import wraps
+import bleach
 
 app = Flask(__name__)
 app.secret_key = 'your-secret-key-change-this-in-production'
 
 # Initialize database on startup
 init_database()
+
+# Security headers
+@app.after_request
+def set_security_headers(response):
+    """Add security headers to prevent XSS"""
+    response.headers['Content-Security-Policy'] = (
+        "default-src 'self'; "
+        "script-src 'self' https://cdn.jsdelivr.net; "
+        "style-src 'self' https://cdn.jsdelivr.net 'unsafe-inline'; "
+        "img-src 'self' https: data:;"
+    )
+    response.headers['X-Content-Type-Options'] = 'nosniff'
+    response.headers['X-Frame-Options'] = 'DENY'
+    response.headers['X-XSS-Protection'] = '1; mode=block'
+    return response
 
 # Login required decorator
 def login_required(f):
@@ -71,7 +87,7 @@ def home():
 
 @app.route('/recipe/<int:recipe_id>')
 def recipe_detail(recipe_id):
-    """Show recipe with XSS vulnerability in comments"""
+    """Show recipe with secured comments"""
     conn = get_db_connection()
     
     # Get recipe with rating
@@ -90,7 +106,7 @@ def recipe_detail(recipe_id):
         flash('Recipe not found!', 'danger')
         return redirect(url_for('home'))
     
-    # Get comments - XSS VULNERABILITY HERE
+    # Get comments
     comments = conn.execute('''
         SELECT c.*, u.username 
         FROM comments c 
@@ -127,18 +143,20 @@ def recipe_detail(recipe_id):
 @app.route('/add_comment/<int:recipe_id>', methods=['POST'])
 @login_required
 def add_comment(recipe_id):
-    """Add comment - XSS VULNERABILITY ENTRY POINT"""
+    """Add comment - NOW SECURED WITH SANITIZATION"""
     content = request.form.get('content')
     if not content:
         flash('Comment cannot be empty!', 'warning')
         return redirect(url_for('recipe_detail', recipe_id=recipe_id))
     
-    # Store WITHOUT sanitization - INTENTIONAL VULNERABILITY
+    # Sanitize input - removes all HTML tags
+    clean_content = bleach.clean(content, tags=[], strip=True)
+    
     conn = get_db_connection()
     conn.execute('''
         INSERT INTO comments (content, recipe_id, user_id)
         VALUES (?, ?, ?)
-    ''', (content, recipe_id, session['user_id']))
+    ''', (clean_content, recipe_id, session['user_id']))
     conn.commit()
     conn.close()
     

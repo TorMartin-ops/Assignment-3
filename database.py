@@ -157,15 +157,18 @@ def init_database():
         except sqlite3.IntegrityError:
             pass
     
-    # Add sample comments
-    recipe = conn.execute('SELECT id FROM recipes WHERE title = ?', ('Chocolate Chip Cookies',)).fetchone()
-    if recipe and user2:
-        try:
-            conn.execute('''INSERT INTO comments (content, recipe_id, user_id) VALUES (?, ?, ?)''',
-                        ('These cookies are absolutely delicious! My kids loved them!', recipe['id'], user2['id']))
-            conn.commit()
-        except sqlite3.IntegrityError:
-            pass
+    # Add sample comments - ONLY IF THEY DON'T EXIST
+    existing_comments = conn.execute('SELECT COUNT(*) as count FROM comments').fetchone()
+    
+    if existing_comments['count'] == 0:
+        recipe = conn.execute('SELECT id FROM recipes WHERE title = ?', ('Chocolate Chip Cookies',)).fetchone()
+        if recipe and user2:
+            try:
+                conn.execute('''INSERT INTO comments (content, recipe_id, user_id) VALUES (?, ?, ?)''',
+                            ('These cookies are absolutely delicious! My kids loved them!', recipe['id'], user2['id']))
+                conn.commit()
+            except sqlite3.IntegrityError:
+                pass
     
     conn.close()
     print("Database initialized successfully!")
