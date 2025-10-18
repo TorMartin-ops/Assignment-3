@@ -78,6 +78,8 @@ class RateLimiter:
         """
         Record a request for rate limiting
 
+        Uses transaction with immediate lock to prevent TOCTOU race conditions
+
         Args:
             key: Rate limit key
             endpoint: Endpoint path
@@ -90,6 +92,9 @@ class RateLimiter:
         window_end = now + timedelta(minutes=self.window_minutes)
 
         try:
+            # BEGIN IMMEDIATE to acquire write lock immediately (prevents race conditions)
+            conn.execute('BEGIN IMMEDIATE')
+
             # Try to increment existing window
             existing = conn.execute('''
                 SELECT id FROM rate_limits
@@ -116,6 +121,7 @@ class RateLimiter:
             return True
 
         except Exception as e:
+            conn.execute('ROLLBACK')
             conn.close()
             print(f"Rate limit record error: {e}")
             return False

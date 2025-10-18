@@ -88,9 +88,9 @@ secret = base64.b32encode(random_bytes).decode('utf-8')
 
 ### 2.2 Secure Storage - Critical Security Requirement
 
-**❌ NEVER store secrets in plain text**
+**[No] NEVER store secrets in plain text**
 
-**✅ Required: Encryption before database storage**
+**[Complete] Required: Encryption before database storage**
 
 #### Recommended: Fernet Encryption (cryptography library)
 
@@ -619,7 +619,7 @@ def get_remaining_backup_codes_count(user_id):
 ```html
 <!-- Show after successful 2FA verification -->
 <div class="backup-codes-container">
-    <h3>⚠️ Save Your Backup Codes</h3>
+    <h3>WARNING: Save Your Backup Codes</h3>
     <p><strong>Important:</strong> These codes will only be shown ONCE. Save them securely!</p>
 
     <div class="codes-grid">
@@ -631,10 +631,10 @@ def get_remaining_backup_codes_count(user_id):
     <div class="backup-instructions">
         <h4>How to Store Backup Codes Safely:</h4>
         <ul>
-            <li>✅ Print and store in a safe place</li>
-            <li>✅ Save in a password manager (separate from passwords)</li>
-            <li>❌ Do NOT store in the same place as your TOTP device</li>
-            <li>❌ Do NOT share these codes with anyone</li>
+            <li>[Complete] Print and store in a safe place</li>
+            <li>[Complete] Save in a password manager (separate from passwords)</li>
+            <li>[No] Do NOT store in the same place as your TOTP device</li>
+            <li>[No] Do NOT share these codes with anyone</li>
         </ul>
 
         <p>Each code can only be used once. You have <strong>{{ backup_codes|length }}</strong> codes.</p>
@@ -671,20 +671,20 @@ def get_remaining_backup_codes_count(user_id):
 ### 4.5 Security Best Practices for Backup Codes
 
 **DO:**
-1. ✅ **Hash before storage** - Never store plain text backup codes
-2. ✅ **Single-use enforcement** - Remove from database after use
-3. ✅ **Log usage** - Track when backup codes are used (potential security indicator)
-4. ✅ **Allow regeneration** - Let users generate new codes (invalidates old ones)
-5. ✅ **Show count** - Display remaining backup codes count in user settings
-6. ✅ **One-time display** - Show codes only once during generation
-7. ✅ **Higher entropy** - Use 8+ character codes (vs 6-digit TOTP)
+1. [Complete] **Hash before storage** - Never store plain text backup codes
+2. [Complete] **Single-use enforcement** - Remove from database after use
+3. [Complete] **Log usage** - Track when backup codes are used (potential security indicator)
+4. [Complete] **Allow regeneration** - Let users generate new codes (invalidates old ones)
+5. [Complete] **Show count** - Display remaining backup codes count in user settings
+6. [Complete] **One-time display** - Show codes only once during generation
+7. [Complete] **Higher entropy** - Use 8+ character codes (vs 6-digit TOTP)
 
 **DON'T:**
-1. ❌ **Don't use predictable patterns** - No sequential numbers or common words
-2. ❌ **Don't reuse codes** - Each code must be single-use
-3. ❌ **Don't store unhashed** - Always hash before database storage
-4. ❌ **Don't salt backup codes** - Salting is unnecessary (codes are already random and single-use)
-5. ❌ **Don't rely solely on backup codes** - They're emergency-only, not primary 2FA
+1. [No] **Don't use predictable patterns** - No sequential numbers or common words
+2. [No] **Don't reuse codes** - Each code must be single-use
+3. [No] **Don't store unhashed** - Always hash before database storage
+4. [No] **Don't salt backup codes** - Salting is unnecessary (codes are already random and single-use)
+5. [No] **Don't rely solely on backup codes** - They're emergency-only, not primary 2FA
 
 **Regeneration Flow:**
 
@@ -1002,13 +1002,13 @@ def verify_totp_with_rate_limiting(user_id, provided_code):
 ### 5.4 Rate Limiting Best Practices Summary
 
 **Essential Protections:**
-1. ✅ **Progressive delays:** Exponential backoff (2s, 4s, 8s, 16s, 32s)
-2. ✅ **Maximum attempts:** Lock after 5 failed attempts
-3. ✅ **Atomic counters:** Prevent race conditions in concurrent attempts
-4. ✅ **Cross-session tracking:** Prevent parallel brute force (use Redis/database)
-5. ✅ **Time window restriction:** Accept codes only for ±30-60 seconds (valid_window=1)
-6. ✅ **Account lockout:** Temporary ban (1 hour) after threshold
-7. ✅ **Security logging:** Log all failed attempts and lockouts
+1. [Complete] **Progressive delays:** Exponential backoff (2s, 4s, 8s, 16s, 32s)
+2. [Complete] **Maximum attempts:** Lock after 5 failed attempts
+3. [Complete] **Atomic counters:** Prevent race conditions in concurrent attempts
+4. [Complete] **Cross-session tracking:** Prevent parallel brute force (use Redis/database)
+5. [Complete] **Time window restriction:** Accept codes only for ±30-60 seconds (valid_window=1)
+6. [Complete] **Account lockout:** Temporary ban (1 hour) after threshold
+7. [Complete] **Security logging:** Log all failed attempts and lockouts
 
 **Configuration Parameters:**
 - `MAX_TOTP_ATTEMPTS`: 5 (industry standard)
@@ -1262,20 +1262,20 @@ def verify_recovery_token(token):
 ### 6.3 Recovery Best Practices
 
 **DO:**
-1. ✅ **Prioritize backup codes** - Fastest, most secure recovery method
-2. ✅ **Warn about remaining codes** - Notify user when backup codes are used
-3. ✅ **Time-limited recovery tokens** - Email tokens expire in 1 hour
-4. ✅ **Log all recovery actions** - Track for security monitoring
-5. ✅ **Require re-setup after email recovery** - Don't just disable 2FA permanently
-6. ✅ **Show remaining backup codes count** - In user settings dashboard
-7. ✅ **Allow backup code regeneration** - Let users generate new codes (requires TOTP verification)
+1. [Complete] **Prioritize backup codes** - Fastest, most secure recovery method
+2. [Complete] **Warn about remaining codes** - Notify user when backup codes are used
+3. [Complete] **Time-limited recovery tokens** - Email tokens expire in 1 hour
+4. [Complete] **Log all recovery actions** - Track for security monitoring
+5. [Complete] **Require re-setup after email recovery** - Don't just disable 2FA permanently
+6. [Complete] **Show remaining backup codes count** - In user settings dashboard
+7. [Complete] **Allow backup code regeneration** - Let users generate new codes (requires TOTP verification)
 
 **DON'T:**
-1. ❌ **Don't allow SMS recovery** - SMS is vulnerable to SIM swapping attacks
-2. ❌ **Don't skip verification** - Always verify identity before recovery
-3. ❌ **Don't make recovery too easy** - Balance usability with security
-4. ❌ **Don't expose user existence** - Use same message for valid/invalid emails
-5. ❌ **Don't allow unlimited recovery attempts** - Rate limit recovery token requests
+1. [No] **Don't allow SMS recovery** - SMS is vulnerable to SIM swapping attacks
+2. [No] **Don't skip verification** - Always verify identity before recovery
+3. [No] **Don't make recovery too easy** - Balance usability with security
+4. [No] **Don't expose user existence** - Use same message for valid/invalid emails
+5. [No] **Don't allow unlimited recovery attempts** - Rate limit recovery token requests
 
 **Recovery Flow Summary:**
 
@@ -1415,11 +1415,11 @@ valid_window=2:  [Past 60s] [Current 30s] [Future 60s]  ← Too permissive
 
 **Critical Security Issues:**
 
-1. **⚠️ No Built-in Rate Limiting**
+1. **WARNING: No Built-in Rate Limiting**
    - pyotp does NOT implement rate limiting
    - **You MUST implement this yourself** (see Section 5)
 
-2. **⚠️ No Replay Attack Prevention**
+2. **WARNING: No Replay Attack Prevention**
    - pyotp does NOT track used codes
    - Same code can be verified multiple times within time window
    - **Solution:** Track used codes in database or cache
@@ -1448,16 +1448,16 @@ def verify_totp_with_replay_protection(user_id, code):
     return is_valid
 ```
 
-3. **⚠️ Clock Synchronization Dependency**
+3. **WARNING: Clock Synchronization Dependency**
    - TOTP requires synchronized clocks between client and server
    - **Solution:** Use valid_window=1 to tolerate ±30 seconds drift
    - **Monitoring:** Log time drift issues for investigation
 
-4. **⚠️ Secret Key Management**
+4. **WARNING: Secret Key Management**
    - pyotp does NOT handle secret encryption
    - **You MUST encrypt secrets** before database storage (see Section 2)
 
-5. **⚠️ No Session Management**
+5. **WARNING: No Session Management**
    - pyotp is stateless
    - **You MUST implement** session handling, lockouts, attempt tracking
 
@@ -1465,13 +1465,13 @@ def verify_totp_with_replay_protection(user_id, code):
 
 **Pitfall 1: Using verify() Multiple Times**
 ```python
-# ❌ WRONG: Multiple verify() calls consume time
+# [No] WRONG: Multiple verify() calls consume time
 if not totp.verify(code):
     # Time passes...
     if not totp.verify(code):  # Might fail even if code was valid
         pass
 
-# ✅ CORRECT: Store verification result
+# [Complete] CORRECT: Store verification result
 is_valid = totp.verify(code, valid_window=1)
 if is_valid:
     # Process valid code
@@ -1481,20 +1481,20 @@ else:
 
 **Pitfall 2: Ignoring Time Window**
 ```python
-# ❌ WRONG: Too strict, causes legitimate failures due to clock drift
+# [No] WRONG: Too strict, causes legitimate failures due to clock drift
 is_valid = totp.verify(code, valid_window=0)
 
-# ✅ CORRECT: Allow 1 window of drift
+# [Complete] CORRECT: Allow 1 window of drift
 is_valid = totp.verify(code, valid_window=1)
 ```
 
 **Pitfall 3: Not Handling Exceptions**
 ```python
-# ❌ WRONG: Crashes on invalid input
+# [No] WRONG: Crashes on invalid input
 code = "invalid"
 is_valid = totp.verify(code)  # May raise exception
 
-# ✅ CORRECT: Handle invalid input
+# [Complete] CORRECT: Handle invalid input
 try:
     is_valid = totp.verify(code, valid_window=1)
 except Exception as e:
@@ -1504,10 +1504,10 @@ except Exception as e:
 
 **Pitfall 4: Exposing Secrets in Logs**
 ```python
-# ❌ WRONG: Logs secret key
+# [No] WRONG: Logs secret key
 print(f"Verifying TOTP for secret: {secret}")
 
-# ✅ CORRECT: Never log secrets
+# [Complete] CORRECT: Never log secrets
 print(f"Verifying TOTP for user: {user_id}")
 ```
 
@@ -1874,7 +1874,7 @@ def confirm_backup_codes_saved():
     # Clear from session
     session.pop('backup_codes_display', None)
 
-    flash('2FA setup complete! Your account is now more secure.', 'success')
+    flash('2FA setup complete. Your account is now more secure.', 'success')
     return redirect(url_for('security_settings'))
 
 @app.route('/disable-2fa', methods=['POST'])
@@ -2345,11 +2345,11 @@ CREATE INDEX idx_users_lockout ON users(totp_lockout_until) WHERE totp_lockout_u
 ### 13.1 Key Takeaways
 
 **Critical Success Factors:**
-1. ✅ **Encrypt all secrets** - Never store TOTP secrets in plain text
-2. ✅ **Implement rate limiting** - Essential to prevent brute force attacks
-3. ✅ **Provide backup codes** - Users WILL lose devices
-4. ✅ **Use pyotp correctly** - Understand valid_window and security implications
-5. ✅ **Monitor and log** - Track 2FA events for security analysis
+1. [Complete] **Encrypt all secrets** - Never store TOTP secrets in plain text
+2. [Complete] **Implement rate limiting** - Essential to prevent brute force attacks
+3. [Complete] **Provide backup codes** - Users WILL lose devices
+4. [Complete] **Use pyotp correctly** - Understand valid_window and security implications
+5. [Complete] **Monitor and log** - Track 2FA events for security analysis
 
 **Security vs. Usability Balance:**
 - TOTP provides strong security without SMS vulnerabilities

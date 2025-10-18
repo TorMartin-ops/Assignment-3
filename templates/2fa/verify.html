@@ -14,6 +14,7 @@
                     <p>Enter the 6-digit code from your authenticator app:</p>
 
                     <form method="POST" action="{{ url_for('twofa.verify_2fa') }}">
+                        {{ csrf_token() }}
                         <div class="mb-3">
                             <label for="code" class="form-label">Verification Code</label>
                             <input type="text" class="form-control text-center" id="code" name="code"
@@ -31,6 +32,7 @@
                             <small>Lost access to your authenticator? Use backup code</small>
                         </summary>
                         <form method="POST" action="{{ url_for('twofa.verify_2fa') }}" class="mt-3">
+                        {{ csrf_token() }}
                             <input type="hidden" name="use_backup" value="true">
                             <div class="mb-3">
                                 <label for="backup_code" class="form-label">Backup Code</label>

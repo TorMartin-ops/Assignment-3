@@ -1,20 +1,20 @@
-# 🔐 How 2FA Works in This Implementation
+#  How 2FA Works in This Implementation
 
-## 🎯 **Complete TOTP Two-Factor Authentication Flow**
+##  **Complete TOTP Two-Factor Authentication Flow**
 
 This is a **REAL, PRODUCTION-READY** implementation using:
-- ✅ `pyotp` library (RFC 6238 compliant)
-- ✅ Real QR code generation
-- ✅ Real Google Authenticator integration
-- ✅ Encrypted secret storage (Fernet AES-128)
-- ✅ Replay attack prevention
-- ✅ Backup codes (SHA-256 hashed)
+- [Complete] `pyotp` library (RFC 6238 compliant)
+- [Complete] Real QR code generation
+- [Complete] Real Google Authenticator integration
+- [Complete] Encrypted secret storage (Fernet AES-128)
+- [Complete] Replay attack prevention
+- [Complete] Backup codes (SHA-256 hashed)
 
 **NO MOCKS. NO SIMULATIONS. REAL 2FA!**
 
 ---
 
-## 📊 **Complete Flow Diagram**
+##  **Complete Flow Diagram**
 
 ```
 ┌──────────────────────────────────────────────────────────────────┐
@@ -72,7 +72,7 @@ This is a **REAL, PRODUCTION-READY** implementation using:
    │   └─> Display backup codes (ONE TIME ONLY)
    │       └─> session['new_backup_codes'] = plaintext_codes
    │
-   └─> 2FA NOW ENABLED ✅
+   └─> 2FA NOW ENABLED 
 
 ┌──────────────────────────────────────────────────────────────────┐
 │                    PHASE 2: LOGIN (Every Time)                   │
@@ -95,7 +95,7 @@ This is a **REAL, PRODUCTION-READY** implementation using:
        │
        └─> IF 2FA DISABLED:
            ├─> session['user_id'] = user.id
-           └─> Login complete ✅
+           └─> Login complete 
 
 3. GET /verify-2fa (routes/twofa_routes.py:82-145)
    └─> Shows 6-digit code input form
@@ -139,7 +139,7 @@ This is a **REAL, PRODUCTION-READY** implementation using:
    └─> IF VERIFIED:
        ├─> session.pop('pending_2fa_user_id')
        ├─> session.pop('pending_2fa_username')
-       ├─> session['user_id'] = user_id  ✅ LOGIN COMPLETE
+       ├─> session['user_id'] = user_id  [Complete] LOGIN COMPLETE
        └─> Redirect → /home
 
 ┌──────────────────────────────────────────────────────────────────┐
@@ -165,7 +165,7 @@ During /verify-2fa, user can click "Use backup code"
 
 ---
 
-## 🔐 **Security Mechanisms**
+##  **Security Mechanisms**
 
 ### **1. Secret Storage (Encrypted)**
 
@@ -326,7 +326,7 @@ User Journey:
    - EFGH-5678
    - IJKL-9012
    (User must save these somewhere safe)
-10. 2FA now active ✅
+10. 2FA now active 
 ```
 
 **Code Path**: `/setup-2fa` → `routes/twofa_routes.py:19-80`
@@ -337,7 +337,7 @@ User Journey:
 User Journey:
 1. Enter username/password → Click Login
 2. IF 2FA enabled:
-   ├─> Password verified ✅
+   ├─> Password verified 
    ├─> Redirect to /verify-2fa (NOT logged in yet!)
    │
 3. User opens Google Authenticator app
@@ -346,7 +346,7 @@ User Journey:
 4. User enters: "472819" → Click Verify
    ├─> TOTP verification (±30 sec tolerance)
    ├─> Replay check (code not already used)
-   └─> IF VALID: Login complete ✅
+   └─> IF VALID: Login complete 
 
 5. User now logged in → Can access protected pages
 ```
@@ -367,7 +367,7 @@ User Journey:
    ├─> IF MATCH:
    │   ├─> REMOVES code from database (single-use!)
    │   ├─> Shows: "9 backup codes remaining"
-   │   └─> Login complete ✅
+   │   └─> Login complete 
 6. Backup code CANNOT be reused
 ```
 
@@ -405,7 +405,7 @@ backup_codes: ["5d41402abc4b2a76b9719d911017c592", "7c9e34b22f93b7d9c0f3e8a1d5b6
 
 ---
 
-## 🔍 **Code Reference by Feature**
+##  **Code Reference by Feature**
 
 | Feature | File | Lines | What It Does |
 |---------|------|-------|--------------|
@@ -420,7 +420,7 @@ backup_codes: ["5d41402abc4b2a76b9719d911017c592", "7c9e34b22f93b7d9c0f3e8a1d5b6
 
 ---
 
-## 🧪 **How to Test (Real 2FA)**
+## TEST: **How to Test (Real 2FA)**
 
 ### **Test with Real Phone App**
 
@@ -454,7 +454,7 @@ python3 app_auth.py
 # Logout and login again
 # After password, you'll be asked for 2FA code
 # Enter code from Google Authenticator
-# Login succeeds! ✅
+# Login succeeds! 
 ```
 
 ### **Test Replay Prevention**
@@ -468,8 +468,8 @@ python3 app_auth.py
 
 # 3. Login again within 30 seconds
 # Try SAME code: "853142"
-# Should see: "Code already used" ❌
-# Replay attack prevented! ✅
+# Should see: "Code already used" 
+# Replay attack prevented! 
 ```
 
 ### **Test Rate Limiting**
@@ -478,7 +478,7 @@ python3 app_auth.py
 # 1. At /verify-2fa screen
 # 2. Enter wrong codes 6 times quickly
 # 3. 6th attempt shows: "Rate limit exceeded"
-# Brute force prevented! ✅
+# Brute force prevented! 
 ```
 
 ### **Test Backup Codes**
@@ -487,11 +487,11 @@ python3 app_auth.py
 # 1. At /verify-2fa screen
 # 2. Click "Lost access to authenticator?"
 # 3. Enter a backup code (from setup): "ABCD-1234"
-# 4. Login succeeds! ✅
+# 4. Login succeeds! 
 # 5. See: "9 backup codes remaining"
 # 6. Try SAME code again
-# 7. Fails! "Invalid backup code" ❌
-# Single-use enforced! ✅
+# 7. Fails! "Invalid backup code" 
+# Single-use enforced! 
 ```
 
 ---
@@ -541,7 +541,7 @@ EFGH-5678  →  SHA-256  →  7c9e34b22f93b7d9c0f3e8a1d5b6c4e2
 
 ---
 
-## 🎯 **Integration with Login Flow**
+##  **Integration with Login Flow**
 
 ### **Modified Login Route**
 
@@ -622,7 +622,7 @@ def login():
 
 ```
 ┌───────────────────────────────────────┐
-│  ⚠️  Save Your Backup Codes           │
+│  WARNING:  Save Your Backup Codes           │
 ├───────────────────────────────────────┤
 │  IMPORTANT: Save these codes!         │
 │  You won't see them again!            │
@@ -641,28 +641,28 @@ def login():
 
 ---
 
-## ✅ **Implementation Completeness Check**
+## [Complete] **Implementation Completeness Check**
 
 ```python
 # ALL REAL IMPLEMENTATIONS:
 
-✅ pyotp.random_base32()           # Real secret generation
-✅ pyotp.TOTP(secret)              # Real TOTP object
-✅ totp.provisioning_uri()         # Real QR URI
-✅ qrcode.QRCode()                 # Real QR code generation
-✅ totp.verify(code, valid_window=1) # Real verification
-✅ encryption.encrypt(secret)      # Real Fernet encryption
-✅ hashlib.sha256(code)            # Real SHA-256 hashing
-✅ rate_limiter.limit(5)           # Real rate limiting
+[Complete] pyotp.random_base32()           # Real secret generation
+[Complete] pyotp.TOTP(secret)              # Real TOTP object
+[Complete] totp.provisioning_uri()         # Real QR URI
+[Complete] qrcode.QRCode()                 # Real QR code generation
+[Complete] totp.verify(code, valid_window=1) # Real verification
+[Complete] encryption.encrypt(secret)      # Real Fernet encryption
+[Complete] hashlib.sha256(code)            # Real SHA-256 hashing
+[Complete] rate_limiter.limit(5)           # Real rate limiting
 
-❌ NO MOCKS
-❌ NO SIMULATIONS
-❌ NO PLACEHOLDERS
+[No] NO MOCKS
+[No] NO SIMULATIONS
+[No] NO PLACEHOLDERS
 ```
 
 ---
 
-## 🔐 **Security Summary**
+##  **Security Summary**
 
 | Attack Vector | Protection | Implementation |
 |---------------|------------|----------------|
@@ -675,7 +675,7 @@ def login():
 
 ---
 
-## 🎯 **Try It Now**
+##  **Try It Now**
 
 ```bash
 # 1. Install (if not done)
@@ -694,29 +694,29 @@ python3 app_auth.py
 # - Enter 6-digit code
 # - Save backup codes
 # - Logout and login (will ask for 2FA code)
-# - WORKS! 🎉
+# - WORKS! 
 ```
 
 ---
 
-## 📊 **Verification**
+##  **Verification**
 
-**Is this real 2FA?** ✅ **YES**
+**Is this real 2FA?** [Complete] **YES**
 - Uses industry-standard pyotp library
 - RFC 6238 compliant
 - Works with Google Authenticator, Authy, Microsoft Authenticator
 - Same implementation used by GitHub, Google, etc.
 
-**Do I need to configure anything?** ❌ **NO**
+**Do I need to configure anything?** [No] **NO**
 - All automatic after `./install.sh`
 - No API keys needed
 - No external services needed
 
-**Will it work with my phone?** ✅ **YES**
+**Will it work with my phone?** [Complete] **YES**
 - Any TOTP-compatible authenticator app
 - Google Authenticator (most common)
 - Authy, Microsoft Authenticator, 1Password, etc.
 
 ---
 
-**Summary**: This is **REAL, PRODUCTION-GRADE 2FA** using the same standards as GitHub, Google, and banks. No manual setup needed beyond installing a phone app! 🔐
+**Summary**: This is **REAL, PRODUCTION-GRADE 2FA** using the same standards as GitHub, Google, and banks. No manual setup needed beyond installing a phone app! 

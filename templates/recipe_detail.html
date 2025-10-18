@@ -38,6 +38,7 @@
                     </div>
                     {% if session.user_id %}
                     <form method="POST" action="{{ url_for('toggle_favorite', recipe_id=recipe.id) }}">
+                        {{ csrf_token() }}
                         <button type="submit" class="btn btn-light">
                             <i class="fa{% if is_favorited %}s{% else %}r{% endif %} fa-heart text-danger"></i>
                             {% if is_favorited %}Favorited{% else %}Favorite{% endif %}
@@ -72,13 +73,14 @@
                         {% if session.user_id and session.user_id != recipe.author_id %}
                         <div>
                             <form method="POST" action="{{ url_for('rate_recipe', recipe_id=recipe.id) }}" class="d-inline">
+                        {{ csrf_token() }}
                                 <select name="rating" class="form-select form-select-sm d-inline w-auto" onchange="this.form.submit()">
                                     <option value="">Rate this recipe</option>
-                                    <option value="5" {% if user_rating == 5 %}selected{% endif %}>⭐⭐⭐⭐⭐ Excellent</option>
-                                    <option value="4" {% if user_rating == 4 %}selected{% endif %}>⭐⭐⭐⭐ Great</option>
-                                    <option value="3" {% if user_rating == 3 %}selected{% endif %}>⭐⭐⭐ Good</option>
-                                    <option value="2" {% if user_rating == 2 %}selected{% endif %}>⭐⭐ Fair</option>
-                                    <option value="1" {% if user_rating == 1 %}selected{% endif %}>⭐ Poor</option>
+                                    <option value="5" {% if user_rating == 5 %}selected{% endif %}>5 stars</option>
+                                    <option value="4" {% if user_rating == 4 %}selected{% endif %}>4 stars</option>
+                                    <option value="3" {% if user_rating == 3 %}selected{% endif %}>3 stars</option>
+                                    <option value="2" {% if user_rating == 2 %}selected{% endif %}>2 stars</option>
+                                    <option value="1" {% if user_rating == 1 %}selected{% endif %}>1 star</option>
                                 </select>
                             </form>
                         </div>
@@ -156,6 +158,7 @@
             </div>
             <div class="card-body">
                 <form action="{{ url_for('add_comment', recipe_id=recipe.id) }}" method="POST">
+                        {{ csrf_token() }}
                     <div class="mb-3">
                         <textarea class="form-control" name="content" rows="4" 
                                 placeholder="Share your thoughts..." required></textarea>

@@ -33,13 +33,13 @@ def test_oauth2_flow_automated():
     Simulates the assignment's test code but with proper OAuth2 flow
     """
     print("=" * 70)
-    print("🔐 OAuth2 Authorization Code Flow - Automated Test")
+    print("OAuth2 Authorization Code Flow - Automated Test")
     print("   (Adapted from assignment test code)")
     print("=" * 70)
 
     # Generate PKCE pair (required for security)
     code_verifier, code_challenge = generate_pkce_pair()
-    print(f"\n✅ PKCE Generated:")
+    print(f"\nPKCE Generated:")
     print(f"   Verifier: {code_verifier[:30]}...")
     print(f"   Challenge: {code_challenge[:30]}...")
 
@@ -51,7 +51,7 @@ def test_oauth2_flow_automated():
     # 3. Approve the authorization
     # 4. Get redirected with authorization code
 
-    print(f"\n📝 Step 1: Authorization Request")
+    print(f"\nStep 1: Authorization Request")
     print(f"   In browser, user would visit:")
     auth_url = (
         f"{BASE_URL}/oauth/authorize?"
@@ -63,7 +63,7 @@ def test_oauth2_flow_automated():
         f"state=random_state_12345"
     )
     print(f"   {auth_url}")
-    print(f"\n   ⚠️  For full automated test, we need to:")
+    print(f"\n   NOTE: For full automated test, we need to:")
     print(f"   1. Create a test user")
     print(f"   2. Login with that user")
     print(f"   3. Approve the authorization")
@@ -71,7 +71,7 @@ def test_oauth2_flow_automated():
 
     # For this test, let's directly create an authorization code
     # (simulating what happens after user approves)
-    print(f"\n📝 Step 2: Simulating User Approval")
+    print(f"\nStep 2: Simulating User Approval")
     print(f"   Creating authorization code directly in database...")
 
     # Create auth code directly (bypassing browser flow for testing)
@@ -90,12 +90,12 @@ def test_oauth2_flow_automated():
     success, result = auth.register_user(test_username, test_email, test_password)
     if success:
         user_id = result
-        print(f"   ✅ Test user created: ID {user_id}")
+        print(f"   Test user created: ID {user_id}")
     else:
         # User exists, get their ID
         user = auth.get_user_by_username(test_username)
         user_id = user['id'] if user else 1  # Fallback to user 1
-        print(f"   ℹ️  Using existing user: ID {user_id}")
+        print(f"   INFO: Using existing user: ID {user_id}")
 
     # Generate authorization code
     auth_code = oauth2.generate_authorization_code(
@@ -107,10 +107,10 @@ def test_oauth2_flow_automated():
         'S256'
     )
 
-    print(f"   ✅ Authorization code generated: {auth_code[:30]}...")
+    print(f"   Authorization code generated: {auth_code[:30]}...")
 
     # Step 3: Exchange Authorization Code for Access Token
-    print(f"\n💱 Step 3: Token Exchange")
+    print(f"\nStep 3: Token Exchange")
 
     token_data = {
         'grant_type': 'authorization_code',
@@ -133,13 +133,13 @@ def test_oauth2_flow_automated():
             access_token = token_info.get('access_token')
             refresh_token = token_info.get('refresh_token')
 
-            print(f"   ✅ Tokens received:")
+            print(f"   Tokens received:")
             print(f"      Access Token: {access_token[:30]}...")
             print(f"      Refresh Token: {refresh_token[:30] if refresh_token else 'N/A'}...")
             print(f"      Expires In: {token_info.get('expires_in')} seconds")
 
             # Step 4: Access Protected Resource
-            print(f"\n🔓 Step 4: Access Protected Resource")
+            print(f"\nStep 4: Access Protected Resource")
 
             headers = {'Authorization': f"Bearer {access_token}"}
             print(f"   GET {BASE_URL}/oauth/userinfo")
@@ -150,14 +150,14 @@ def test_oauth2_flow_automated():
 
             if response.status_code == 200:
                 user_info = response.json()
-                print(f"   ✅ User info retrieved:")
+                print(f"   User info retrieved:")
                 print(f"      {json.dumps(user_info, indent=6)}")
             else:
-                print(f"   ❌ Failed: {response.text}")
+                print(f"   FAIL: {response.text}")
 
             # Step 5: Refresh Access Token
             if refresh_token:
-                print(f"\n🔄 Step 5: Refresh Access Token")
+                print(f"\nStep 5: Refresh Access Token")
 
                 refresh_data = {
                     'grant_type': 'refresh_token',
@@ -171,13 +171,13 @@ def test_oauth2_flow_automated():
 
                 if response.status_code == 200:
                     new_tokens = response.json()
-                    print(f"   ✅ New tokens received:")
+                    print(f"   New tokens received:")
                     print(f"      Access Token: {new_tokens['access_token'][:30]}...")
                     print(f"      Refresh Token: {new_tokens['refresh_token'][:30]}...")
-                    print(f"\n   🔒 Token Rotation: Old refresh token is now INVALID")
+                    print(f"\n   Token Rotation: Old refresh token is now INVALID")
 
                     # Step 6: Test token reuse detection
-                    print(f"\n🚨 Step 6: Test Refresh Token Reuse Detection")
+                    print(f"\nStep 6: Test Refresh Token Reuse Detection")
                     print(f"   Attempting to reuse old refresh token...")
 
                     reuse_data = {
@@ -192,35 +192,35 @@ def test_oauth2_flow_automated():
 
                     if response.status_code == 400:
                         error = response.json()
-                        print(f"   ✅ Reuse detected and blocked!")
+                        print(f"   Reuse detected and blocked!")
                         print(f"      Error: {error.get('error_description')}")
                     else:
-                        print(f"   ⚠️  Token reuse not properly blocked")
+                        print(f"   WARNING: Token reuse not properly blocked")
                 else:
-                    print(f"   ❌ Refresh failed: {response.text}")
+                    print(f"   FAIL: Refresh failed: {response.text}")
 
             print(f"\n" + "=" * 70)
-            print(f"✅ OAuth2 FLOW TEST COMPLETE!")
+            print(f"OAuth2 FLOW TEST COMPLETE")
             print(f"=" * 70)
-            print(f"\n🎓 Assignment Requirements Met:")
-            print(f"   ✅ Authorization Code Flow implemented")
-            print(f"   ✅ Token exchange working")
-            print(f"   ✅ Protected resource access working")
-            print(f"   ✅ User details securely stored in database")
-            print(f"   ✅ BONUS: PKCE implemented (advanced security)")
-            print(f"   ✅ BONUS: Refresh token rotation (production-ready)")
-            print(f"   ✅ BONUS: Token reuse detection (advanced security)")
+            print(f"\nAssignment Requirements Met:")
+            print(f"   - Authorization Code Flow implemented")
+            print(f"   - Token exchange working")
+            print(f"   - Protected resource access working")
+            print(f"   - User details securely stored in database")
+            print(f"   - BONUS: PKCE implemented (advanced security)")
+            print(f"   - BONUS: Refresh token rotation (production-ready)")
+            print(f"   - BONUS: Token reuse detection (advanced security)")
 
         else:
-            print(f"   ❌ Token exchange failed: {response.text}")
+            print(f"   FAIL: Token exchange failed: {response.text}")
 
     except requests.exceptions.ConnectionError:
-        print(f"\n❌ ERROR: Could not connect to {BASE_URL}")
+        print(f"\nERROR: Could not connect to {BASE_URL}")
         print(f"   Make sure the application is running:")
         print(f"   python3 app_auth.py")
         return False
     except Exception as e:
-        print(f"\n❌ ERROR: {e}")
+        print(f"\nERROR: {e}")
         import traceback
         traceback.print_exc()
         return False

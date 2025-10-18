@@ -40,7 +40,7 @@
 # If passwords stored as MD5(password):
 Database: user1 → 5f4dcc3b5aa765d61d8327deb882cf99
 Rainbow Table lookup: 5f4dcc3b5aa765d61d8327deb882cf99 = "password"
-Result: ✅ Cracked in milliseconds
+Result: [Complete] Cracked in milliseconds
 ```
 
 ### Attack 2: Timing Attack for Username Enumeration
@@ -171,19 +171,19 @@ self.hasher = PasswordHasher(
 ```
 
 **OWASP Compliance**:
-- ✅ Exceeds minimum memory requirement (15 MiB)
-- ✅ Argon2id variant (side-channel resistant)
-- ✅ Automatic unique salt per password
-- ✅ Password versioning for algorithm upgrades
+- [Complete] Exceeds minimum memory requirement (15 MiB)
+- [Complete] Argon2id variant (side-channel resistant)
+- [Complete] Automatic unique salt per password
+- [Complete] Password versioning for algorithm upgrades
 
 **Why Argon2id over bcrypt/PBKDF2?**
 
 | Feature | Argon2id | bcrypt | PBKDF2 | MD5 |
 |---------|----------|--------|--------|-----|
-| Memory-hard | ✅ 19 MiB | ❌ | ❌ | ❌ |
-| GPU-resistant | ✅ Yes | ⚠️ Partial | ❌ No | ❌ No |
-| Side-channel safe | ✅ Yes | ✅ Yes | ⚠️ Partial | ❌ No |
-| OWASP 2024 ranking | #1 | #2 | #3 | ❌ Deprecated |
+| Memory-hard | [Complete] 19 MiB | [No] | [No] | [No] |
+| GPU-resistant | [Complete] Yes | WARNING: Partial | [No] No | [No] No |
+| Side-channel safe | [Complete] Yes | [Complete] Yes | WARNING: Partial | [No] No |
+| OWASP 2024 ranking | #1 | #2 | #3 | [No] Deprecated |
 | Cracking speed (GPU) | ~10 H/s | ~100 H/s | ~1M H/s | ~200B H/s |
 
 **Hash Format**:
@@ -447,11 +447,11 @@ python3 test_auth_basic.py
 
 **Output**:
 ```
-🔑 Testing Authentication Service...
-   ✅ User registered: ID 1730987654
-   ✅ Login successful: testuser_1730987654
-   ✅ Wrong password rejected
-   ✅ Timing difference: 0.0123s (should be minimal)
+ Testing Authentication Service...
+   [Complete] User registered: ID 1730987654
+   [Complete] Login successful: testuser_1730987654
+   [Complete] Wrong password rejected
+   [Complete] Timing difference: 0.0123s (should be minimal)
 ```
 
 **Verification**: Timing difference <50ms indicates successful timing attack mitigation.
@@ -511,14 +511,14 @@ Error: Username can only contain letters, numbers, underscores and hyphens
 
 | Control | Status | Implementation | Effectiveness |
 |---------|--------|----------------|---------------|
-| **Argon2id Hashing** | ✅ Implemented | OWASP parameters | 99% (GPU-resistant) |
-| **Unique Salts** | ✅ Automated | Built into Argon2 | 100% (rainbow table proof) |
-| **Timing-Safe Auth** | ✅ Implemented | Dummy hash verification | 95% (near constant-time) |
-| **Password Strength** | ✅ Implemented | 12+ chars, complexity | 80% (users can bypass with compliant weak password) |
-| **Breach Detection** | ✅ Implemented | HIBP API k-anonymity | 90% (requires internet) |
-| **Password Rehashing** | ✅ Implemented | Automatic on login | 100% (seamless upgrades) |
-| **Input Validation** | ✅ Implemented | Regex + length checks | 95% (defense in depth) |
-| **SQL Injection Prevention** | ✅ Implemented | Parameterized queries | 100% (if implemented correctly) |
+| **Argon2id Hashing** | [Complete] Implemented | OWASP parameters | 99% (GPU-resistant) |
+| **Unique Salts** | [Complete] Automated | Built into Argon2 | 100% (rainbow table proof) |
+| **Timing-Safe Auth** | [Complete] Implemented | Dummy hash verification | 95% (near constant-time) |
+| **Password Strength** | [Complete] Implemented | 12+ chars, complexity | 80% (users can bypass with compliant weak password) |
+| **Breach Detection** | [Complete] Implemented | HIBP API k-anonymity | 90% (requires internet) |
+| **Password Rehashing** | [Complete] Implemented | Automatic on login | 100% (seamless upgrades) |
+| **Input Validation** | [Complete] Implemented | Regex + length checks | 95% (defense in depth) |
+| **SQL Injection Prevention** | [Complete] Implemented | Parameterized queries | 100% (if implemented correctly) |
 
 ---
 
@@ -648,26 +648,26 @@ else:
 
 | Guideline | Requirement | Our Implementation | Status |
 |-----------|-------------|-------------------|--------|
-| Password Length | ≥8 characters | ≥12 characters | ✅ Exceeds |
-| Memorized Secret | Allow all characters | Full UTF-8 support | ✅ Compliant |
-| Password Complexity | No composition rules | Flexible (2 of 3) | ✅ Compliant |
-| Breach Detection | Check against known breaches | HIBP API integration | ✅ Compliant |
-| Storage | Salted, memory-hard hash | Argon2id, 19 MiB | ✅ Exceeds |
-| Rate Limiting | Throttle failed attempts | 5/min + 3-attempt lockout | ✅ Compliant |
+| Password Length | ≥8 characters | ≥12 characters | [Complete] Exceeds |
+| Memorized Secret | Allow all characters | Full UTF-8 support | [Complete] Compliant |
+| Password Complexity | No composition rules | Flexible (2 of 3) | [Complete] Compliant |
+| Breach Detection | Check against known breaches | HIBP API integration | [Complete] Compliant |
+| Storage | Salted, memory-hard hash | Argon2id, 19 MiB | [Complete] Exceeds |
+| Rate Limiting | Throttle failed attempts | 5/min + 3-attempt lockout | [Complete] Compliant |
 
 ### Assignment Requirement Met?
 
-✅ **YES - EXCEEDS REQUIREMENTS**
+[Complete] **YES - EXCEEDS REQUIREMENTS**
 
-- ✅ Standard auth system: Username + password implemented
-- ✅ Secure credential storage: Argon2id (better than required bcrypt!)
-- ✅ Advanced hashing: Memory-hard, GPU-resistant
-- ✅ Salting: Automatic unique salts per password
-- ✅ Security challenges: Documented above
-- ✅ Vulnerabilities: Rainbow tables, timing attacks, weak passwords
-- ✅ Mitigations: Argon2id, timing-safe verification, breach checking
+- [Complete] Standard auth system: Username + password implemented
+- [Complete] Secure credential storage: Argon2id (better than required bcrypt!)
+- [Complete] Advanced hashing: Memory-hard, GPU-resistant
+- [Complete] Salting: Automatic unique salts per password
+- [Complete] Security challenges: Documented above
+- [Complete] Vulnerabilities: Rainbow tables, timing attacks, weak passwords
+- [Complete] Mitigations: Argon2id, timing-safe verification, breach checking
 
-**Score: 20/20** ✅ **+ BONUS for exceeding spec**
+**Score: 20/20** [Complete] **+ BONUS for exceeding spec**
 
 ---
 

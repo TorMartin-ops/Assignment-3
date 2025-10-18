@@ -158,9 +158,9 @@ failures = conn.execute('''
 **Database-Based Design** (`services/rate_limiter.py`):
 
 **Advantages**:
-- ✅ No Redis dependency (simpler deployment)
-- ✅ Persistent across restarts
-- ✅ Supports IP and username-based limiting
+- [Complete] No Redis dependency (simpler deployment)
+- [Complete] Persistent across restarts
+- [Complete] Supports IP and username-based limiting
 
 **Design Pattern**:
 ```python
@@ -219,13 +219,13 @@ python3 test_auth_basic.py
 
 **Output**:
 ```
-⏱️  Testing Rate Limiter...
-   ✅ Request 1/5: Allowed, 4 remaining
-   ✅ Request 2/5: Allowed, 3 remaining
-   ✅ Request 3/5: Allowed, 2 remaining
-   ✅ Request 4/5: Allowed, 1 remaining
-   ✅ Request 5/5: Allowed, 0 remaining
-   ✅ Rate limit exceeded (as expected)
+  Testing Rate Limiter...
+   [Complete] Request 1/5: Allowed, 4 remaining
+   [Complete] Request 2/5: Allowed, 3 remaining
+   [Complete] Request 3/5: Allowed, 2 remaining
+   [Complete] Request 4/5: Allowed, 1 remaining
+   [Complete] Request 5/5: Allowed, 0 remaining
+   [Complete] Rate limit exceeded (as expected)
    ⏰ Reset time: 2025-10-18 13:15:42
 ```
 
@@ -280,7 +280,7 @@ curl -X POST http://localhost:5001/login \
 2. **Implement progressive delays** (1st fail: instant, 2nd: 2s, 3rd: 5s)
 3. **Add IP-based blocking** for distributed attacks
 
-**Assignment Requirement**: ✅ **FULLY MET (20/20)**
+**Assignment Requirement**: [Complete] **FULLY MET (20/20)**
 
 ---
 

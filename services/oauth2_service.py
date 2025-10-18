@@ -162,6 +162,8 @@ class OAuth2Service:
         """
         Validate and consume authorization code
 
+        Uses transaction to ensure single-use enforcement (prevents replay attacks)
+
         Args:
             code: Authorization code
             client_id: Client identifier
@@ -171,28 +173,40 @@ class OAuth2Service:
         """
         conn = get_db_connection()
 
-        auth_code = conn.execute('''
-            SELECT * FROM oauth2_authorization_codes
-            WHERE code = ? AND client_id = ? AND used = 0
-        ''', (code, client_id)).fetchone()
+        try:
+            # BEGIN IMMEDIATE for write lock (prevents concurrent code use - CRITICAL for OAuth2 security)
+            conn.execute('BEGIN IMMEDIATE')
 
-        if not auth_code:
+            auth_code = conn.execute('''
+                SELECT * FROM oauth2_authorization_codes
+                WHERE code = ? AND client_id = ? AND used = 0
+            ''', (code, client_id)).fetchone()
+
+            if not auth_code:
+                conn.execute('ROLLBACK')
+                conn.close()
+                return False, "Invalid or expired authorization code"
+
+            # Check expiration
+            if datetime.fromisoformat(auth_code['expires_at']) < datetime.utcnow():
+                conn.execute('ROLLBACK')
+                conn.close()
+                return False, "Authorization code expired"
+
+            # Mark as used (single use only)
+            conn.execute('''
+                UPDATE oauth2_authorization_codes SET used = 1 WHERE code = ?
+            ''', (code,))
+            conn.commit()
             conn.close()
-            return False, "Invalid or expired authorization code"
 
-        # Check expiration
-        if datetime.fromisoformat(auth_code['expires_at']) < datetime.utcnow():
+            return True, dict(auth_code)
+
+        except Exception as e:
+            conn.execute('ROLLBACK')
             conn.close()
-            return False, "Authorization code expired"
-
-        # Mark as used (single use only)
-        conn.execute('''
-            UPDATE oauth2_authorization_codes SET used = 1 WHERE code = ?
-        ''', (code,))
-        conn.commit()
-        conn.close()
-
-        return True, dict(auth_code)
+            print(f"Authorization code validation error: {e}")
+            return False, "Authorization code validation failed"
 
     def generate_tokens(self, client_id, user_id, scope):
         """
@@ -271,6 +285,8 @@ class OAuth2Service:
         """
         Refresh access token using refresh token (with rotation)
 
+        Uses transaction to prevent token reuse attacks (CRITICAL for OAuth2 security)
+
         Args:
             refresh_token: Refresh token
             client_id: Client identifier
@@ -280,52 +296,65 @@ class OAuth2Service:
         """
         conn = get_db_connection()
 
-        token = conn.execute('''
-            SELECT * FROM oauth2_tokens
-            WHERE refresh_token = ? AND client_id = ? AND revoked = 0
-        ''', (refresh_token, client_id)).fetchone()
+        try:
+            # BEGIN IMMEDIATE for write lock (prevents concurrent token refresh - CRITICAL)
+            conn.execute('BEGIN IMMEDIATE')
 
-        if not token:
+            token = conn.execute('''
+                SELECT * FROM oauth2_tokens
+                WHERE refresh_token = ? AND client_id = ? AND revoked = 0
+            ''', (refresh_token, client_id)).fetchone()
+
+            if not token:
+                conn.execute('ROLLBACK')
+                conn.close()
+                return False, "Invalid refresh token"
+
+            # Check if already used (reuse detection)
+            if token['refresh_token_used']:
+                # SECURITY: Revoke entire token family
+                conn.execute('ROLLBACK')
+                conn.close()
+                self._revoke_token_family(token['token_family_id'])
+                return False, "Token reuse detected - all tokens revoked"
+
+            # Check refresh token expiration
+            if token['refresh_token_expires_at'] < int(time.time()):
+                conn.execute('ROLLBACK')
+                conn.close()
+                return False, "Refresh token expired"
+
+            # Mark old refresh token as used
+            conn.execute('''
+                UPDATE oauth2_tokens
+                SET refresh_token_used = 1, revoked = 1
+                WHERE id = ?
+            ''', (token['id'],))
+
+            # Generate new tokens (rotation)
+            new_tokens = self.generate_tokens(
+                client_id,
+                token['user_id'],
+                token['scope']
+            )
+
+            # Update token family
+            conn.execute('''
+                UPDATE oauth2_tokens
+                SET token_family_id = ?
+                WHERE access_token = ?
+            ''', (token['token_family_id'], new_tokens['access_token']))
+
+            conn.commit()
             conn.close()
-            return False, "Invalid refresh token"
 
-        # Check if already used (reuse detection)
-        if token['refresh_token_used']:
-            # SECURITY: Revoke entire token family
-            self._revoke_token_family(token['token_family_id'])
+            return True, new_tokens
+
+        except Exception as e:
+            conn.execute('ROLLBACK')
             conn.close()
-            return False, "Token reuse detected - all tokens revoked"
-
-        # Check refresh token expiration
-        if token['refresh_token_expires_at'] < int(time.time()):
-            conn.close()
-            return False, "Refresh token expired"
-
-        # Mark old refresh token as used
-        conn.execute('''
-            UPDATE oauth2_tokens
-            SET refresh_token_used = 1, revoked = 1
-            WHERE id = ?
-        ''', (token['id'],))
-        conn.commit()
-
-        # Generate new tokens (rotation)
-        new_tokens = self.generate_tokens(
-            client_id,
-            token['user_id'],
-            token['scope']
-        )
-
-        # Update token family
-        conn.execute('''
-            UPDATE oauth2_tokens
-            SET token_family_id = ?
-            WHERE access_token = ?
-        ''', (token['token_family_id'], new_tokens['access_token']))
-        conn.commit()
-        conn.close()
-
-        return True, new_tokens
+            print(f"Token refresh error: {e}")
+            return False, "Token refresh failed"
 
     def revoke_token(self, token, token_type_hint='access_token'):
         """

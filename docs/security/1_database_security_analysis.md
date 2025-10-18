@@ -108,13 +108,13 @@ query = f"SELECT * FROM users WHERE username = '{username}'"
 
 **Code Example**:
 ```python
-# ✅ SECURE: Parameterized query (database_auth.py:60-70)
+# [Complete] SECURE: Parameterized query (database_auth.py:60-70)
 conn.execute(
     'SELECT * FROM users WHERE username = ? OR email = ?',
     (username, email)
 )
 
-# ❌ INSECURE: String concatenation (NEVER DO THIS)
+# [No] INSECURE: String concatenation (NEVER DO THIS)
 # query = f"SELECT * FROM users WHERE username = '{username}'"
 ```
 
@@ -271,18 +271,18 @@ def log_security_event(self, event_type, username=None, ip_address=None,
 ### Database Choice: SQLite
 
 **Rationale**:
-- ✅ Zero configuration (no server setup)
-- ✅ Single file storage (easy backup)
-- ✅ Portable (works on any OS)
-- ✅ Perfect for development and demonstration
-- ✅ ACID-compliant transactions
-- ✅ Foreign key support
+- [Complete] Zero configuration (no server setup)
+- [Complete] Single file storage (easy backup)
+- [Complete] Portable (works on any OS)
+- [Complete] Fully implemented for development and demonstration
+- [Complete] ACID-compliant transactions
+- [Complete] Foreign key support
 
 **Trade-offs**:
-- ⚠️ Single-writer limitation (concurrent writes block)
-- ⚠️ No connection pooling
-- ⚠️ File-based (security depends on file permissions)
-- ⚠️ Maximum ~50-100 concurrent users
+- WARNING: Single-writer limitation (concurrent writes block)
+- WARNING: No connection pooling
+- WARNING: File-based (security depends on file permissions)
+- WARNING: Maximum ~50-100 concurrent users
 
 **Production Recommendation**: Migrate to PostgreSQL for:
 - Multi-version concurrency control (MVCC)
@@ -314,11 +314,11 @@ def log_security_event(self, event_type, username=None, ip_address=None,
 ### Data Encryption Strategy
 
 **What's Encrypted**:
-1. ✅ TOTP secrets (`users.totp_secret`) - Fernet AES-128
-2. ✅ Backup codes (`users.backup_codes`) - SHA-256 hashed
-3. ✅ Passwords (`users.password`) - Argon2id hashed
-4. ✅ OAuth2 client secrets (`oauth2_clients.client_secret_hash`) - Hashed
-5. ✅ Access tokens - Opaque random strings (not JWT)
+1. [Complete] TOTP secrets (`users.totp_secret`) - Fernet AES-128
+2. [Complete] Backup codes (`users.backup_codes`) - SHA-256 hashed
+3. [Complete] Passwords (`users.password`) - Argon2id hashed
+4. [Complete] OAuth2 client secrets (`oauth2_clients.client_secret_hash`) - Hashed
+5. [Complete] Access tokens - Opaque random strings (not JWT)
 
 **What's NOT Encrypted** (Design Decision):
 - Email addresses (need for lookups, regex matching)
@@ -369,9 +369,9 @@ python3 test_auth_basic.py
 
 **Output**:
 ```
-🔐 Testing Encryption Service...
-   ✅ Encrypted: gAAAAABl...
-   ✅ Decrypted: test_totp_secret_12345
+ Testing Encryption Service...
+   [Complete] Encrypted: gAAAAABl...
+   [Complete] Decrypted: test_totp_secret_12345
 ```
 
 **Verification**: Secrets are encrypted before database storage.
@@ -389,7 +389,7 @@ tables = ['users', 'login_attempts', 'oauth2_tokens', 'oauth2_authorization_code
 
 for table in tables:
     result = conn.execute(\"SELECT name FROM sqlite_master WHERE type='table' AND name=?\", (table,)).fetchone()
-    status = '✅' if result else '❌'
+    status = '' if result else ''
     print(f'{status} Table: {table}')
 
 # Check indexes
@@ -400,9 +400,9 @@ print(f'\\nIndexes created: {len(indexes)}')
 
 **Output**:
 ```
-✅ Table: users
-✅ Table: login_attempts
-✅ Table: oauth2_tokens
+[Complete] Table: users
+[Complete] Table: login_attempts
+[Complete] Table: oauth2_tokens
 ...
 Indexes created: 12
 ```
@@ -480,9 +480,9 @@ except sqlite3.OperationalError:
 ```
 
 **Rationale**:
-- ✅ Single database (simpler deployment)
-- ✅ Backward compatible (original app still works)
-- ✅ try/except handles repeat migrations
+- [Complete] Single database (simpler deployment)
+- [Complete] Backward compatible (original app still works)
+- [Complete] try/except handles repeat migrations
 
 **Lesson Learned**: For production, use proper migration tool (Alembic) with version tracking.
 
@@ -494,10 +494,10 @@ except sqlite3.OperationalError:
 ```
 Operation              Without Security    With Security    Acceptable?
 ─────────────────────────────────────────────────────────────────────────
-User Registration     ~2ms                ~150ms           ✅ Yes (Argon2 hashing)
-Login Query           ~1ms                ~120ms           ✅ Yes (security > speed)
-Token Validation      ~1ms                ~5ms             ✅ Yes (DB lookup acceptable)
-Session Read          ~0.5ms              ~2ms             ✅ Yes (minimal overhead)
+User Registration     ~2ms                ~150ms           [Complete] Yes (Argon2 hashing)
+Login Query           ~1ms                ~120ms           [Complete] Yes (security > speed)
+Token Validation      ~1ms                ~5ms             [Complete] Yes (DB lookup acceptable)
+Session Read          ~0.5ms              ~2ms             [Complete] Yes (minimal overhead)
 ```
 
 **Solution**: Optimized indexing reduces security overhead
@@ -596,27 +596,27 @@ def cleanup_expired_data():
 
 | Guideline | Status | Evidence |
 |-----------|--------|----------|
-| Use parameterized queries | ✅ Implemented | All queries use `?` placeholders |
-| Apply least privilege | ⚠️ Partial | SQLite file-based (OS permissions) |
-| Encrypt sensitive data | ✅ Implemented | TOTP secrets encrypted |
-| Use strong hashing | ✅ Implemented | Argon2id for passwords |
-| Implement audit logging | ✅ Implemented | security_events table |
-| Backup encryption | ❌ Not implemented | Recommendation only |
+| Use parameterized queries | [Complete] Implemented | All queries use `?` placeholders |
+| Apply least privilege | WARNING: Partial | SQLite file-based (OS permissions) |
+| Encrypt sensitive data | [Complete] Implemented | TOTP secrets encrypted |
+| Use strong hashing | [Complete] Implemented | Argon2id for passwords |
+| Implement audit logging | [Complete] Implemented | security_events table |
+| Backup encryption | [No] Not implemented | Recommendation only |
 | Database firewall | N/A | SQLite local only |
 
 ### Assignment Requirement Met?
 
-✅ **YES - FULLY COMPLIANT**
+[Complete] **YES - FULLY COMPLIANT**
 
-- ✅ Lightweight database: SQLite (serverless, file-based)
-- ✅ Efficient schema: 3NF normalization, 12 indexes
-- ✅ Optimized retrieval: Indexed queries on hot paths
-- ✅ Data security: Encryption, hashing, parameterized queries
-- ✅ Security challenges: Documented above
-- ✅ Vulnerabilities identified: SQL injection, data breach
-- ✅ Mitigations explained: Parameterization, encryption, indexing
+- [Complete] Lightweight database: SQLite (serverless, file-based)
+- [Complete] Efficient schema: 3NF normalization, 12 indexes
+- [Complete] Optimized retrieval: Indexed queries on hot paths
+- [Complete] Data security: Encryption, hashing, parameterized queries
+- [Complete] Security challenges: Documented above
+- [Complete] Vulnerabilities identified: SQL injection, data breach
+- [Complete] Mitigations explained: Parameterization, encryption, indexing
 
-**Score: 20/20** ✅
+**Score: 20/20** 
 
 ---
 

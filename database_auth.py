@@ -301,7 +301,7 @@ def create_auth_tables():
     conn.commit()
     conn.close()
 
-    print("✅ Authentication tables created successfully!")
+    print("Authentication tables created successfully.")
 
 def create_sample_oauth_client():
     """Create a sample OAuth2 client for testing"""
@@ -334,7 +334,7 @@ def create_sample_oauth_client():
         ))
 
         conn.commit()
-        print("✅ Sample OAuth2 client created")
+        print("Sample OAuth2 client created")
         print("   Client ID: test_client_id")
         print("   Client Secret: test_client_secret")
 
@@ -369,11 +369,11 @@ def cleanup_expired_data():
     conn.close()
 
     if deleted_sessions > 0 or deleted_limits > 0 or deleted_attempts > 0:
-        print(f"🧹 Cleanup: {deleted_sessions} sessions, {deleted_limits} rate limits, {deleted_attempts} login attempts")
+        print(f"Cleanup: {deleted_sessions} sessions, {deleted_limits} rate limits, {deleted_attempts} login attempts")
 
 def initialize_auth_database():
     """Initialize the complete authentication database"""
-    print("🚀 Initializing authentication database...")
+    print("Initializing authentication database...")
 
     # Create all auth tables
     create_auth_tables()
@@ -384,7 +384,7 @@ def initialize_auth_database():
     # Run initial cleanup
     cleanup_expired_data()
 
-    print("✨ Authentication database initialization complete!")
+    print("Authentication database initialization complete.")
 
 if __name__ == '__main__':
     initialize_auth_database()

@@ -17,8 +17,9 @@ auth_service = get_auth_service()
 rate_limiter = get_rate_limiter()
 
 @twofa_bp.route('/setup-2fa', methods=['GET', 'POST'])
+@rate_limiter.limit(requests_per_minute=5, per_user=True)
 def setup_2fa():
-    """Setup 2FA for user account"""
+    """Setup 2FA for user account (rate limited to prevent code brute force during setup)"""
     if 'user_id' not in session:
         flash('Please log in', 'warning')
         return redirect(url_for('auth.login'))
@@ -38,10 +39,8 @@ def setup_2fa():
             flash('Invalid request', 'danger')
             return redirect(url_for('twofa.setup_2fa'))
 
-        # Verify the code
-        from services.totp_service import TOTPService
+        # Verify the code with temporary secret
         import pyotp
-
         totp = pyotp.TOTP(secret)
         if totp.verify(code, valid_window=1):
             # Enable 2FA and generate backup codes
@@ -80,9 +79,9 @@ def setup_2fa():
     return render_template('2fa/setup.html', secret=secret, qr_code=qr_code)
 
 @twofa_bp.route('/verify-2fa', methods=['GET', 'POST'])
-@rate_limiter.limit(requests_per_minute=5)
+@rate_limiter.limit(requests_per_minute=5, per_user=False)
 def verify_2fa():
-    """Verify 2FA code during login"""
+    """Verify 2FA code during login (rate limited per IP to prevent brute force)"""
     if 'pending_2fa_user_id' not in session:
         flash('Invalid request', 'danger')
         return redirect(url_for('auth.login'))
@@ -160,8 +159,9 @@ def show_backup_codes():
     return render_template('2fa/backup_codes.html', backup_codes=backup_codes)
 
 @twofa_bp.route('/disable-2fa', methods=['GET', 'POST'])
+@rate_limiter.limit(requests_per_minute=3, per_user=True)
 def disable_2fa():
-    """Disable 2FA (requires password confirmation)"""
+    """Disable 2FA (requires password confirmation, rate limited to prevent password brute force)"""
     if 'user_id' not in session:
         flash('Please log in', 'warning')
         return redirect(url_for('auth.login'))

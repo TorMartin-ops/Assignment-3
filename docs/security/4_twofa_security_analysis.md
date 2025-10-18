@@ -21,10 +21,10 @@
 ### Attack 1: Password Stolen (2FA Prevents)
 ```
 WITHOUT 2FA:
-Attacker steals password → Direct account access ✅
+Attacker steals password → Direct account access 
 
 WITH 2FA:
-Attacker steals password → Blocked at 2FA prompt ❌
+Attacker steals password → Blocked at 2FA prompt 
 Needs: Password + physical device with TOTP app
 Success rate: <1% (needs device theft too)
 ```
@@ -322,15 +322,15 @@ totp_service.verify_totp(user_id, "123456")  # "Code already used"
 
 ## Assignment Compliance
 
-✅ **FULLY MET (20/20)**
+[Complete] **FULLY MET (20/20)**
 
-- ✅ TOTP system using pyotp: `services/totp_service.py`
-- ✅ QR code generation: Lines 36-73
-- ✅ Google Authenticator compatible: Standard provisioning URI
-- ✅ TOTP during login: `routes/twofa_routes.py:82-145`
-- ✅ Enhanced security layer: Password + TOTP required
-- ✅ Security challenges documented: Above
-- ✅ Mitigations explained: Encryption, replay prevention, backup codes
+- [Complete] TOTP system using pyotp: `services/totp_service.py`
+- [Complete] QR code generation: Lines 36-73
+- [Complete] Google Authenticator compatible: Standard provisioning URI
+- [Complete] TOTP during login: `routes/twofa_routes.py:82-145`
+- [Complete] Enhanced security layer: Password + TOTP required
+- [Complete] Security challenges documented: Above
+- [Complete] Mitigations explained: Encryption, replay prevention, backup codes
 
 **BONUS Features**:
 - Encrypted secret storage

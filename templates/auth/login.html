@@ -2,6 +2,12 @@
 
 {% block title %}Login - Recipe App{% endblock %}
 
+{% block extra_head %}
+{% if recaptcha_enabled %}
+<script src="https://www.google.com/recaptcha/api.js" async defer></script>
+{% endif %}
+{% endblock %}
+
 {% block content %}
 <div class="container mt-5">
     <div class="row justify-content-center">
@@ -18,6 +24,7 @@
                     {% endif %}
 
                     <form method="POST" action="{{ url_for('auth.login') }}">
+                        {{ csrf_token() }}
                         <div class="mb-3">
                             <label for="username" class="form-label">Username</label>
                             <input type="text" class="form-control" id="username" name="username"
@@ -33,9 +40,16 @@
                         <div class="mb-3">
                             <div class="alert alert-warning">
                                 <i class="fas fa-exclamation-triangle"></i>
-                                Multiple failed attempts detected. CAPTCHA would be required here.
+                                Multiple failed attempts detected. Please complete the CAPTCHA to continue.
                             </div>
-                            <!-- In production, add Google reCAPTCHA here -->
+                            {% if recaptcha_enabled %}
+                            <div class="g-recaptcha" data-sitekey="{{ recaptcha_site_key }}"></div>
+                            {% else %}
+                            <div class="alert alert-info">
+                                <i class="fas fa-info-circle"></i>
+                                reCAPTCHA not configured (set RECAPTCHA_SITE_KEY and RECAPTCHA_SECRET_KEY in .env)
+                            </div>
+                            {% endif %}
                         </div>
                         {% endif %}
 

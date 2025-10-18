@@ -1,22 +1,22 @@
-# 🚀 Quick Start Guide - Authentication System
+#  Quick Start Guide - Authentication System
 
-## ⚡ One-Command Install
+##  One-Command Install
 
 ```bash
 ./install.sh
 ```
 
 This script will:
-1. ✅ Check Python version
-2. ✅ Create virtual environment
-3. ✅ Install all dependencies
-4. ✅ Initialize databases
-5. ✅ Run basic tests
-6. ✅ Display next steps
+1. [Complete] Check Python version
+2. [Complete] Create virtual environment
+3. [Complete] Install all dependencies
+4. [Complete] Initialize databases
+5. [Complete] Run basic tests
+6. [Complete] Display next steps
 
 ---
 
-## 🛠️ Manual Setup (Alternative)
+##  Manual Setup (Alternative)
 
 ### Step 1: Install Dependencies
 ```bash
@@ -54,7 +54,7 @@ Open: http://localhost:5000
 
 ---
 
-## 🧪 Testing Each Feature
+## TEST: Testing Each Feature
 
 ### Test 1: Registration & Login
 ```bash
@@ -112,7 +112,7 @@ python3 test_oauth2_flow.py
 
 ---
 
-## 📋 Default Test Accounts
+##  Default Test Accounts
 
 **Existing Users** (from original app):
 - Username: `chef_anna`
@@ -125,7 +125,7 @@ python3 test_oauth2_flow.py
 
 ---
 
-## 🎯 Feature Checklist
+##  Feature Checklist
 
 After setup, you should be able to:
 
@@ -145,16 +145,16 @@ After setup, you should be able to:
 
 ---
 
-## 🏗️ Project Structure
+##  Project Structure
 
 ```
 assignment-2-auth/
-├── app_auth.py              # 🚀 New integrated application (USE THIS)
+├── app_auth.py              #  New integrated application (USE THIS)
 ├── app.py                   # Old application (keep for reference)
 ├── database.py              # Original recipe database
-├── database_auth.py         # ✨ New authentication tables
+├── database_auth.py         #  New authentication tables
 │
-├── services/                # 🔐 Authentication services
+├── services/                #  Authentication services
 │   ├── auth_service.py     # Argon2id password hashing
 │   ├── oauth2_service.py   # OAuth2 provider
 │   ├── totp_service.py     # 2FA TOTP
@@ -166,7 +166,7 @@ assignment-2-auth/
 │   ├── oauth_routes.py     # /oauth/authorize, /oauth/token
 │   └── twofa_routes.py     # /setup-2fa, /verify-2fa
 │
-├── utils/                   # 🛠️ Utilities
+├── utils/                   #  Utilities
 │   ├── encryption.py       # Fernet encryption
 │   └── validators.py       # Input validation
 │
@@ -176,14 +176,14 @@ assignment-2-auth/
 │   ├── oauth/              # OAuth consent screen
 │   └── security/           # Security settings
 │
-└── tests/                   # 🧪 Test suite
+└── tests/                   # TEST: Test suite
     ├── test_auth_basic.py
     └── test_complete_system.py
 ```
 
 ---
 
-## 🐛 Troubleshooting
+## BUG: Troubleshooting
 
 ### "ModuleNotFoundError: No module named 'argon2'"
 ```bash
@@ -203,7 +203,7 @@ from database import get_db_connection
 conn = get_db_connection()
 conn.execute('DELETE FROM account_lockouts')
 conn.commit()
-print('✅ Lockouts cleared')
+print('[Complete] Lockouts cleared')
 "
 ```
 
@@ -215,23 +215,23 @@ from database import get_db_connection
 conn = get_db_connection()
 conn.execute('DELETE FROM rate_limits')
 conn.commit()
-print('✅ Rate limits cleared')
+print('[Complete] Rate limits cleared')
 "
 ```
 
 ---
 
-## 📊 Assignment Completion Status
+##  Assignment Completion Status
 
 | Requirement | Status | Score |
 |-------------|--------|-------|
-| 1. Database Integration | ✅ Complete | 20/20 |
-| 2. Basic Authentication | ✅ Complete | 20/20 |
-| 3. Brute Force Protection | ✅ Complete | 20/20 |
-| 4. Two-Factor Authentication | ✅ Complete | 20/20 |
-| 5. OAuth2 Implementation | ✅ Complete | 20/20 |
+| 1. Database Integration | [Complete] Complete | 20/20 |
+| 2. Basic Authentication | [Complete] Complete | 20/20 |
+| 3. Brute Force Protection | [Complete] Complete | 20/20 |
+| 4. Two-Factor Authentication | [Complete] Complete | 20/20 |
+| 5. OAuth2 Implementation | [Complete] Complete | 20/20 |
 
-**Total**: 100/100 (Excellent) ⭐
+**Total**: 100/100 (Complete) 
 
 ---
 

@@ -6,7 +6,7 @@
 
 ---
 
-## 🎯 Assignment Requirements Overview
+##  Assignment Requirements Overview
 
 | Task | Weight | Key Deliverables |
 |------|--------|------------------|
@@ -18,7 +18,7 @@
 
 ---
 
-## 📊 Database Schema Design
+##  Database Schema Design
 
 ### Option 1: SQLite (Recommended for Assignment)
 
@@ -320,7 +320,7 @@ CREATE INDEX idx_sessions_expiry ON sessions(expires_at);
 
 ---
 
-## 🏗️ Secure Architecture Design
+##  Secure Architecture Design
 
 ### **Architecture Pattern: Layered Separation of Concerns**
 
@@ -448,7 +448,7 @@ assignment-2-auth/
 
 ---
 
-## 🔒 Security Threat Model & Mitigations
+##  Security Threat Model & Mitigations
 
 ### **STRIDE Threat Analysis**
 
@@ -474,13 +474,13 @@ assignment-2-auth/
 - Credential stuffing (breached databases)
 
 **Mitigations**:
-- ✅ **Argon2id hashing** (memory-hard, GPU-resistant)
-- ✅ **Unique salts per password** (prevents rainbow tables)
-- ✅ **Rate limiting**: 5 attempts/minute per IP, 3 attempts before lockout
-- ✅ **Account lockout**: 15-minute lockout after 3 failures
-- ✅ **Progressive delays**: Exponential backoff (2s, 4s, 8s, 16s)
-- ✅ **CAPTCHA**: Required after 3 failures
-- ✅ **Password complexity**: Minimum 12 characters, breach checking (haveibeenpwned API)
+- [Complete] **Argon2id hashing** (memory-hard, GPU-resistant)
+- [Complete] **Unique salts per password** (prevents rainbow tables)
+- [Complete] **Rate limiting**: 5 attempts/minute per IP, 3 attempts before lockout
+- [Complete] **Account lockout**: 15-minute lockout after 3 failures
+- [Complete] **Progressive delays**: Exponential backoff (2s, 4s, 8s, 16s)
+- [Complete] **CAPTCHA**: Required after 3 failures
+- [Complete] **Password complexity**: Minimum 12 characters, breach checking (haveibeenpwned API)
 
 **Implementation**:
 ```python
@@ -527,13 +527,13 @@ class AuthService:
 - CSRF attacks
 
 **Mitigations**:
-- ✅ **httpOnly cookies**: Blocks JavaScript access
-- ✅ **Secure flag**: HTTPS-only transmission
-- ✅ **SameSite=Strict**: Prevents CSRF
-- ✅ **Session regeneration**: New session ID after login
-- ✅ **CSRF tokens**: Flask-WTF protection
-- ✅ **Content Security Policy**: Blocks inline scripts
-- ✅ **Session timeout**: 30-minute inactivity, 24-hour absolute
+- [Complete] **httpOnly cookies**: Blocks JavaScript access
+- [Complete] **Secure flag**: HTTPS-only transmission
+- [Complete] **SameSite=Strict**: Prevents CSRF
+- [Complete] **Session regeneration**: New session ID after login
+- [Complete] **CSRF tokens**: Flask-WTF protection
+- [Complete] **Content Security Policy**: Blocks inline scripts
+- [Complete] **Session timeout**: 30-minute inactivity, 24-hour absolute
 
 **Implementation**:
 ```python
@@ -566,12 +566,12 @@ Talisman(app,
 - Malicious browser extensions
 
 **Mitigations**:
-- ✅ **PKCE (RFC 7636)**: Mandatory for all clients
-- ✅ **State parameter**: CSRF protection with cryptographic randomness
-- ✅ **Exact redirect URI matching**: No wildcards or pattern matching
-- ✅ **Short-lived codes**: 10-minute expiration
-- ✅ **Single-use codes**: Marked as used immediately
-- ✅ **HTTPS-only**: All OAuth endpoints require TLS
+- [Complete] **PKCE (RFC 7636)**: Mandatory for all clients
+- [Complete] **State parameter**: CSRF protection with cryptographic randomness
+- [Complete] **Exact redirect URI matching**: No wildcards or pattern matching
+- [Complete] **Short-lived codes**: 10-minute expiration
+- [Complete] **Single-use codes**: Marked as used immediately
+- [Complete] **HTTPS-only**: All OAuth endpoints require TLS
 
 **Implementation**:
 ```python
@@ -609,12 +609,12 @@ def validate_redirect_uri(client, redirect_uri):
 - Backup code theft
 
 **Mitigations**:
-- ✅ **Rate limiting**: 5 attempts/minute for TOTP verification
-- ✅ **Replay prevention**: Track used codes within time window
-- ✅ **Clock tolerance**: ±30 seconds (1 window before/after)
-- ✅ **Backup codes hashed**: SHA-256, single-use only
-- ✅ **Account lockout**: After 5 failed TOTP attempts
-- ✅ **Time-based expiration**: 30-second windows
+- [Complete] **Rate limiting**: 5 attempts/minute for TOTP verification
+- [Complete] **Replay prevention**: Track used codes within time window
+- [Complete] **Clock tolerance**: ±30 seconds (1 window before/after)
+- [Complete] **Backup codes hashed**: SHA-256, single-use only
+- [Complete] **Account lockout**: After 5 failed TOTP attempts
+- [Complete] **Time-based expiration**: 30-second windows
 
 **Implementation**:
 ```python
@@ -654,10 +654,10 @@ class TOTPService:
 - Registration endpoint probing
 
 **Mitigations**:
-- ✅ **Generic error messages**: "Invalid username or password" (no distinction)
-- ✅ **Constant-time comparison**: Timing-safe verification even for non-existent users
-- ✅ **Dummy operations**: Perform hash verification even if user doesn't exist
-- ✅ **Rate limiting**: Prevents mass enumeration
+- [Complete] **Generic error messages**: "Invalid username or password" (no distinction)
+- [Complete] **Constant-time comparison**: Timing-safe verification even for non-existent users
+- [Complete] **Dummy operations**: Perform hash verification even if user doesn't exist
+- [Complete] **Rate limiting**: Prevents mass enumeration
 
 **Implementation**:
 ```python
@@ -691,12 +691,12 @@ def authenticate(username, password):
 - Refresh token reuse after compromise
 
 **Mitigations**:
-- ✅ **httpOnly cookies**: Tokens never accessible to JavaScript
-- ✅ **Short-lived access tokens**: 15-30 minute expiration
-- ✅ **Refresh token rotation**: New refresh token on every use
-- ✅ **Token family tracking**: Revoke entire family if reuse detected
-- ✅ **Token logging prevention**: Redacting filters in logging
-- ✅ **TLS enforcement**: HTTPS-only transmission
+- [Complete] **httpOnly cookies**: Tokens never accessible to JavaScript
+- [Complete] **Short-lived access tokens**: 15-30 minute expiration
+- [Complete] **Refresh token rotation**: New refresh token on every use
+- [Complete] **Token family tracking**: Revoke entire family if reuse detected
+- [Complete] **Token logging prevention**: Redacting filters in logging
+- [Complete] **TLS enforcement**: HTTPS-only transmission
 
 **Implementation**:
 ```python
@@ -743,7 +743,7 @@ class TokenRepository:
 
 ---
 
-## 📋 Implementation Roadmap
+##  Implementation Roadmap
 
 ### **Week 1: Foundation & Database** (20 points)
 
@@ -887,7 +887,7 @@ class TokenRepository:
 
 ---
 
-## 🧪 Testing Strategy
+## TEST: Testing Strategy
 
 ### **Unit Tests**
 
@@ -1028,7 +1028,7 @@ def test_oauth2_authorization_code_flow():
 
 ---
 
-## 📦 Dependencies (requirements.txt)
+## PACKAGE: Dependencies (requirements.txt)
 
 ```txt
 # Web Framework
@@ -1070,17 +1070,17 @@ flake8==6.1.0                 # Linter
 
 | Requirement | Implementation | Documentation | Score Target |
 |-------------|----------------|---------------|--------------|
-| **Database Integration (20%)** | SQLite schema with 9 tables, encrypted TOTP storage, optimized indexes | Schema design documentation, security challenges (SQL injection), mitigations (parameterized queries) | **18-20/20** (Excellent) |
-| **Basic Authentication (20%)** | Argon2id hashing, salt generation, registration/login/logout, session management | Password security analysis, rainbow table prevention, timing attack mitigation | **18-20/20** (Excellent) |
-| **Brute Force Protection (20%)** | Flask-Limiter + Redis, 3-attempt lockout, 15-min timeout, CAPTCHA after 3 failures, security logging | Rate limiting strategies, lockout mechanisms, attack scenarios, testing evidence | **18-20/20** (Excellent) |
-| **2FA Implementation (20%)** | pyotp TOTP, QR codes, backup codes, replay prevention, rate limiting | 2FA security benefits, TOTP algorithm explanation, recovery mechanisms | **18-20/20** (Excellent) |
-| **OAuth2 Implementation (20%)** | Authlib provider, PKCE mandatory, refresh token rotation, token family tracking | OAuth2 flow diagrams, security benefits, PKCE necessity, state parameter usage | **18-20/20** (Excellent) |
+| **Database Integration (20%)** | SQLite schema with 9 tables, encrypted TOTP storage, optimized indexes | Schema design documentation, security challenges (SQL injection), mitigations (parameterized queries) | **18-20/20** (Complete) |
+| **Basic Authentication (20%)** | Argon2id hashing, salt generation, registration/login/logout, session management | Password security analysis, rainbow table prevention, timing attack mitigation | **18-20/20** (Complete) |
+| **Brute Force Protection (20%)** | Flask-Limiter + Redis, 3-attempt lockout, 15-min timeout, CAPTCHA after 3 failures, security logging | Rate limiting strategies, lockout mechanisms, attack scenarios, testing evidence | **18-20/20** (Complete) |
+| **2FA Implementation (20%)** | pyotp TOTP, QR codes, backup codes, replay prevention, rate limiting | 2FA security benefits, TOTP algorithm explanation, recovery mechanisms | **18-20/20** (Complete) |
+| **OAuth2 Implementation (20%)** | Authlib provider, PKCE mandatory, refresh token rotation, token family tracking | OAuth2 flow diagrams, security benefits, PKCE necessity, state parameter usage | **18-20/20** (Complete) |
 
-**Expected Total**: **90-100/100** (Excellent grade)
+**Expected Total**: **90-100/100** (Complete grade)
 
 ---
 
-## 🚀 Quick Start Commands
+##  Quick Start Commands
 
 ```bash
 # Setup virtual environment
@@ -1112,7 +1112,7 @@ open http://localhost:5000
 
 ---
 
-## 📚 Key Security Documentation Points
+##  Key Security Documentation Points
 
 ### **For Each Feature, Document:**
 
@@ -1173,11 +1173,11 @@ except VerifyMismatchError:
 ```
 
 ### Testing Evidence
-- ✅ Passwords stored as `$argon2id$v=19$m=19456,t=2,p=1$...`
-- ✅ Hashing takes 200-500ms (prevents brute force)
-- ✅ Each password has unique salt
-- ✅ Timing attack test: constant verification time regardless of input
-- ✅ Rainbow table test: identical passwords produce different hashes
+- [Complete] Passwords stored as `$argon2id$v=19$m=19456,t=2,p=1$...`
+- [Complete] Hashing takes 200-500ms (prevents brute force)
+- [Complete] Each password has unique salt
+- [Complete] Timing attack test: constant verification time regardless of input
+- [Complete] Rainbow table test: identical passwords produce different hashes
 
 ### Recommendations
 - Use Argon2id over bcrypt for new applications
@@ -1188,7 +1188,7 @@ except VerifyMismatchError:
 
 ---
 
-## ✅ Success Criteria
+## [Complete] Success Criteria
 
 **Your implementation is successful when:**
 
@@ -1201,10 +1201,10 @@ except VerifyMismatchError:
 - [ ] Code follows SOLID principles and separation of concerns
 - [ ] Professional documentation with diagrams
 - [ ] Demo-ready application
-- [ ] Expected grade: 90-100/100 (Excellent)
+- [ ] Expected grade: 90-100/100 (Complete)
 
 ---
 
 **Document Version**: 1.0
 **Last Updated**: 2025-10-16
-**Status**: ✅ Ready for Implementation
+**Status**: [Complete] Ready for Implementation

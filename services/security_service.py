@@ -159,6 +159,8 @@ class SecurityService:
         """
         Apply account lockout
 
+        Uses transaction to prevent race conditions
+
         Args:
             username: Username to lock
             failed_count: Number of failed attempts
@@ -170,38 +172,48 @@ class SecurityService:
 
         conn = get_db_connection()
 
-        # Check if lockout already exists
-        existing = conn.execute(
-            'SELECT id FROM account_lockouts WHERE username = ?',
-            (username,)
-        ).fetchone()
+        try:
+            # BEGIN IMMEDIATE for write lock (prevents concurrent lockout attempts)
+            conn.execute('BEGIN IMMEDIATE')
 
-        if existing:
-            conn.execute('''
-                UPDATE account_lockouts
-                SET locked_until = ?, failed_attempts = ?, locked_at = ?
-                WHERE username = ?
-            ''', (locked_until, failed_count, datetime.utcnow(), username))
-        else:
-            conn.execute('''
-                INSERT INTO account_lockouts
-                (username, locked_until, failed_attempts, lockout_reason)
-                VALUES (?, ?, ?, 'too_many_failures')
-            ''', (username, locked_until, failed_count))
+            # Check if lockout already exists
+            existing = conn.execute(
+                'SELECT id FROM account_lockouts WHERE username = ?',
+                (username,)
+            ).fetchone()
 
-        conn.commit()
-        conn.close()
+            if existing:
+                conn.execute('''
+                    UPDATE account_lockouts
+                    SET locked_until = ?, failed_attempts = ?, locked_at = ?
+                    WHERE username = ?
+                ''', (locked_until, failed_count, datetime.utcnow(), username))
+            else:
+                conn.execute('''
+                    INSERT INTO account_lockouts
+                    (username, locked_until, failed_attempts, lockout_reason)
+                    VALUES (?, ?, ?, 'too_many_failures')
+                ''', (username, locked_until, failed_count))
 
-        # Log critical event
-        self.log_security_event(
-            'account_locked',
-            username=username,
-            metadata={'failed_attempts': failed_count},
-            severity='critical'
-        )
+            conn.commit()
+            conn.close()
 
-        print(f"🔒 Account locked: {username} after {failed_count} failures")
-        return True
+            # Log critical event
+            self.log_security_event(
+                'account_locked',
+                username=username,
+                metadata={'failed_attempts': failed_count},
+                severity='critical'
+            )
+
+            print(f"Account locked: {username} after {failed_count} failures")
+            return True
+
+        except Exception as e:
+            conn.execute('ROLLBACK')
+            conn.close()
+            print(f"Account lockout error: {e}")
+            return False
 
     def clear_account_lockout(self, username):
         """

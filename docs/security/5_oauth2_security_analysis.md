@@ -40,7 +40,7 @@ User authorizes app via OAuth2
 2. Redirected to: google.com/auth?client_id=app&redirect_uri=app.com/callback
 3. User authorizes → Redirect: app.com/callback?code=AUTH_CODE_123
 4. Attacker intercepts code (malicious app, network sniffer)
-5. Attacker exchanges code for token → Success ❌
+5. Attacker exchanges code for token → Success 
 ```
 
 **With PKCE** (our implementation):
@@ -50,7 +50,7 @@ User authorizes app via OAuth2
 3. Authorization request includes code_challenge
 4. Attacker intercepts authorization code
 5. Token exchange requires code_verifier (attacker doesn't have!)
-6. Attack failed ✅
+6. Attack failed 
 ```
 
 ### Attack 2: Redirect URI Manipulation
@@ -138,9 +138,9 @@ Token exchange:
 Server validates:
   computed = SHA256(code_verifier)
   if computed == stored_code_challenge:
-      issue_token()  # ✅ Valid
+      issue_token()  # [Complete] Valid
   else:
-      reject()  # ❌ Invalid (attacker doesn't have verifier)
+      reject()  # [No] Invalid (attacker doesn't have verifier)
 ```
 
 **Security Property**: Authorization code useless without code_verifier
@@ -322,7 +322,7 @@ python3 test_oauth2_flow.py
 
 **Output**:
 ```
-🔐 OAuth2 Authorization Code Flow Test
+ OAuth2 Authorization Code Flow Test
 
 Step 1: Generate PKCE Parameters
    Code Verifier: dBjftJeZ4CVP-mB0unHsS...
@@ -342,7 +342,7 @@ Step 5: Access Protected Resource
    Request: GET /oauth/userinfo with Bearer token
    Response: {"sub": "42", "username": "...", "email": "..."}
 
-✅ OAuth2 flow completed successfully!
+[Complete] OAuth2 flow completed successfully.
 ```
 
 ---
@@ -354,28 +354,28 @@ Step 5: Access Protected Resource
 @app.route("/auth", methods=["GET"])
 def auth():
     # TODO: 1-6 steps
-    pass  # ❌ PLACEHOLDER
+    pass  # [No] PLACEHOLDER
 ```
 
 **My Implementation** (`routes/oauth_routes.py:16-110`):
 ```python
 @oauth_bp.route('/authorize', methods=['GET', 'POST'])
 def authorize():
-    # ✅ Step 1: Extract client_id, redirect_uri, state, etc.
+    # [Complete] Step 1: Extract client_id, redirect_uri, state, etc.
     client_id = request.args.get('client_id')
     redirect_uri = request.args.get('redirect_uri')
     code_challenge = request.args.get('code_challenge')
 
-    # ✅ Step 2: Validate client_id and redirect_uri
+    # [Complete] Step 2: Validate client_id and redirect_uri
     client = oauth2_service.get_client(client_id)
     if not oauth2_service.validate_redirect_uri(client_id, redirect_uri):
         return jsonify({'error': 'invalid_request'}), 400
 
-    # ✅ Step 3: Display authorization page
+    # [Complete] Step 3: Display authorization page
     return render_template('oauth/authorize.html', client=client, scope=scope.split())
 
     # POST handler:
-    # ✅ Step 4-6: Generate code, save, redirect
+    # [Complete] Step 4-6: Generate code, save, redirect
     code = oauth2_service.generate_authorization_code(...)
     return redirect(f"{redirect_uri}?code={code}&state={state}")
 ```
@@ -386,21 +386,21 @@ def authorize():
 
 ## Compliance Summary
 
-✅ **EXCEEDS REQUIREMENTS (20/20 + BONUS)**
+[Complete] **EXCEEDS REQUIREMENTS (20/20 + BONUS)**
 
 Required:
-- ✅ OAuth2 client developed
-- ✅ Authorization Code Flow implemented
-- ✅ User details fetched and stored
-- ✅ Sample code completed (no "pass" statements)
+- [Complete] OAuth2 client developed
+- [Complete] Authorization Code Flow implemented
+- [Complete] User details fetched and stored
+- [Complete] Sample code completed (no "pass" statements)
 
 BONUS (beyond requirement):
-- ✅ PKCE mandatory (OAuth 2.1 compliance)
-- ✅ Refresh token rotation
-- ✅ Token reuse detection
-- ✅ Token family tracking
-- ✅ Token revocation endpoint
-- ✅ Complete OAuth2 Authorization Server (not just client!)
+- [Complete] PKCE mandatory (OAuth 2.1 compliance)
+- [Complete] Refresh token rotation
+- [Complete] Token reuse detection
+- [Complete] Token family tracking
+- [Complete] Token revocation endpoint
+- [Complete] Complete OAuth2 Authorization Server (not just client!)
 
 ---
 

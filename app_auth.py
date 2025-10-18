@@ -6,9 +6,11 @@ This is a complete authentication system implementation for Assignment 2
 Run this instead of app.py to use the new authentication features
 """
 from flask import Flask, render_template, request, session, redirect, url_for, flash
+from flask_wtf.csrf import CSRFProtect
 from database import get_db_connection, init_database
 from database_auth import initialize_auth_database
 from routes import auth_bp, oauth_bp, twofa_bp
+from utils import login_required, set_security_headers, sanitize_comment, get_recaptcha_service
 import os
 from dotenv import load_dotenv
 
@@ -17,6 +19,9 @@ load_dotenv()
 
 app = Flask(__name__)
 app.secret_key = os.getenv('SECRET_KEY', 'dev-secret-key-change-in-production')
+
+# Initialize CSRF Protection
+csrf = CSRFProtect(app)
 
 # Initialize databases
 init_database()  # Original recipe database
@@ -27,33 +32,23 @@ app.register_blueprint(auth_bp)
 app.register_blueprint(oauth_bp)
 app.register_blueprint(twofa_bp)
 
+# Initialize reCAPTCHA
+recaptcha_service = get_recaptcha_service()
+
+# Make reCAPTCHA site key available to all templates
+@app.context_processor
+def inject_recaptcha():
+    """Inject reCAPTCHA site key into all templates"""
+    return {
+        'recaptcha_site_key': recaptcha_service.get_site_key(),
+        'recaptcha_enabled': recaptcha_service.is_enabled()
+    }
+
 # Security headers
 @app.after_request
-def set_security_headers(response):
-    """Add security headers"""
-    response.headers['Content-Security-Policy'] = (
-        "default-src 'self'; "
-        "script-src 'self' https://cdn.jsdelivr.net; "
-        "style-src 'self' https://cdn.jsdelivr.net 'unsafe-inline'; "
-        "img-src 'self' https: data:;"
-    )
-    response.headers['X-Content-Type-Options'] = 'nosniff'
-    response.headers['X-Frame-Options'] = 'DENY'
-    response.headers['X-XSS-Protection'] = '1; mode=block'
-    response.headers['Strict-Transport-Security'] = 'max-age=31536000; includeSubDomains'
-    return response
-
-# Login required decorator
-from functools import wraps
-
-def login_required(f):
-    @wraps(f)
-    def decorated_function(*args, **kwargs):
-        if 'user_id' not in session:
-            flash('Please log in to access this page', 'warning')
-            return redirect(url_for('auth.login'))
-        return f(*args, **kwargs)
-    return decorated_function
+def apply_security_headers(response):
+    """Add security headers to all responses"""
+    return set_security_headers(response)
 
 # ============================================
 # RECIPE APP ROUTES (from original app.py)
@@ -166,15 +161,13 @@ def recipe_detail(recipe_id):
 @login_required
 def add_comment(recipe_id):
     """Add comment with XSS protection"""
-    import bleach
-
     content = request.form.get('content', '').strip()
     if not content:
         flash('Comment cannot be empty', 'warning')
         return redirect(url_for('recipe_detail', recipe_id=recipe_id))
 
-    # Sanitize input
-    clean_content = bleach.clean(content, tags=[], strip=True)
+    # Sanitize input to prevent XSS
+    clean_content = sanitize_comment(content)
 
     conn = get_db_connection()
     conn.execute('''
@@ -206,7 +199,7 @@ def rate_recipe(recipe_id):
         ''', (rating, recipe_id, session['user_id'], rating))
         conn.commit()
         flash(f'Rating of {rating} stars added', 'success')
-    except Exception as e:
+    except Exception:
         flash('Error adding rating', 'danger')
     conn.close()
 

@@ -18,6 +18,7 @@
                     <p>To disable two-factor authentication, please confirm your password:</p>
 
                     <form method="POST" action="{{ url_for('twofa.disable_2fa') }}">
+                        {{ csrf_token() }}
                         <div class="mb-3">
                             <label for="password" class="form-label">Password</label>
                             <input type="password" class="form-control" id="password" name="password" required>

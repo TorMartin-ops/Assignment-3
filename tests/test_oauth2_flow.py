@@ -30,12 +30,12 @@ def generate_pkce_pair():
 def test_oauth2_flow():
     """Test complete OAuth2 authorization code flow"""
     print("=" * 60)
-    print("🔐 OAuth2 Authorization Code Flow Test (with PKCE)")
+    print("OAuth2 Authorization Code Flow Test (with PKCE)")
     print("=" * 60)
 
     # Step 1: Generate PKCE pair
     code_verifier, code_challenge = generate_pkce_pair()
-    print(f"\n✅ Step 1: Generated PKCE pair")
+    print(f"\nStep 1: Generated PKCE pair")
     print(f"   Code Verifier: {code_verifier[:20]}...")
     print(f"   Code Challenge: {code_challenge[:20]}...")
 
@@ -53,10 +53,10 @@ def test_oauth2_flow():
     }
 
     auth_url = f"{BASE_URL}/oauth/authorize"
-    print(f"\n📝 Step 2: Authorization Request")
+    print(f"\nStep 2: Authorization Request")
     print(f"   URL: {auth_url}")
     print(f"   Params: {json.dumps(auth_params, indent=6)}")
-    print(f"\n   ⚠️  NOTE: This requires manual browser interaction:")
+    print(f"\n   NOTE: This requires manual browser interaction:")
     print(f"   1. Open: {auth_url}?{'&'.join(f'{k}={v}' for k,v in auth_params.items())}")
     print(f"   2. Login as a test user")
     print(f"   3. Approve the authorization")
@@ -66,7 +66,7 @@ def test_oauth2_flow():
     print(f"\n   For automated testing, use the test_oauth2_automated.py script")
 
     # Step 3: Token Exchange (example)
-    print(f"\n💱 Step 3: Token Exchange (after getting code)")
+    print(f"\nStep 3: Token Exchange (after getting code)")
     print(f"   POST {BASE_URL}/oauth/token")
     print(f"   Data:")
     token_data = {
@@ -80,13 +80,13 @@ def test_oauth2_flow():
     print(f"   {json.dumps(token_data, indent=6)}")
 
     # Step 4: Access Protected Resource (example)
-    print(f"\n🔓 Step 4: Access Protected Resource")
+    print(f"\nStep 4: Access Protected Resource")
     print(f"   GET {BASE_URL}/oauth/userinfo")
     print(f"   Headers:")
     print(f"      Authorization: Bearer [ACCESS_TOKEN_FROM_STEP_3]")
 
     # Step 5: Refresh Token (example)
-    print(f"\n🔄 Step 5: Refresh Access Token")
+    print(f"\nStep 5: Refresh Access Token")
     print(f"   POST {BASE_URL}/oauth/token")
     refresh_data = {
         'grant_type': 'refresh_token',
@@ -97,7 +97,7 @@ def test_oauth2_flow():
     print(f"   Data: {json.dumps(refresh_data, indent=6)}")
 
     print(f"\n" + "=" * 60)
-    print(f"📚 For complete automated test, run:")
+    print(f"For complete automated test, run:")
     print(f"   python3 test_oauth2_automated.py")
     print(f"=" * 60)
 

@@ -14,7 +14,7 @@ def print_header(text):
 
 def print_test(name, passed, details=""):
     """Print test result"""
-    status = "✅ PASS" if passed else "❌ FAIL"
+    status = "PASS" if passed else "FAIL"
     print(f"{status}: {name}")
     if details:
         print(f"       {details}")
@@ -73,7 +73,7 @@ def test_requirement_1_database():
 
     conn.close()
 
-    print(f"\n📊 Requirement 1 Score: {'18-20/20 (Excellent)' if all_exist and has_auth_cols else '12-16/20'}")
+    print(f"\nRequirement 1 Score: {'18-20/20 (Complete)' if all_exist and has_auth_cols else '12-16/20'}")
     return all_exist and has_auth_cols
 
 def test_requirement_2_authentication():
@@ -124,7 +124,7 @@ def test_requirement_2_authentication():
     print_test("Timing attack prevention", timing_safe,
                f"Time diff: {abs(time1 - time2):.4f}s")
 
-    print(f"\n📊 Requirement 2 Score: {'18-20/20 (Excellent)' if success and is_argon2 else '12-16/20'}")
+    print(f"\nRequirement 2 Score: {'18-20/20 (Complete)' if success and is_argon2 else '12-16/20'}")
     return success and success_auth
 
 def test_requirement_3_brute_force():
@@ -179,7 +179,7 @@ def test_requirement_3_brute_force():
     )
     print_test("Security event logging", event_id > 0, f"Event ID: {event_id}")
 
-    print(f"\n📊 Requirement 3 Score: {'18-20/20 (Excellent)' if is_locked and requires_captcha else '12-16/20'}")
+    print(f"\nRequirement 3 Score: {'18-20/20 (Complete)' if is_locked and requires_captcha else '12-16/20'}")
     return is_locked
 
 def test_requirement_4_2fa():
@@ -221,7 +221,7 @@ def test_requirement_4_2fa():
     print_test("Backup codes are hashed", is_hashed,
                f"Hash: {code_hash[:40]}...")
 
-    print(f"\n📊 Requirement 4 Score: {'18-20/20 (Excellent)' if is_qr and correct_format else '12-16/20'}")
+    print(f"\nRequirement 4 Score: {'18-20/20 (Complete)' if is_qr and correct_format else '12-16/20'}")
     return is_qr
 
 def test_requirement_5_oauth2():
@@ -306,7 +306,7 @@ def test_requirement_5_oauth2():
                 print_test("Refresh token reuse detection", not reuse_attempt,
                            f"Error: {error if not reuse_attempt else 'Should fail'}")
 
-    print(f"\n📊 Requirement 5 Score: {'18-20/20 (Excellent)' if client and pkce_valid else '0/20 (Not Complete)'}")
+    print(f"\nRequirement 5 Score: {'18-20/20 (Complete)' if client and pkce_valid else '0/20 (Not Complete)'}")
     return client is not None
 
 def test_integration_flow():
@@ -357,9 +357,9 @@ def test_integration_flow():
 def run_all_tests():
     """Run all system tests"""
     print("\n")
-    print("🧪" * 35)
+    print("=" * 70)
     print("  AUTHENTICATION SYSTEM - COMPREHENSIVE TEST SUITE")
-    print("🧪" * 35)
+    print("=" * 70)
 
     results = []
 
@@ -382,41 +382,41 @@ def run_all_tests():
         total = len(results)
 
         for name, result in results:
-            status = "✅ PASS" if result else "❌ FAIL"
+            status = "PASS" if result else "FAIL"
             print(f"{status}: {name}")
 
-        print(f"\n{'✅' if integration_passed else '❌'} Integration Flow: {'PASS' if integration_passed else 'FAIL'}")
+        print(f"\n{'PASS' if integration_passed else 'FAIL'} Integration Flow: {'PASS' if integration_passed else 'FAIL'}")
 
-        print(f"\n📊 OVERALL RESULTS: {passed}/{total} requirements passed")
+        print(f"\nOVERALL RESULTS: {passed}/{total} requirements passed")
 
         score = (passed / total) * 100
-        print(f"📈 Estimated Score: {int(score)}/100")
+        print(f"Estimated Score: {int(score)}/100")
 
         if score >= 90:
-            grade = "EXCELLENT ⭐⭐⭐⭐⭐"
+            grade = "EXCELLENT"
         elif score >= 80:
-            grade = "GOOD ⭐⭐⭐⭐"
+            grade = "GOOD"
         elif score >= 70:
-            grade = "SATISFACTORY ⭐⭐⭐"
+            grade = "SATISFACTORY"
         else:
-            grade = "NEEDS IMPROVEMENT ⭐⭐"
+            grade = "NEEDS IMPROVEMENT"
 
-        print(f"🎓 Expected Grade: {grade}")
+        print(f"Expected Grade: {grade}")
 
         print("\n" + "=" * 70)
 
         if passed == total:
-            print("✅ ALL REQUIREMENTS COMPLETE!")
-            print("   Ready for submission! 🚀")
+            print("ALL REQUIREMENTS COMPLETE")
+            print("   Ready for submission!")
         else:
-            print(f"⚠️  {total - passed} requirement(s) need attention")
+            print(f"WARNING: {total - passed} requirement(s) need attention")
 
         print("=" * 70 + "\n")
 
         return passed == total
 
     except Exception as e:
-        print(f"\n❌ ERROR: {e}")
+        print(f"\nERROR: {e}")
         import traceback
         traceback.print_exc()
         return False

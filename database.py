@@ -114,8 +114,8 @@ def init_database():
             conn.execute('''INSERT INTO recipes 
                 (title, description, ingredients, instructions, category, prep_time, cook_time, servings, difficulty, user_id, image_url) 
                 VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)''', 
-                ('Chocolate Chip Cookies', 
-                 'Delicious homemade cookies with gooey chocolate chips. Perfect for any occasion!',
+                ('Chocolate Chip Cookies',
+                 'Homemade cookies with chocolate chips.',
                  '2 cups all-purpose flour\n1 cup butter, softened\n3/4 cup sugar\n3/4 cup brown sugar\n2 eggs\n2 tsp vanilla extract\n1 tsp baking soda\n1 tsp salt\n2 cups chocolate chips',
                  '1. Preheat oven to 350°F (175°C)\n2. Cream together butter and sugars until fluffy\n3. Beat in eggs and vanilla\n4. In separate bowl, mix flour, baking soda, and salt\n5. Gradually blend dry ingredients into butter mixture\n6. Stir in chocolate chips\n7. Drop rounded tablespoons onto ungreased cookie sheets\n8. Bake for 10-12 minutes or until golden brown',
                  'Desserts',
@@ -145,7 +145,7 @@ def init_database():
                 (title, description, ingredients, instructions, category, prep_time, cook_time, servings, difficulty, user_id, image_url) 
                 VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)''',
                 ('Homemade Sourdough Bread',
-                 'Artisan sourdough bread with a crispy crust and soft, tangy interior. Worth the wait!',
+                 'Traditional sourdough bread with natural fermentation.',
                  '500g bread flour\n350ml water\n100g active sourdough starter\n10g salt',
                  '1. Mix flour and water, let rest 30 minutes (autolyse)\n2. Add starter and salt, mix well\n3. Bulk fermentation for 4-6 hours with stretch and folds every 30 mins\n4. Shape into boule or batard\n5. Cold proof overnight in fridge (12-18 hours)\n6. Preheat Dutch oven to 450°F\n7. Score bread and bake covered for 20 mins\n8. Remove lid, bake 25-30 mins until deep golden brown',
                  'Bread',
@@ -165,7 +165,7 @@ def init_database():
         if recipe and user2:
             try:
                 conn.execute('''INSERT INTO comments (content, recipe_id, user_id) VALUES (?, ?, ?)''',
-                            ('These cookies are absolutely delicious! My kids loved them!', recipe['id'], user2['id']))
+                            ('These cookies turned out well. Good recipe.', recipe['id'], user2['id']))
                 conn.commit()
             except sqlite3.IntegrityError:
                 pass

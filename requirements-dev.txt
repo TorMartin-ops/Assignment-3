@@ -1,0 +1,18 @@
+# Development and Testing Dependencies
+# Install with: pip install -r requirements-dev.txt
+
+# Testing Framework
+pytest==7.4.3
+pytest-cov==4.1.0              # Coverage reporting
+pytest-flask==1.3.0            # Flask testing utilities
+pytest-mock==3.12.0            # Mocking support
+
+# Code Quality
+pylint==3.0.3                  # Linting
+flake8==7.0.0                  # Style checking
+black==23.12.1                 # Code formatting
+mypy==1.8.0                    # Type checking
+
+# Security Testing
+bandit==1.7.6                  # Security vulnerability scanning
+safety==2.3.5                  # Dependency security checking

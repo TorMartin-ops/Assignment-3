@@ -6,6 +6,7 @@ from flask import Blueprint, render_template, request, redirect, url_for, sessio
 from services.auth_service import get_auth_service
 from services.security_service import get_security_service
 from services.rate_limiter import get_rate_limiter
+from utils.recaptcha import get_recaptcha_service
 
 auth_bp = Blueprint('auth', __name__)
 
@@ -13,6 +14,7 @@ auth_bp = Blueprint('auth', __name__)
 auth_service = get_auth_service()
 security_service = get_security_service()
 rate_limiter = get_rate_limiter()
+recaptcha_service = get_recaptcha_service()
 
 @auth_bp.route('/register', methods=['GET', 'POST'])
 def register():
@@ -73,6 +75,22 @@ def login():
 
         # Check if CAPTCHA is required
         requires_captcha = security_service.requires_captcha(username)
+
+        # Validate CAPTCHA if required
+        if requires_captcha and recaptcha_service.is_enabled():
+            is_valid, error = recaptcha_service.verify_response()
+            if not is_valid:
+                flash(f'CAPTCHA verification failed: {error}', 'danger')
+                security_service.log_security_event(
+                    'captcha_failed',
+                    username=username,
+                    ip_address=request.remote_addr,
+                    metadata={'error': error},
+                    severity='warning'
+                )
+                return render_template('auth/login.html',
+                                     requires_captcha=True,
+                                     username=username)
 
         # Authenticate
         success, result = auth_service.authenticate(username, password)
