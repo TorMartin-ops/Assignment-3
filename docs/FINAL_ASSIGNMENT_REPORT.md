@@ -637,7 +637,7 @@ This authentication system demonstrates a security-first approach to user authen
 ### Key Achievements
 
 [Complete] **All 5 Requirements Fully Implemented**
-- Database: SQLite with 9 tables, indexed, encrypted data
+- Database: SQLite with 13 tables (8 auth + 5 recipe), indexed, encrypted data
 - Authentication: Argon2id (better than required bcrypt)
 - Brute Force: Dual-layer protection (rate limiting + lockouts)
 - 2FA: TOTP with encrypted secrets and backup codes

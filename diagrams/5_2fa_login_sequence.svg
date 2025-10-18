@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="950" height="800" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <marker id="msg" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto">
+      <polygon points="0 0, 10 3, 0 6" fill="#2a5298"/>
+    </marker>
+    <marker id="ret" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto">
+      <polygon points="0 0, 10 3, 0 6" fill="#666"/>
+    </marker>
+  </defs>
+
+  <text x="475" y="25" text-anchor="middle" font-size="16" font-weight="bold" fill="#1e3c72">
+    Authentication Flow with Two-Factor Verification (TOTP)
+  </text>
+
+  <!-- Actors -->
+  <rect x="30" y="50" width="80" height="40" fill="#1e3c72" rx="5"/>
+  <text x="70" y="75" text-anchor="middle" fill="white" font-weight="bold">User</text>
+
+  <rect x="180" y="50" width="90" height="40" fill="#1e3c72" rx="5"/>
+  <text x="225" y="75" text-anchor="middle" fill="white" font-weight="bold">Browser</text>
+
+  <rect x="340" y="50" width="90" height="40" fill="#1e3c72" rx="5"/>
+  <text x="385" y="75" text-anchor="middle" fill="white" font-weight="bold">Flask</text>
+
+  <rect x="500" y="50" width="110" height="40" fill="#1e3c72" rx="5"/>
+  <text x="555" y="75" text-anchor="middle" fill="white" font-weight="bold">AuthService</text>
+
+  <rect x="680" y="50" width="110" height="40" fill="#1e3c72" rx="5"/>
+  <text x="735" y="75" text-anchor="middle" fill="white" font-weight="bold">TOTPService</text>
+
+  <rect x="860" y="50" width="70" height="40" fill="#1e3c72" rx="5"/>
+  <text x="895" y="75" text-anchor="middle" fill="white" font-weight="bold">DB</text>
+
+  <!-- Lifelines -->
+  <line x1="70" y1="90" x2="70" y2="770" stroke="#ddd" stroke-dasharray="5,5"/>
+  <line x1="225" y1="90" x2="225" y2="770" stroke="#ddd" stroke-dasharray="5,5"/>
+  <line x1="385" y1="90" x2="385" y2="770" stroke="#ddd" stroke-dasharray="5,5"/>
+  <line x1="555" y1="90" x2="555" y2="770" stroke="#ddd" stroke-dasharray="5,5"/>
+  <line x1="735" y1="90" x2="735" y2="770" stroke="#ddd" stroke-dasharray="5,5"/>
+  <line x1="895" y1="90" x2="895" y2="770" stroke="#ddd" stroke-dasharray="5,5"/>
+
+  <!-- Phase 1: Password Authentication -->
+  <rect x="20" y="110" width="120" height="25" fill="#fff3cd" stroke="#ffc107" stroke-width="2"/>
+  <text x="80" y="127" text-anchor="middle" font-size="11" font-weight="bold">Phase 1: Password</text>
+
+  <line x1="70" y1="150" x2="225" y2="150" stroke="#2a5298" stroke-width="2" marker-end="url(#msg)"/>
+  <text x="147" y="145" font-size="10">POST /login</text>
+  <text x="147" y="165" font-size="9" fill="#666">{username, password}</text>
+
+  <line x1="225" y1="180" x2="385" y2="180" stroke="#2a5298" stroke-width="2" marker-end="url(#msg)"/>
+  <text x="305" y="175" font-size="10">login()</text>
+
+  <line x1="385" y1="200" x2="555" y2="200" stroke="#2a5298" stroke-width="2" marker-end="url(#msg)"/>
+  <text x="470" y="195" font-size="10">authenticate()</text>
+
+  <line x1="555" y1="220" x2="895" y2="220" stroke="#2a5298" stroke-width="2" marker-end="url(#msg)"/>
+  <text x="725" y="215" font-size="10">SELECT user WHERE username=?</text>
+
+  <line x1="895" y1="240" x2="555" y2="240" stroke="#666" stroke-dasharray="3,3" marker-end="url(#ret)"/>
+  <text x="725" y="255" font-size="9">User row</text>
+
+  <!-- Argon2 verification -->
+  <rect x="500" y="260" width="110" height="50" fill="#fff3cd" stroke="#ffc107" stroke-width="1.5"/>
+  <text x="555" y="278" text-anchor="middle" font-family="Consolas" font-size="9">Argon2id verify</text>
+  <text x="555" y="293" text-anchor="middle" font-size="9" fill="#dc3545">~120ms</text>
+  <text x="555" y="305" text-anchor="middle" font-size="8">(19 MiB memory)</text>
+
+  <line x1="555" y1="320" x2="385" y2="320" stroke="#666" stroke-dasharray="3,3" marker-end="url(#ret)"/>
+  <text x="470" y="335" font-size="9">Valid + totp_enabled=true</text>
+
+  <!-- Check if 2FA enabled -->
+  <rect x="340" y="345" width="90" height="40" fill="#d4edda" stroke="#28a745" stroke-width="1.5"/>
+  <text x="385" y="360" text-anchor="middle" font-size="9">Check 2FA</text>
+  <text x="385" y="375" text-anchor="middle" font-size="9" font-weight="bold">Enabled</text>
+
+  <!-- Store pending 2FA -->
+  <text x="385" y="405" text-anchor="middle" font-size="9" fill="#666">Store pending_2fa_user_id</text>
+  <text x="385" y="418" text-anchor="middle" font-size="9" fill="#666">in session</text>
+
+  <line x1="385" y1="430" x2="225" y2="430" stroke="#666" stroke-dasharray="3,3" marker-end="url(#ret)"/>
+  <text x="305" y="425" font-size="10">Redirect /verify-2fa</text>
+
+  <line x1="225" y1="450" x2="70" y2="450" stroke="#666" stroke-dasharray="3,3" marker-end="url(#ret)"/>
+  <text x="147" y="465" font-size="10">Show 2FA form</text>
+
+  <!-- Phase 2: TOTP Verification -->
+  <rect x="20" y="480" width="120" height="25" fill="#f8d7da" stroke="#dc3545" stroke-width="2"/>
+  <text x="80" y="497" text-anchor="middle" font-size="11" font-weight="bold">Phase 2: TOTP</text>
+
+  <line x1="70" y1="520" x2="225" y2="520" stroke="#dc3545" stroke-width="2" marker-end="url(#msg)"/>
+  <text x="147" y="515" font-size="10" font-weight="bold">Enter 6-digit code</text>
+  <text x="147" y="535" font-size="9">{code: "123456"}</text>
+
+  <line x1="225" y1="550" x2="385" y2="550" stroke="#2a5298" stroke-width="2" marker-end="url(#msg)"/>
+  <text x="305" y="545" font-size="10">POST /verify-2fa</text>
+
+  <line x1="385" y1="570" x2="735" y2="570" stroke="#2a5298" stroke-width="2" marker-end="url(#msg)"/>
+  <text x="560" y="565" font-size="10">verify_totp(user_id, code)</text>
+
+  <line x1="735" y1="590" x2="895" y2="590" stroke="#2a5298" stroke-width="2" marker-end="url(#msg)"/>
+  <text x="815" y="585" font-size="10">SELECT totp_secret</text>
+
+  <line x1="895" y1="610" x2="735" y2="610" stroke="#666" stroke-dasharray="3,3" marker-end="url(#ret)"/>
+  <text x="815" y="625" font-size="9">encrypted_secret</text>
+
+  <!-- Decrypt -->
+  <rect x="680" y="635" width="110" height="35" fill="#fff3cd" stroke="#ffc107"/>
+  <text x="735" y="650" text-anchor="middle" font-size="9">Decrypt with Fernet</text>
+  <text x="735" y="663" text-anchor="middle" font-family="Consolas" font-size="8">AES-128 + HMAC</text>
+
+  <!-- Generate TOTP -->
+  <rect x="680" y="680" width="110" height="35" fill="#d4edda" stroke="#28a745"/>
+  <text x="735" y="695" text-anchor="middle" font-family="Consolas" font-size="9">pyotp.TOTP(secret)</text>
+  <text x="735" y="708" text-anchor="middle" font-size="8">.verify(code)</text>
+
+  <!-- Check replay -->
+  <rect x="680" y="725" width="110" height="35" fill="#e8f4f8" stroke="#2a5298"/>
+  <text x="735" y="738" text-anchor="middle" font-size="9">Check cache:</text>
+  <text x="735" y="751" text-anchor="middle" font-family="Consolas" font-size="8">user:code:window</text>
+
+  <line x1="735" y1="765" x2="385" y2="765" stroke="#666" stroke-dasharray="3,3" marker-end="url(#ret)"/>
+  <text x="560" y="780" font-size="9" font-weight="bold" fill="#28a745">Valid (not replayed)</text>
+
+  <!-- Complete login -->
+  <text x="385" y="800" text-anchor="middle" font-size="9">session['user_id'] = user_id</text>
+
+  <line x1="385" y1="815" x2="70" y2="815" stroke="#666" stroke-dasharray="3,3" marker-end="url(#ret)"/>
+  <text x="227" y="810" font-size="10" fill="#28a745" font-weight="bold">Login successful</text>
+
+  <!-- Legend -->
+  <rect x="50" y="755" width="600" height="35" fill="#f8f9fa" stroke="#666"/>
+  <text x="60" y="773" font-size="10" font-weight="bold">Security:</text>
+  <text x="120" y="773" font-size="9">Password never stored plaintext | TOTP secrets encrypted | Replay cache prevents code reuse</text>
+</svg>

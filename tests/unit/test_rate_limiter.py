@@ -17,27 +17,43 @@ class TestRateLimiter:
 
     def test_first_request_allowed(self, rate_limiter, db_connection):
         """Test that first request is always allowed"""
-        key = 'ip:192.168.1.1'
-        endpoint = '/login'
+        from database import get_db_connection
+
+        key = 'ip:192.168.1.100'  # Use unique IP to avoid conflicts
+        endpoint = '/test-first-request'
+
+        # CLEANUP: Ensure clean state for this specific test
+        conn = get_db_connection()
+        conn.execute('DELETE FROM rate_limits WHERE key = ? AND endpoint = ?', (key, endpoint))
+        conn.commit()
+        conn.close()
 
         is_limited, remaining, reset_time = rate_limiter.is_rate_limited(key, endpoint)
 
-        assert not is_limited
-        assert remaining == 5
-        assert reset_time is None
+        assert not is_limited, f"First request should not be limited, got is_limited={is_limited}"
+        assert remaining == 5, f"Should have 5 remaining, got {remaining}"
+        assert reset_time is None, f"Reset time should be None, got {reset_time}"
 
     def test_record_request_increments_count(self, rate_limiter, db_connection):
         """Test that recording requests increments counter"""
+        from database import get_db_connection
+
         key = 'ip:192.168.1.1'
         endpoint = '/login'
+
+        # CLEANUP: Ensure clean state
+        conn = get_db_connection()
+        conn.execute('DELETE FROM rate_limits WHERE key = ? AND endpoint = ?', (key, endpoint))
+        conn.commit()
+        conn.close()
 
         # Record first request
         assert rate_limiter.record_request(key, endpoint)
 
-        # Check rate limit - should have 4 remaining
+        # Check rate limit - should have 4 remaining (5-1=4)
         is_limited, remaining, reset_time = rate_limiter.is_rate_limited(key, endpoint)
-        assert not is_limited
-        assert remaining == 4
+        assert not is_limited, f"Should not be limited after 1 request, but is_limited={is_limited}"
+        assert remaining == 4, f"Should have 4 remaining, got {remaining}"
 
     def test_rate_limit_enforcement(self, rate_limiter, db_connection):
         """Test that rate limit is enforced after threshold"""

@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="1000" height="650" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="classHeader" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#1e3c72"/>
+      <stop offset="100%" style="stop-color:#2a5298"/>
+    </linearGradient>
+    <marker id="arrow" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto">
+      <polygon points="0 0, 10 3, 0 6" fill="#2a5298"/>
+    </marker>
+    <marker id="diamond" markerWidth="12" markerHeight="12" refX="0" refY="6" orient="auto">
+      <polygon points="0 6, 6 0, 12 6, 6 12" fill="white" stroke="#2a5298" stroke-width="1.5"/>
+    </marker>
+  </defs>
+
+  <text x="500" y="25" text-anchor="middle" font-size="16" font-weight="bold" fill="#1e3c72">
+    UML Class Diagram - Service Layer Architecture
+  </text>
+
+  <!-- AuthService -->
+  <g>
+    <rect x="50" y="60" width="230" height="200" fill="#f0f4f8" stroke="#2a5298" stroke-width="2"/>
+    <rect x="50" y="60" width="230" height="35" fill="url(#classHeader)"/>
+    <text x="165" y="82" text-anchor="middle" fill="white" font-weight="bold" font-size="13">AuthService</text>
+    <text x="60" y="110" font-family="Consolas" font-size="10">- hasher: PasswordHasher</text>
+    <text x="60" y="125" font-family="Consolas" font-size="10">- MIN_PASSWORD_LENGTH: 12</text>
+    <line x1="50" y1="135" x2="280" y2="135" stroke="#2a5298"/>
+    <text x="60" y="152" font-family="Consolas" font-size="10">+ register_user(user, pass)</text>
+    <text x="70" y="167" font-family="Consolas" font-size="9" fill="#666">→ (bool, result)</text>
+    <text x="60" y="182" font-family="Consolas" font-size="10">+ authenticate(user, pass)</text>
+    <text x="70" y="197" font-family="Consolas" font-size="9" fill="#666">→ (bool, user|error)</text>
+    <text x="60" y="212" font-family="Consolas" font-size="10">+ change_password()</text>
+    <text x="60" y="227" font-family="Consolas" font-size="10">+ get_user_by_id()</text>
+    <text x="60" y="242" font-family="Consolas" font-size="10">+ get_user_by_username()</text>
+  </g>
+
+  <!-- OAuth2Service -->
+  <g>
+    <rect x="320" y="60" width="280" height="200" fill="#f0f4f8" stroke="#2a5298" stroke-width="2"/>
+    <rect x="320" y="60" width="280" height="35" fill="url(#classHeader)"/>
+    <text x="460" y="82" text-anchor="middle" fill="white" font-weight="bold" font-size="13">OAuth2Service</text>
+    <text x="330" y="110" font-family="Consolas" font-size="10">- ACCESS_TOKEN_EXPIRES: 3600</text>
+    <text x="330" y="125" font-family="Consolas" font-size="10">- AUTH_CODE_EXPIRES: 600</text>
+    <line x1="320" y1="135" x2="600" y2="135" stroke="#2a5298"/>
+    <text x="330" y="152" font-family="Consolas" font-size="10">+ generate_authorization_code()</text>
+    <text x="330" y="167" font-family="Consolas" font-size="10">+ validate_pkce(verifier, challenge)</text>
+    <text x="340" y="182" font-family="Consolas" font-size="9" fill="#666">→ SHA256 validation</text>
+    <text x="330" y="197" font-family="Consolas" font-size="10">+ generate_tokens(client, user)</text>
+    <text x="330" y="212" font-family="Consolas" font-size="10">+ refresh_access_token()</text>
+    <text x="340" y="227" font-family="Consolas" font-size="9" fill="#666">→ Token rotation + family tracking</text>
+    <text x="330" y="242" font-family="Consolas" font-size="10">+ _revoke_token_family()</text>
+  </g>
+
+  <!-- TOTPService -->
+  <g>
+    <rect x="640" y="60" width="230" height="200" fill="#f0f4f8" stroke="#2a5298" stroke-width="2"/>
+    <rect x="640" y="60" width="230" height="35" fill="url(#classHeader)"/>
+    <text x="755" y="82" text-anchor="middle" fill="white" font-weight="bold" font-size="13">TOTPService</text>
+    <text x="650" y="110" font-family="Consolas" font-size="10">- encryption: EncryptionSvc</text>
+    <text x="650" y="125" font-family="Consolas" font-size="10">- used_codes_cache: dict</text>
+    <line x1="640" y1="135" x2="870" y2="135" stroke="#2a5298"/>
+    <text x="650" y="152" font-family="Consolas" font-size="10">+ generate_secret()</text>
+    <text x="660" y="167" font-family="Consolas" font-size="9" fill="#666">→ base32 random</text>
+    <text x="650" y="182" font-family="Consolas" font-size="10">+ generate_qr_code()</text>
+    <text x="650" y="197" font-family="Consolas" font-size="10">+ verify_totp(user, code)</text>
+    <text x="660" y="212" font-family="Consolas" font-size="9" fill="#666">→ Replay prevention</text>
+    <text x="650" y="227" font-family="Consolas" font-size="10">+ verify_backup_code()</text>
+    <text x="650" y="242" font-family="Consolas" font-size="10">+ enable_2fa()</text>
+  </g>
+
+  <!-- SecurityService -->
+  <g>
+    <rect x="50" y="300" width="220" height="170" fill="#f0f4f8" stroke="#2a5298" stroke-width="2"/>
+    <rect x="50" y="300" width="220" height="35" fill="url(#classHeader)"/>
+    <text x="160" y="322" text-anchor="middle" fill="white" font-weight="bold" font-size="13">SecurityService</text>
+    <text x="60" y="350" font-family="Consolas" font-size="10">- LOCKOUT_THRESHOLD: 3</text>
+    <text x="60" y="365" font-family="Consolas" font-size="10">- LOCKOUT_DURATION: 15min</text>
+    <line x1="50" y1="375" x2="270" y2="375" stroke="#2a5298"/>
+    <text x="60" y="392" font-family="Consolas" font-size="10">+ log_security_event()</text>
+    <text x="60" y="407" font-family="Consolas" font-size="10">+ log_login_attempt()</text>
+    <text x="60" y="422" font-family="Consolas" font-size="10">+ check_account_lockout()</text>
+    <text x="60" y="437" font-family="Consolas" font-size="10">+ apply_account_lockout()</text>
+    <text x="60" y="452" font-family="Consolas" font-size="10">+ get_recent_failures()</text>
+  </g>
+
+  <!-- RateLimiter -->
+  <g>
+    <rect x="310" y="300" width="240" height="170" fill="#f0f4f8" stroke="#2a5298" stroke-width="2"/>
+    <rect x="310" y="300" width="240" height="35" fill="url(#classHeader)"/>
+    <text x="430" y="322" text-anchor="middle" fill="white" font-weight="bold" font-size="13">RateLimiter</text>
+    <text x="320" y="350" font-family="Consolas" font-size="10">- requests_per_minute: 5</text>
+    <text x="320" y="365" font-family="Consolas" font-size="10">- window_minutes: 1</text>
+    <line x1="310" y1="375" x2="550" y2="375" stroke="#2a5298"/>
+    <text x="320" y="392" font-family="Consolas" font-size="10">+ is_rate_limited(key, endpoint)</text>
+    <text x="330" y="407" font-family="Consolas" font-size="9" fill="#666">→ Transaction-safe check</text>
+    <text x="320" y="422" font-family="Consolas" font-size="10">+ record_request(key)</text>
+    <text x="320" y="437" font-family="Consolas" font-size="10">+ limit() [decorator]</text>
+    <text x="320" y="452" font-family="Consolas" font-size="10">+ cleanup_expired()</text>
+  </g>
+
+  <!-- EncryptionService -->
+  <g>
+    <rect x="590" y="300" width="240" height="170" fill="#f0f4f8" stroke="#2a5298" stroke-width="2"/>
+    <rect x="590" y="300" width="240" height="35" fill="url(#classHeader)"/>
+    <text x="710" y="322" text-anchor="middle" fill="white" font-weight="bold" font-size="13">EncryptionService</text>
+    <text x="600" y="350" font-family="Consolas" font-size="10">- cipher: Fernet</text>
+    <text x="600" y="365" font-family="Consolas" font-size="10">- algorithm: AES-128-CBC</text>
+    <line x1="590" y1="375" x2="830" y2="375" stroke="#2a5298"/>
+    <text x="600" y="392" font-family="Consolas" font-size="10">+ encrypt(plaintext)</text>
+    <text x="610" y="407" font-family="Consolas" font-size="9" fill="#666">→ Fernet + HMAC</text>
+    <text x="600" y="422" font-family="Consolas" font-size="10">+ decrypt(ciphertext)</text>
+    <text x="600" y="437" font-family="Consolas" font-size="10">+ generate_key()</text>
+    <text x="600" y="452" font-family="Consolas" font-size="10">- _derive_key(password)</text>
+    <text x="610" y="467" font-family="Consolas" font-size="9" fill="#666">→ PBKDF2 100k iterations</text>
+  </g>
+
+  <!-- Relationships -->
+  <!-- TOTPService uses EncryptionService -->
+  <path d="M 755 260 L 710 300" stroke="#2a5298" stroke-width="2" marker-end="url(#arrow)"/>
+  <text x="730" y="285" font-size="10" fill="#2a5298" font-weight="bold">uses</text>
+
+  <!-- All services use database -->
+  <path d="M 165 470 L 400 560" stroke="#666" stroke-width="1.5" stroke-dasharray="5,5" marker-end="url(#arrow)"/>
+  <path d="M 430 470 L 450 560" stroke="#666" stroke-width="1.5" stroke-dasharray="5,5" marker-end="url(#arrow)"/>
+  <path d="M 710 470 L 500 560" stroke="#666" stroke-width="1.5" stroke-dasharray="5,5" marker-end="url(#arrow)"/>
+
+  <!-- Database -->
+  <rect x="350" y="560" width="300" height="70" rx="8" fill="#e8f4f8" stroke="#2a5298" stroke-width="2"/>
+  <text x="500" y="590" text-anchor="middle" font-weight="bold" font-size="14" fill="#1e3c72">SQLite Database</text>
+  <text x="500" y="610" text-anchor="middle" font-size="11">get_db_connection() factory pattern</text>
+
+  <!-- Legend -->
+  <rect x="50" y="615" width="400" height="30" fill="#f8f9fa" stroke="#ddd"/>
+  <text x="60" y="633" font-size="10" font-weight="bold">Notation:</text>
+  <line x1="110" y1="630" x2="140" y2="630" stroke="#2a5298" stroke-width="2"/>
+  <polygon points="140 627, 150 630, 140 633" fill="#2a5298"/>
+  <text x="155" y="633" font-size="9">Association</text>
+  <line x1="250" y1="630" x2="280" y2="630" stroke="#666" stroke-width="1.5" stroke-dasharray="5,5"/>
+  <text x="285" y="633" font-size="9">Dependency (queries)</text>
+  <text x="390" y="633" font-size="9">PK = Primary Key</text>
+</svg>

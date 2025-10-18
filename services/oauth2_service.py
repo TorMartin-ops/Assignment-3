@@ -208,7 +208,7 @@ class OAuth2Service:
             print(f"Authorization code validation error: {e}")
             return False, "Authorization code validation failed"
 
-    def generate_tokens(self, client_id, user_id, scope):
+    def generate_tokens(self, client_id, user_id, scope, conn=None):
         """
         Generate access and refresh tokens
 
@@ -216,6 +216,7 @@ class OAuth2Service:
             client_id: Client identifier
             user_id: User ID
             scope: Token scope
+            conn: Optional database connection (for transaction support)
 
         Returns:
             Token response dict
@@ -229,7 +230,10 @@ class OAuth2Service:
         issued_at = int(time.time())
         refresh_expires_at = issued_at + self.REFRESH_TOKEN_EXPIRES
 
-        conn = get_db_connection()
+        # Use provided connection or create new one
+        own_connection = conn is None
+        if own_connection:
+            conn = get_db_connection()
 
         conn.execute('''
             INSERT INTO oauth2_tokens
@@ -241,8 +245,10 @@ class OAuth2Service:
               token_family_id, issued_at, self.ACCESS_TOKEN_EXPIRES,
               refresh_expires_at))
 
-        conn.commit()
-        conn.close()
+        # Only commit if we created the connection
+        if own_connection:
+            conn.commit()
+            conn.close()
 
         return {
             'access_token': access_token,
@@ -324,18 +330,19 @@ class OAuth2Service:
                 conn.close()
                 return False, "Refresh token expired"
 
-            # Mark old refresh token as used
+            # Mark old refresh token as used (but not revoked - allows reuse detection)
             conn.execute('''
                 UPDATE oauth2_tokens
-                SET refresh_token_used = 1, revoked = 1
+                SET refresh_token_used = 1
                 WHERE id = ?
             ''', (token['id'],))
 
-            # Generate new tokens (rotation)
+            # Generate new tokens (rotation) - use same connection to avoid locks
             new_tokens = self.generate_tokens(
                 client_id,
                 token['user_id'],
-                token['scope']
+                token['scope'],
+                conn=conn  # Pass connection to avoid nested transaction
             )
 
             # Update token family

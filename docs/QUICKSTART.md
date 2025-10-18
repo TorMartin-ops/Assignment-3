@@ -50,7 +50,7 @@ python3 test_complete_system.py # Full integration tests
 python3 app_auth.py
 ```
 
-Open: http://localhost:5000
+Open: http://localhost:5001
 
 ---
 
@@ -62,9 +62,9 @@ Open: http://localhost:5000
 python3 app_auth.py
 
 # In browser:
-1. Go to http://localhost:5000/register
+1. Go to http://localhost:5001/register
 2. Create account (min 12 char password)
-3. Login at http://localhost:5000/login
+3. Login at http://localhost:5001/login
 ```
 
 ### Test 2: Brute Force Protection
@@ -103,7 +103,7 @@ print(f'Locked: {is_locked} - {msg}')
 python3 test_oauth2_flow.py
 
 # Manual test:
-1. Open: http://localhost:5000/oauth/authorize?client_id=test_client_id&response_type=code&redirect_uri=http://localhost:5000/callback&code_challenge=XXX&code_challenge_method=S256
+1. Open: http://localhost:5001/oauth/authorize?client_id=test_client_id&response_type=code&redirect_uri=http://localhost:5001/callback&code_challenge=XXX&code_challenge_method=S256
 2. Login if needed
 3. Approve authorization
 4. Copy code from URL
@@ -121,7 +121,7 @@ python3 test_oauth2_flow.py
 **OAuth2 Client**:
 - Client ID: `test_client_id`
 - Client Secret: `test_client_secret`
-- Redirect URIs: `http://localhost:5000/callback`
+- Redirect URIs: `http://localhost:5001/callback`
 
 ---
 

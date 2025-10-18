@@ -429,11 +429,11 @@ backup_codes: ["5d41402abc4b2a76b9719d911017c592", "7c9e34b22f93b7d9c0f3e8a1d5b6
 python3 app_auth.py
 
 # 2. Register new account
-# Go to: http://localhost:5000/register
+# Go to: http://localhost:5001/register
 # Create account with password ≥12 chars
 
 # 3. Login and enable 2FA
-# Go to: http://localhost:5000/security-settings
+# Go to: http://localhost:5001/security-settings
 # Click "Enable 2FA"
 
 # 4. Scan QR code
@@ -686,7 +686,7 @@ source venv/bin/activate
 python3 app_auth.py
 
 # 3. Test 2FA
-# - Go to http://localhost:5000/register
+# - Go to http://localhost:5001/register
 # - Create account
 # - Go to /security-settings
 # - Enable 2FA

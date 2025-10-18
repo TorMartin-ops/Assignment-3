@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="1100" height="900" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <marker id="msg" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto">
+      <polygon points="0 0, 10 3, 0 6" fill="#2a5298"/>
+    </marker>
+    <marker id="ret" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto">
+      <polygon points="0 0, 10 3, 0 6" fill="#666"/>
+    </marker>
+  </defs>
+
+  <text x="550" y="25" text-anchor="middle" font-size="16" font-weight="bold" fill="#1e3c72">
+    OAuth2 Authorization Code Flow with PKCE (RFC 7636)
+  </text>
+
+  <!-- Participants -->
+  <rect x="40" y="50" width="110" height="40" fill="#1e3c72" rx="5"/>
+  <text x="95" y="75" text-anchor="middle" fill="white" font-weight="bold">Client App</text>
+
+  <rect x="230" y="50" width="90" height="40" fill="#1e3c72" rx="5"/>
+  <text x="275" y="75" text-anchor="middle" fill="white" font-weight="bold">Browser</text>
+
+  <rect x="400" y="50" width="120" height="40" fill="#1e3c72" rx="5"/>
+  <text x="460" y="75" text-anchor="middle" fill="white" font-weight="bold">Auth Server</text>
+
+  <rect x="600" y="50" width="120" height="40" fill="#1e3c72" rx="5"/>
+  <text x="660" y="75" text-anchor="middle" fill="white" font-weight="bold">OAuth2Svc</text>
+
+  <rect x="800" y="50" width="100" height="40" fill="#1e3c72" rx="5"/>
+  <text x="850" y="75" text-anchor="middle" fill="white" font-weight="bold">Database</text>
+
+  <rect x="980" y="50" width="90" height="40" fill="#1e3c72" rx="5"/>
+  <text x="1025" y="75" text-anchor="middle" fill="white" font-weight="bold">User</text>
+
+  <!-- Lifelines -->
+  <line x1="95" y1="90" x2="95" y2="870" stroke="#ddd" stroke-width="1" stroke-dasharray="5,5"/>
+  <line x1="275" y1="90" x2="275" y2="870" stroke="#ddd" stroke-width="1" stroke-dasharray="5,5"/>
+  <line x1="460" y1="90" x2="460" y2="870" stroke="#ddd" stroke-width="1" stroke-dasharray="5,5"/>
+  <line x1="660" y1="90" x2="660" y2="870" stroke="#ddd" stroke-width="1" stroke-dasharray="5,5"/>
+  <line x1="850" y1="90" x2="850" y2="870" stroke="#ddd" stroke-width="1" stroke-dasharray="5,5"/>
+  <line x1="1025" y1="90" x2="1025" y2="870" stroke="#ddd" stroke-width="1" stroke-dasharray="5,5"/>
+
+  <!-- Phase 1: PKCE Generation -->
+  <rect x="30" y="110" width="130" height="30" fill="#fff3cd" stroke="#ffc107" stroke-width="2"/>
+  <text x="95" y="130" text-anchor="middle" font-size="11" font-weight="bold">1. Generate PKCE</text>
+
+  <rect x="30" y="145" width="130" height="40" fill="white" stroke="#ddd"/>
+  <text x="95" y="160" text-anchor="middle" font-family="Consolas" font-size="9">verifier = random(128)</text>
+  <text x="95" y="175" text-anchor="middle" font-family="Consolas" font-size="9">challenge = SHA256(v)</text>
+
+  <!-- Message 1: Authorization Request -->
+  <line x1="95" y1="200" x2="275" y2="200" stroke="#2a5298" stroke-width="2" marker-end="url(#msg)"/>
+  <text x="185" y="195" font-size="10">GET /oauth/authorize</text>
+  <text x="185" y="220" font-size="9" fill="#666">+ code_challenge</text>
+
+  <line x1="275" y1="235" x2="460" y2="235" stroke="#2a5298" stroke-width="2" marker-end="url(#msg)"/>
+  <text x="367" y="230" font-size="10">Request</text>
+
+  <!-- Check user auth -->
+  <line x1="460" y1="260" x2="1025" y2="260" stroke="#2a5298" stroke-width="2" marker-end="url(#msg)"/>
+  <text x="742" y="255" font-size="10">Check login</text>
+
+  <rect x="920" y="275" width="210" height="25" fill="#d4edda" stroke="#28a745"/>
+  <text x="1025" y="292" text-anchor="middle" font-size="9">User approves consent</text>
+
+  <!-- Message 2: Generate Code -->
+  <line x1="460" y1="320" x2="660" y2="320" stroke="#2a5298" stroke-width="2" marker-end="url(#msg)"/>
+  <text x="560" y="315" font-size="10">generate_auth_code()</text>
+
+  <line x1="660" y1="345" x2="850" y2="345" stroke="#2a5298" stroke-width="2" marker-end="url(#msg)"/>
+  <text x="755" y="340" font-size="10">INSERT code</text>
+  <text x="755" y="360" font-size="9" fill="#666">+ code_challenge</text>
+
+  <line x1="850" y1="375" x2="660" y2="375" stroke="#666" stroke-width="1.5" stroke-dasharray="3,3" marker-end="url(#ret)"/>
+  <text x="755" y="390" font-size="9">Stored</text>
+
+  <line x1="660" y1="400" x2="460" y2="400" stroke="#666" stroke-width="1.5" stroke-dasharray="3,3" marker-end="url(#ret)"/>
+  <text x="560" y="415" font-size="9">code=ABC123</text>
+
+  <!-- Message 3: Redirect -->
+  <line x1="460" y1="430" x2="275" y2="430" stroke="#666" stroke-width="1.5" stroke-dasharray="3,3" marker-end="url(#ret)"/>
+  <text x="367" y="425" font-size="10">Redirect</text>
+
+  <line x1="275" y1="455" x2="95" y2="455" stroke="#666" stroke-width="1.5" stroke-dasharray="3,3" marker-end="url(#ret)"/>
+  <text x="185" y="450" font-size="10">callback?code=ABC</text>
+
+  <!-- Phase 2: Token Exchange -->
+  <rect x="30" y="480" width="130" height="30" fill="#f8d7da" stroke="#dc3545" stroke-width="2"/>
+  <text x="95" y="500" text-anchor="middle" font-size="11" font-weight="bold">2. Token Exchange</text>
+
+  <line x1="95" y1="525" x2="460" y2="525" stroke="#dc3545" stroke-width="2.5" marker-end="url(#msg)"/>
+  <text x="277" y="520" font-size="10" font-weight="bold">POST /oauth/token</text>
+  <text x="277" y="545" font-size="9" fill="#666">code + code_verifier</text>
+
+  <!-- Validate PKCE -->
+  <line x1="460" y1="565" x2="660" y2="565" stroke="#2a5298" stroke-width="2" marker-end="url(#msg)"/>
+  <text x="560" y="560" font-size="10">validate_pkce()</text>
+
+  <line x1="660" y1="590" x2="850" y2="590" stroke="#2a5298" stroke-width="2" marker-end="url(#msg)"/>
+  <text x="755" y="585" font-size="10">BEGIN IMMEDIATE</text>
+
+  <line x1="850" y1="615" x2="660" y2="615" stroke="#666" stroke-width="1.5" stroke-dasharray="3,3" marker-end="url(#ret)"/>
+  <text x="755" y="630" font-size="9">code + challenge</text>
+
+  <!-- PKCE Validation Box -->
+  <rect x="600" y="640" width="120" height="55" fill="#fff3cd" stroke="#ffc107" stroke-width="2"/>
+  <text x="660" y="660" text-anchor="middle" font-family="Consolas" font-size="9">SHA256(verifier)</text>
+  <text x="660" y="675" text-anchor="middle" font-family="Consolas" font-size="9">== challenge?</text>
+  <text x="660" y="690" text-anchor="middle" font-size="10" font-weight="bold" fill="#28a745">VALID</text>
+
+  <!-- Generate Tokens -->
+  <line x1="660" y1="710" x2="850" y2="710" stroke="#2a5298" stroke-width="2" marker-end="url(#msg)"/>
+  <text x="755" y="705" font-size="10">INSERT tokens</text>
+  <text x="755" y="725" font-size="9" fill="#666">+ family_id</text>
+
+  <line x1="850" y1="740" x2="660" y2="740" stroke="#666" stroke-width="1.5" stroke-dasharray="3,3" marker-end="url(#ret)"/>
+  <text x="755" y="755" font-size="9">Tokens created</text>
+
+  <line x1="660" y1="765" x2="460" y2="765" stroke="#666" stroke-width="1.5" stroke-dasharray="3,3" marker-end="url(#ret)"/>
+  <text x="560" y="780" font-size="9">{access, refresh}</text>
+
+  <line x1="460" y1="790" x2="95" y2="790" stroke="#666" stroke-width="1.5" stroke-dasharray="3,3" marker-end="url(#ret)"/>
+  <text x="277" y="785" font-size="10">JSON response</text>
+
+  <!-- Phase 3: API Access -->
+  <rect x="30" y="815" width="130" height="25" fill="#d4edda" stroke="#28a745" stroke-width="2"/>
+  <text x="95" y="832" text-anchor="middle" font-size="11" font-weight="bold">3. API Access</text>
+
+  <line x1="95" y1="855" x2="460" y2="855" stroke="#28a745" stroke-width="2" marker-end="url(#msg)"/>
+  <text x="277" y="850" font-size="10">GET /oauth/userinfo</text>
+  <text x="277" y="870" font-size="9">Bearer: access_token</text>
+
+  <!-- Legend -->
+  <rect x="50" y="865" width="550" height="30" fill="#f8f9fa" stroke="#ddd"/>
+  <text x="60" y="883" font-size="10" font-weight="bold">Security:</text>
+  <text x="120" y="883" font-size="9">PKCE prevents code theft | BEGIN IMMEDIATE prevents race | Token family tracks rotation</text>
+</svg>

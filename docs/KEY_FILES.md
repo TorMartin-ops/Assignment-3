@@ -138,17 +138,17 @@ python3 database_auth.py
 After running `./install.sh` and `python3 app_auth.py`:
 
 **Authentication:**
-- [ ] http://localhost:5000/register - Create account
-- [ ] http://localhost:5000/login - Login
+- [ ] http://localhost:5001/register - Create account
+- [ ] http://localhost:5001/login - Login
 - [ ] Try 3 wrong passwords - See lockout
 
 **2FA:**
-- [ ] http://localhost:5000/security-settings - Enable 2FA
-- [ ] http://localhost:5000/setup-2fa - Scan QR code
+- [ ] http://localhost:5001/security-settings - Enable 2FA
+- [ ] http://localhost:5001/setup-2fa - Scan QR code
 - [ ] Login again - Verify with authenticator
 
 **OAuth2:**
-- [ ] http://localhost:5000/oauth/authorize?client_id=test_client_id&...
+- [ ] http://localhost:5001/oauth/authorize?client_id=test_client_id&...
 - [ ] POST to /oauth/token - Get access token
 - [ ] GET /oauth/userinfo - Access protected resource
 

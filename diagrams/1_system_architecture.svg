@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="900" height="700" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <style>
+      .layer-box { fill: #f0f4f8; stroke: #2a5298; stroke-width: 2; }
+      .layer-header { fill: url(#layerGradient); }
+      .component { fill: white; stroke: #2a5298; stroke-width: 1.5; }
+      .arrow { stroke: #666; stroke-width: 2; fill: none; marker-end: url(#arrowhead); }
+      .label { font-family: Arial, sans-serif; font-size: 11px; }
+      .title { font-family: Arial, sans-serif; font-size: 13px; font-weight: bold; }
+      .header-text { font-family: Arial, sans-serif; font-size: 12px; font-weight: bold; fill: white; }
+    </style>
+    <linearGradient id="layerGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#1e3c72;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#2a5298;stop-opacity:1" />
+    </linearGradient>
+    <marker id="arrowhead" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto">
+      <polygon points="0 0, 10 3, 0 6" fill="#666"/>
+    </marker>
+  </defs>
+
+  <!-- Title -->
+  <text x="450" y="25" text-anchor="middle" class="title" font-size="16" fill="#1e3c72">
+    System Architecture - Service-Oriented Layered Design
+  </text>
+
+  <!-- Layer 1: Presentation -->
+  <rect x="50" y="50" width="800" height="120" class="layer-box"/>
+  <rect x="50" y="50" width="800" height="30" class="layer-header"/>
+  <text x="450" y="70" text-anchor="middle" class="header-text">PRESENTATION LAYER - Flask Blueprints</text>
+
+  <rect x="80" y="95" width="220" height="60" class="component"/>
+  <text x="190" y="115" text-anchor="middle" class="title" fill="#2a5298">auth_routes.py</text>
+  <text x="190" y="132" text-anchor="middle" class="label" font-size="9">/register, /login, /logout</text>
+  <text x="190" y="145" text-anchor="middle" class="label" font-size="9">Blueprint: 'auth'</text>
+
+  <rect x="340" y="95" width="220" height="60" class="component"/>
+  <text x="450" y="115" text-anchor="middle" class="title" fill="#2a5298">oauth_routes.py</text>
+  <text x="450" y="132" text-anchor="middle" class="label" font-size="9">/oauth/authorize, /oauth/token</text>
+  <text x="450" y="145" text-anchor="middle" class="label" font-size="9">Blueprint: 'oauth'</text>
+
+  <rect x="600" y="95" width="220" height="60" class="component"/>
+  <text x="710" y="115" text-anchor="middle" class="title" fill="#2a5298">twofa_routes.py</text>
+  <text x="710" y="132" text-anchor="middle" class="label" font-size="9">/setup-2fa, /verify-2fa</text>
+  <text x="710" y="145" text-anchor="middle" class="label" font-size="9">Blueprint: 'twofa'</text>
+
+  <!-- Layer 2: Business Logic -->
+  <rect x="50" y="200" width="800" height="180" class="layer-box"/>
+  <rect x="50" y="200" width="800" height="30" class="layer-header"/>
+  <text x="450" y="220" text-anchor="middle" class="header-text">BUSINESS LOGIC LAYER - Service Classes (Singleton Pattern)</text>
+
+  <rect x="70" y="245" width="150" height="120" class="component"/>
+  <text x="145" y="263" text-anchor="middle" class="title" fill="#2a5298">AuthService</text>
+  <text x="145" y="280" text-anchor="middle" class="label" font-size="9">258 lines</text>
+  <line x1="70" y1="285" x2="220" y2="285" stroke="#2a5298"/>
+  <text x="80" y="300" class="label" font-size="9">+ register_user()</text>
+  <text x="80" y="315" class="label" font-size="9">+ authenticate()</text>
+  <text x="80" y="330" class="label" font-size="9">+ change_password()</text>
+  <text x="80" y="345" class="label" font-size="9">Argon2id hashing</text>
+
+  <rect x="240" y="245" width="150" height="120" class="component"/>
+  <text x="315" y="263" text-anchor="middle" class="title" fill="#2a5298">OAuth2Service</text>
+  <text x="315" y="280" text-anchor="middle" class="label" font-size="9">454 lines</text>
+  <line x1="240" y1="285" x2="390" y2="285" stroke="#2a5298"/>
+  <text x="250" y="300" class="label" font-size="9">+ generate_auth_code()</text>
+  <text x="250" y="315" class="label" font-size="9">+ validate_pkce()</text>
+  <text x="250" y="330" class="label" font-size="9">+ refresh_token()</text>
+  <text x="250" y="345" class="label" font-size="9">PKCE + rotation</text>
+
+  <rect x="410" y="245" width="150" height="120" class="component"/>
+  <text x="485" y="263" text-anchor="middle" class="title" fill="#2a5298">TOTPService</text>
+  <text x="485" y="280" text-anchor="middle" class="label" font-size="9">260 lines</text>
+  <line x1="410" y1="285" x2="560" y2="285" stroke="#2a5298"/>
+  <text x="420" y="300" class="label" font-size="9">+ generate_secret()</text>
+  <text x="420" y="315" class="label" font-size="9">+ verify_totp()</text>
+  <text x="420" y="330" class="label" font-size="9">+ generate_qr_code()</text>
+  <text x="420" y="345" class="label" font-size="9">RFC 6238 TOTP</text>
+
+  <rect x="580" y="245" width="150" height="120" class="component"/>
+  <text x="655" y="263" text-anchor="middle" class="title" fill="#2a5298">SecurityService</text>
+  <text x="655" y="280" text-anchor="middle" class="label" font-size="9">325 lines</text>
+  <line x1="580" y1="285" x2="730" y2="285" stroke="#2a5298"/>
+  <text x="590" y="300" class="label" font-size="9">+ apply_lockout()</text>
+  <text x="590" y="315" class="label" font-size="9">+ log_security_event()</text>
+  <text x="590" y="330" class="label" font-size="9">+ track_login_attempts()</text>
+  <text x="590" y="345" class="label" font-size="9">Audit logging</text>
+
+  <!-- Arrows from Layer 1 to Layer 2 -->
+  <path d="M 190 155 L 145 245" class="arrow"/>
+  <path d="M 450 155 L 315 245" class="arrow"/>
+  <path d="M 450 155 L 485 245" class="arrow"/>
+  <path d="M 710 155 L 485 245" class="arrow"/>
+  <path d="M 190 155 L 655 245" class="arrow"/>
+
+  <!-- Layer 3: Data Access -->
+  <rect x="50" y="410" width="800" height="120" class="layer-box"/>
+  <rect x="50" y="410" width="800" height="30" class="layer-header"/>
+  <text x="450" y="430" text-anchor="middle" class="header-text">DATA ACCESS LAYER - Database Connections</text>
+
+  <rect x="150" y="455" width="250" height="60" class="component"/>
+  <text x="275" y="475" text-anchor="middle" class="title" fill="#2a5298">database.py</text>
+  <text x="275" y="492" text-anchor="middle" class="label" font-size="9">get_db_connection() factory</text>
+  <text x="275" y="505" text-anchor="middle" class="label" font-size="9">SQLite Row factory</text>
+
+  <rect x="450" y="455" width="250" height="60" class="component"/>
+  <text x="575" y="475" text-anchor="middle" class="title" fill="#2a5298">database_auth.py</text>
+  <text x="575" y="492" text-anchor="middle" class="label" font-size="9">Schema: 8 auth tables + indexes</text>
+  <text x="575" y="505" text-anchor="middle" class="label" font-size="9">BEGIN IMMEDIATE support</text>
+
+  <!-- Arrows from Layer 2 to Layer 3 -->
+  <path d="M 145 365 L 275 455" class="arrow"/>
+  <path d="M 315 365 L 275 455" class="arrow"/>
+  <path d="M 485 365 L 575 455" class="arrow"/>
+  <path d="M 655 365 L 575 455" class="arrow"/>
+
+  <!-- Layer 4: Database -->
+  <rect x="200" y="560" width="500" height="100" rx="10" fill="#e8f4f8" stroke="#2a5298" stroke-width="3" stroke-dasharray="10,5"/>
+  <text x="450" y="590" text-anchor="middle" class="title" font-size="14" fill="#1e3c72">SQLite Database</text>
+  <text x="450" y="610" text-anchor="middle" class="label">recipe_app.db</text>
+  <text x="450" y="628" text-anchor="middle" class="label" font-size="10">13 tables | 13 indexes | ACID transactions</text>
+  <text x="450" y="645" text-anchor="middle" class="label" font-size="10">File-based | Zero configuration</text>
+
+  <!-- Arrows from Layer 3 to Database -->
+  <path d="M 275 515 L 400 560" class="arrow" stroke-dasharray="5,5"/>
+  <path d="M 575 515 L 500 560" class="arrow" stroke-dasharray="5,5"/>
+  <text x="335" y="540" class="label" font-size="10" fill="#666">queries</text>
+  <text x="540" y="540" class="label" font-size="10" fill="#666">queries</text>
+
+  <!-- Legend -->
+  <rect x="50" y="670" width="300" height="25" fill="#f8f9fa" stroke="#ddd"/>
+  <rect x="60" y="677" width="15" height="10" class="component"/>
+  <text x="80" y="685" class="label" font-size="9">Component/Module</text>
+  <line x1="160" y1="682" x2="190" y2="682" class="arrow"/>
+  <text x="195" y="685" class="label" font-size="9">Dependency</text>
+  <line x1="280" y1="682" x2="310" y2="682" stroke="#666" stroke-width="2" stroke-dasharray="5,5"/>
+  <text x="315" y="685" class="label" font-size="9">Data flow</text>
+</svg>

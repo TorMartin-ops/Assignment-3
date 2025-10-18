@@ -120,7 +120,9 @@ class SecurityService:
         ''', (username, datetime.utcnow())).fetchone()
 
         if lockout:
-            remaining = (lockout['locked_until'] - datetime.utcnow()).total_seconds()
+            # Convert string to datetime (SQLite stores as string)
+            locked_until = datetime.fromisoformat(lockout['locked_until']) if isinstance(lockout['locked_until'], str) else lockout['locked_until']
+            remaining = (locked_until - datetime.utcnow()).total_seconds()
             remaining_minutes = int(remaining / 60)
             remaining_seconds = int(remaining % 60)
 

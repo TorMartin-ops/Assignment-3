@@ -101,8 +101,9 @@ class PasswordValidator:
 class EmailValidator:
     """Email validation utility"""
 
+    # RFC 5322 compliant email regex (prevents consecutive dots, leading/trailing dots)
     EMAIL_REGEX = re.compile(
-        r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$'
+        r'^[a-zA-Z0-9][a-zA-Z0-9._%+-]*[a-zA-Z0-9]@[a-zA-Z0-9][a-zA-Z0-9.-]*\.[a-zA-Z]{2,}$|^[a-zA-Z0-9]@[a-zA-Z0-9][a-zA-Z0-9.-]*\.[a-zA-Z]{2,}$'
     )
 
     @classmethod
@@ -118,6 +119,10 @@ class EmailValidator:
         """
         if not email:
             return False, "Email is required"
+
+        # Check for consecutive dots (RFC 5322 violation)
+        if '..' in email:
+            return False, "Invalid email format"
 
         if not cls.EMAIL_REGEX.match(email):
             return False, "Invalid email format"

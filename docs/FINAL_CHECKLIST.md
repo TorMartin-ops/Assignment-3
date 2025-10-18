@@ -201,8 +201,8 @@ python3 app_auth.py
 ### **[Complete] Step 3: Test Features** (15 minutes)
 
 **Test with browser**:
-1. http://localhost:5000/register → Works immediately
-2. http://localhost:5000/login → Works immediately
+1. http://localhost:5001/register → Works immediately
+2. http://localhost:5001/login → Works immediately
 3. Try wrong password 3x → Lockout works
 4. /security-settings → Enable 2FA → QR code appears
 5. Scan with Google Authenticator → Real 2FA!
@@ -237,7 +237,7 @@ python3 test_complete_system.py
 ```
 [Complete] Client ID: test_client_id
 [Complete] Client Secret: test_client_secret
-[Complete] Redirect URIs: http://localhost:5000/callback
+[Complete] Redirect URIs: http://localhost:5001/callback
 [Complete] Scope: profile email
 [Complete] PKCE: Required
 ```
@@ -249,15 +249,15 @@ python3 test_complete_system.py
 The assignment provides this test pattern:
 ```python
 # Step 1: Get authorization code
-response = requests.post("http://localhost:5000/approve_auth", ...)
+response = requests.post("http://localhost:5001/approve_auth", ...)
 auth_code = response.url.split("code=")[1]
 
 # Step 2: Exchange for token
-response = requests.post("http://localhost:5000/token", ...)
+response = requests.post("http://localhost:5001/token", ...)
 access_token = response.json()['access_token']
 
 # Step 3: Access protected resource
-response = requests.get("http://localhost:5000/protected_resource",
+response = requests.get("http://localhost:5001/protected_resource",
                        headers={'Authorization': f"Bearer {access_token}"})
 ```
 
@@ -462,7 +462,7 @@ python3 test_assignment_oauth2.py
 **Test with real phone** (2FA):
 ```
 1. Install Google Authenticator app
-2. Go to http://localhost:5000/security-settings
+2. Go to http://localhost:5001/security-settings
 3. Enable 2FA → Scan QR code
 4. Done! Real 2FA working!
 ```

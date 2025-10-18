@@ -10,7 +10,7 @@
 
 | # | Requirement | Status | Score | Implementation |
 |---|-------------|--------|-------|----------------|
-| 1 | **Database Integration** | [Complete] Complete | 20/20 | SQLite with 9 tables, encryption, indexes |
+| 1 | **Database Integration** | [Complete] Complete | 20/20 | SQLite with 13 tables (8 auth + 5 recipe), encryption, indexes |
 | 2 | **Basic Authentication** | [Complete] Complete | 20/20 | Argon2id hashing, NIST-compliant |
 | 3 | **Brute Force Protection** | [Complete] Complete | 20/20 | Rate limiting, 3-attempt lockout, 15min timeout |
 | 4 | **Two-Factor Authentication** | [Complete] Complete | 20/20 | TOTP, QR codes, backup codes |
@@ -28,7 +28,7 @@ python3 app_auth.py              # Start application
 python3 test_complete_system.py  # Verify all features
 ```
 
-**Then open**: http://localhost:5000
+**Then open**: http://localhost:5001
 
 ---
 
@@ -389,7 +389,7 @@ attackers who gain database access to immediately compromise accounts.
 ##  Key Achievements
 
 ### **1. No Redis Dependency**
-- Database-based rate limiting works fully implementedly
+- Database-based rate limiting works fully implemented
 - Automatic cleanup mechanisms
 - Suitable for academic and production use
 
@@ -439,7 +439,7 @@ attackers who gain database access to immediately compromise accounts.
               ↓
 ┌─────────────────────────────────────────┐
 │         Data Layer                      │
-│  - SQLite Database (9 tables)           │
+│  - SQLite Database (13 tables (8 auth + 5 recipe))           │
 │  - EncryptionService (Fernet)           │
 │  - Validators (NIST policies)           │
 └─────────────────────────────────────────┘
@@ -528,13 +528,13 @@ python3 app_auth.py
 ```
 
 ### **Access URLs**:
-- **Home**: http://localhost:5000
-- **Register**: http://localhost:5000/register
-- **Login**: http://localhost:5000/login
-- **Security Settings**: http://localhost:5000/security-settings
-- **OAuth2 Authorize**: http://localhost:5000/oauth/authorize
-- **OAuth2 Token**: http://localhost:5000/oauth/token (POST)
-- **OAuth2 UserInfo**: http://localhost:5000/oauth/userinfo
+- **Home**: http://localhost:5001
+- **Register**: http://localhost:5001/register
+- **Login**: http://localhost:5001/login
+- **Security Settings**: http://localhost:5001/security-settings
+- **OAuth2 Authorize**: http://localhost:5001/oauth/authorize
+- **OAuth2 Token**: http://localhost:5001/oauth/token (POST)
+- **OAuth2 UserInfo**: http://localhost:5001/oauth/userinfo
 
 ### **Test Accounts**:
 ```

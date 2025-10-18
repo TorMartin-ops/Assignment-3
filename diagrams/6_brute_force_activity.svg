@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="700" height="850" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <marker id="flow" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto">
+      <polygon points="0 0, 10 3, 0 6" fill="#2a5298"/>
+    </marker>
+  </defs>
+
+  <text x="350" y="25" text-anchor="middle" font-size="16" font-weight="bold" fill="#1e3c72">
+    Activity Diagram - Brute Force Protection Logic
+  </text>
+
+  <!-- Start -->
+  <circle cx="350" cy="60" r="15" fill="#1e3c72"/>
+  <text x="350" y="67" text-anchor="middle" fill="white" font-weight="bold">START</text>
+
+  <line x1="350" y1="75" x2="350" y2="110" stroke="#2a5298" stroke-width="2" marker-end="url(#flow)"/>
+
+  <!-- Login Attempt -->
+  <rect x="250" y="110" width="200" height="50" fill="#e8f4f8" stroke="#2a5298" stroke-width="2" rx="25"/>
+  <text x="350" y="140" text-anchor="middle" font-size="11" font-weight="bold">Login Attempt Received</text>
+
+  <line x1="350" y1="160" x2="350" y2="195" stroke="#2a5298" stroke-width="2" marker-end="url(#flow)"/>
+
+  <!-- Decision: Account Locked? -->
+  <polygon points="350,195 450,245 350,295 250,245" fill="#fff3cd" stroke="#ffc107" stroke-width="2"/>
+  <text x="350" y="240" text-anchor="middle" font-size="10">Account</text>
+  <text x="350" y="254" text-anchor="middle" font-size="10">Locked?</text>
+
+  <!-- YES path -->
+  <line x1="450" y1="245" x2="550" y2="245" stroke="#dc3545" stroke-width="2" marker-end="url(#flow)"/>
+  <text x="500" y="240" font-size="10" fill="#dc3545" font-weight="bold">YES</text>
+
+  <rect x="550" y="220" width="130" height="50" fill="#f8d7da" stroke="#dc3545" stroke-width="2" rx="5"/>
+  <text x="615" y="242" text-anchor="middle" font-size="10">Return Error:</text>
+  <text x="615" y="258" text-anchor="middle" font-size="9">"Account locked</text>
+  <text x="615" y="270" text-anchor="middle" font-size="9">Try in Xm Ys"</text>
+
+  <line x1="615" y1="270" x2="615" y2="755" stroke="#dc3545" stroke-width="2"/>
+  <line x1="615" y1="755" x2="350" y2="755" stroke="#dc3545" stroke-width="2" marker-end="url(#flow)"/>
+
+  <!-- NO path -->
+  <line x1="350" y1="295" x2="350" y2="330" stroke="#2a5298" stroke-width="2" marker-end="url(#flow)"/>
+  <text x="360" y="315" font-size="10" fill="#28a745" font-weight="bold">NO</text>
+
+  <!-- Decision: Rate Limited? -->
+  <polygon points="350,330 450,380 350,430 250,380" fill="#fff3cd" stroke="#ffc107" stroke-width="2"/>
+  <text x="350" y="375" text-anchor="middle" font-size="10">Rate Limited?</text>
+  <text x="350" y="389" text-anchor="middle" font-size="9">(5 req/min)</text>
+
+  <!-- YES path (rate limited) -->
+  <line x1="450" y1="380" x2="550" y2="380" stroke="#dc3545" stroke-width="2" marker-end="url(#flow)"/>
+  <text x="500" y="375" font-size="10" fill="#dc3545" font-weight="bold">YES</text>
+
+  <rect x="550" y="355" width="130" height="50" fill="#f8d7da" stroke="#dc3545" stroke-width="2" rx="5"/>
+  <text x="615" y="375" text-anchor="middle" font-size="10">HTTP 429</text>
+  <text x="615" y="391" text-anchor="middle" font-size="9">Too Many Requests</text>
+
+  <line x1="615" y1="405" x2="615" y2="755" stroke="#dc3545" stroke-width="2"/>
+
+  <!-- NO path (not rate limited) -->
+  <line x1="350" y1="430" x2="350" y2="465" stroke="#2a5298" stroke-width="2" marker-end="url(#flow)"/>
+  <text x="360" y="450" font-size="10" fill="#28a745" font-weight="bold">NO</text>
+
+  <!-- Verify Password (Argon2id) -->
+  <rect x="250" y="465" width="200" height="60" fill="#d4edda" stroke="#28a745" stroke-width="2" rx="5"/>
+  <text x="350" y="490" text-anchor="middle" font-size="10" font-weight="bold">Verify Password</text>
+  <text x="350" y="505" text-anchor="middle" font-family="Consolas" font-size="9">Argon2id.verify()</text>
+  <text x="350" y="520" text-anchor="middle" font-size="8" fill="#666">~120ms timing-safe</text>
+
+  <line x1="350" y1="525" x2="350" y2="560" stroke="#2a5298" stroke-width="2" marker-end="url(#flow)"/>
+
+  <!-- Decision: Password Valid? -->
+  <polygon points="350,560 450,610 350,660 250,610" fill="#fff3cd" stroke="#ffc107" stroke-width="2"/>
+  <text x="350" y="605" text-anchor="middle" font-size="10">Password</text>
+  <text x="350" y="619" text-anchor="middle" font-size="10">Valid?</text>
+
+  <!-- NO (invalid password) -->
+  <line x1="250" y1="610" x2="150" y2="610" stroke="#dc3545" stroke-width="2" marker-end="url(#flow)"/>
+  <text x="200" y="605" font-size="10" fill="#dc3545" font-weight="bold">NO</text>
+
+  <rect x="50" y="585" width="100" height="50" fill="#f8d7da" stroke="#dc3545" stroke-width="2" rx="5"/>
+  <text x="100" y="605" text-anchor="middle" font-size="9">Log failure</text>
+  <text x="100" y="620" text-anchor="middle" font-size="9">Increment count</text>
+
+  <line x1="100" y1="635" x2="100" y2="670" stroke="#dc3545" stroke-width="2" marker-end="url(#flow)"/>
+
+  <!-- Decision: 3 Failures? -->
+  <polygon points="100,670 150,705 100,740 50,705" fill="#fff3cd" stroke="#ffc107" stroke-width="2"/>
+  <text x="100" y="705" text-anchor="middle" font-size="9">Failures</text>
+  <text x="100" y="717" text-anchor="middle" font-size="9">≥ 3?</text>
+
+  <line x1="150" y1="705" x2="200" y2="705" stroke="#dc3545" stroke-width="2" marker-end="url(#flow)"/>
+  <text x="175" y="700" font-size="9" fill="#dc3545" font-weight="bold">YES</text>
+
+  <rect x="200" y="680" width="120" height="50" fill="#f8d7da" stroke="#dc3545" stroke-width="2" rx="5"/>
+  <text x="260" y="700" text-anchor="middle" font-size="9">Apply Lockout</text>
+  <text x="260" y="715" text-anchor="middle" font-size="9" font-weight="bold">15 minutes</text>
+
+  <line x1="260" y1="730" x2="260" y2="755" stroke="#dc3545" stroke-width="2"/>
+  <line x1="260" y1="755" x2="350" y2="755" stroke="#dc3545" stroke-width="2" marker-end="url(#flow)"/>
+
+  <line x1="100" y1="740" x2="100" y2="755" stroke="#28a745" stroke-width="2"/>
+  <text x="110" y="748" font-size="9" fill="#28a745">NO</text>
+  <line x1="100" y1="755" x2="350" y2="755" stroke="#28a745" stroke-width="2" marker-end="url(#flow)"/>
+
+  <!-- YES (password valid) -->
+  <line x1="350" y1="660" x2="350" y2="695" stroke="#28a745" stroke-width="2" marker-end="url(#flow)"/>
+  <text x="360" y="680" font-size="10" fill="#28a745" font-weight="bold">YES</text>
+
+  <!-- Redirect to 2FA -->
+  <rect x="270" y="695" width="160" height="50" fill="#d4edda" stroke="#28a745" stroke-width="2" rx="5"/>
+  <text x="350" y="715" text-anchor="middle" font-size="10">Redirect to</text>
+  <text x="350" y="730" text-anchor="middle" font-size="10" font-weight="bold">/verify-2fa</text>
+
+  <!-- End -->
+  <circle cx="350" cy="780" r="15" fill="white" stroke="#1e3c72" stroke-width="3"/>
+  <circle cx="350" cy="780" r="10" fill="#1e3c72"/>
+  <text x="350" y="810" text-anchor="middle" font-size="11" font-weight="bold">END</text>
+
+  <!-- Legend -->
+  <rect x="50" y="805" width="600" height="40" fill="#f8f9fa" stroke="#666"/>
+  <text x="60" y="825" font-size="10" font-weight="bold">Activity Flow:</text>
+  <rect x="120" y="815" width="40" height="20" fill="#e8f4f8" stroke="#2a5298" rx="5"/>
+  <text x="165" y="828" font-size="9">Process</text>
+  <polygon points="230,825 255,817 280,825 255,833" fill="#fff3cd" stroke="#ffc107"/>
+  <text x="285" y="828" font-size="9">Decision</text>
+  <circle cx="355" cy="825" r="8" fill="#1e3c72"/>
+  <text x="370" y="828" font-size="9">Start/End</text>
+  <text x="430" y="828" font-size="9" fill="#28a745" font-weight="bold">Green</text>
+  <text x="470" y="828" font-size="9">=Success |</text>
+  <text x="520" y="828" font-size="9" fill="#dc3545" font-weight="bold">Red</text>
+  <text x="550" y="828" font-size="9">=Failure/Block</text>
+</svg>

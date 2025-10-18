@@ -33,7 +33,7 @@ python3 test_auth_basic.py
    [Complete] Table exists: sessions
 ```
 
-**Verification**: 9 tables created successfully 
+**Verification**: 13 tables (8 auth + 5 recipe) created successfully 
 
 ### Test: SQL Injection Prevention
 ```python
@@ -274,7 +274,7 @@ STEP 2: Authorization Request
 
 GET /oauth/authorize?
   client_id=test_client_id&
-  redirect_uri=http://localhost:5000/callback&
+  redirect_uri=http://localhost:5001/callback&
   response_type=code&
   scope=profile email&
   state=abc123&
@@ -287,7 +287,7 @@ GET /oauth/authorize?
 STEP 3: Redirect with Authorization Code
 ============================================================
 
-http://localhost:5000/callback?code=AUTH_CODE_HERE&state=abc123
+http://localhost:5001/callback?code=AUTH_CODE_HERE&state=abc123
 
 ============================================================
 STEP 4: Token Exchange
@@ -297,7 +297,7 @@ POST /oauth/token
 Body:
   grant_type=authorization_code&
   code=AUTH_CODE_HERE&
-  redirect_uri=http://localhost:5000/callback&
+  redirect_uri=http://localhost:5001/callback&
   client_id=test_client_id&
   client_secret=test_client_secret&
   code_verifier=dBjftJeZ4CVP-mB0unHsSCRH...
@@ -568,7 +568,7 @@ Verification:
 Test Steps:
 1. Navigate to: http://localhost:5001/oauth/authorize?
    client_id=test_client_id&
-   redirect_uri=http://localhost:5000/callback&
+   redirect_uri=http://localhost:5001/callback&
    code_challenge=E9Melhoa...&
    code_challenge_method=S256&
    state=random123
@@ -584,7 +584,7 @@ Test Steps:
 4. Click [Approve]
 
 5. Redirected to:
-   http://localhost:5000/callback?code=AUTH_CODE_abc...&state=random123
+   http://localhost:5001/callback?code=AUTH_CODE_abc...&state=random123
 
 6. Authorization code captured
 
@@ -604,7 +604,7 @@ import requests
 response = requests.post('http://localhost:5001/oauth/token', data={
     'grant_type': 'authorization_code',
     'code': 'AUTH_CODE_abc...',
-    'redirect_uri': 'http://localhost:5000/callback',
+    'redirect_uri': 'http://localhost:5001/callback',
     'client_id': 'test_client_id',
     'client_secret': 'test_client_secret',
     'code_verifier': 'dBjftJeZ4CVP...'

@@ -1,0 +1,190 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="1000" height="700" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <marker id="one" markerWidth="12" markerHeight="12" refX="6" refY="6">
+      <circle cx="6" cy="6" r="4" fill="#2a5298"/>
+    </marker>
+    <marker id="many" markerWidth="12" markerHeight="12" refX="0" refY="6">
+      <line x1="0" y1="0" x2="0" y2="12" stroke="#2a5298" stroke-width="2"/>
+      <line x1="0" y1="3" x2="8" y2="6" stroke="#2a5298" stroke-width="2"/>
+      <line x1="0" y1="9" x2="8" y2="6" stroke="#2a5298" stroke-width="2"/>
+    </marker>
+  </defs>
+
+  <text x="500" y="25" text-anchor="middle" font-size="16" font-weight="bold" fill="#1e3c72">
+    Database Entity-Relationship Diagram (13 Tables)
+  </text>
+
+  <!-- users (central table) -->
+  <g>
+    <rect x="400" y="60" width="200" height="180" fill="#e8f4f8" stroke="#2a5298" stroke-width="2"/>
+    <rect x="400" y="60" width="200" height="30" fill="#1e3c72"/>
+    <text x="500" y="80" text-anchor="middle" fill="white" font-weight="bold">users</text>
+    <text x="410" y="105" font-family="Consolas" font-size="10" font-weight="bold">PK id</text>
+    <text x="410" y="120" font-family="Consolas" font-size="10">username UNIQUE</text>
+    <text x="410" y="135" font-family="Consolas" font-size="10">email UNIQUE</text>
+    <text x="410" y="150" font-family="Consolas" font-size="10">password (Argon2id)</text>
+    <text x="410" y="165" font-family="Consolas" font-size="10">totp_secret (encrypted)</text>
+    <text x="410" y="180" font-family="Consolas" font-size="10">totp_enabled</text>
+    <text x="410" y="195" font-family="Consolas" font-size="10">backup_codes (hashed)</text>
+    <text x="410" y="210" font-family="Consolas" font-size="10">oauth_provider</text>
+    <text x="410" y="225" font-family="Consolas" font-size="10">last_login</text>
+  </g>
+
+  <!-- login_attempts -->
+  <g>
+    <rect x="50" y="280" width="180" height="130" fill="white" stroke="#2a5298" stroke-width="2"/>
+    <rect x="50" y="280" width="180" height="30" fill="#2a5298"/>
+    <text x="140" y="300" text-anchor="middle" fill="white" font-weight="bold">login_attempts</text>
+    <text x="60" y="325" font-family="Consolas" font-size="10" font-weight="bold">PK id</text>
+    <text x="60" y="340" font-family="Consolas" font-size="10" fill="#dc3545">FK username</text>
+    <text x="60" y="355" font-family="Consolas" font-size="10">ip_address</text>
+    <text x="60" y="370" font-family="Consolas" font-size="10">success</text>
+    <text x="60" y="385" font-family="Consolas" font-size="10">failure_reason</text>
+    <text x="60" y="400" font-family="Consolas" font-size="10">timestamp</text>
+  </g>
+
+  <!-- account_lockouts -->
+  <g>
+    <rect x="270" y="280" width="180" height="115" fill="white" stroke="#2a5298" stroke-width="2"/>
+    <rect x="270" y="280" width="180" height="30" fill="#2a5298"/>
+    <text x="360" y="300" text-anchor="middle" fill="white" font-weight="bold">account_lockouts</text>
+    <text x="280" y="325" font-family="Consolas" font-size="10" font-weight="bold">PK id</text>
+    <text x="280" y="340" font-family="Consolas" font-size="10">username UNIQUE</text>
+    <text x="280" y="355" font-family="Consolas" font-size="10">locked_until</text>
+    <text x="280" y="370" font-family="Consolas" font-size="10">failed_attempts</text>
+    <text x="280" y="385" font-family="Consolas" font-size="10">lockout_reason</text>
+  </g>
+
+  <!-- oauth2_clients -->
+  <g>
+    <rect x="700" y="60" width="200" height="130" fill="white" stroke="#2a5298" stroke-width="2"/>
+    <rect x="700" y="60" width="200" height="30" fill="#2a5298"/>
+    <text x="800" y="80" text-anchor="middle" fill="white" font-weight="bold">oauth2_clients</text>
+    <text x="710" y="105" font-family="Consolas" font-size="10" font-weight="bold">PK client_id</text>
+    <text x="710" y="120" font-family="Consolas" font-size="10">client_secret_hash</text>
+    <text x="710" y="135" font-family="Consolas" font-size="10">client_name</text>
+    <text x="710" y="150" font-family="Consolas" font-size="10">redirect_uris (JSON)</text>
+    <text x="710" y="165" font-family="Consolas" font-size="10">require_pkce</text>
+    <text x="710" y="180" font-family="Consolas" font-size="10">created_at</text>
+  </g>
+
+  <!-- oauth2_authorization_codes -->
+  <g>
+    <rect x="700" y="220" width="200" height="145" fill="white" stroke="#2a5298" stroke-width="2"/>
+    <rect x="700" y="220" width="200" height="30" fill="#2a5298"/>
+    <text x="800" y="240" text-anchor="middle" fill="white" font-weight="bold" font-size="11">oauth2_auth_codes</text>
+    <text x="710" y="265" font-family="Consolas" font-size="10" font-weight="bold">PK code</text>
+    <text x="710" y="280" font-family="Consolas" font-size="10" fill="#dc3545">FK client_id</text>
+    <text x="710" y="295" font-family="Consolas" font-size="10" fill="#dc3545">FK user_id</text>
+    <text x="710" y="310" font-family="Consolas" font-size="10">code_challenge</text>
+    <text x="710" y="325" font-family="Consolas" font-size="10">code_challenge_method</text>
+    <text x="710" y="340" font-family="Consolas" font-size="10">used (boolean)</text>
+    <text x="710" y="355" font-family="Consolas" font-size="10">expires_at</text>
+  </g>
+
+  <!-- oauth2_tokens -->
+  <g>
+    <rect x="700" y="395" width="200" height="160" fill="white" stroke="#2a5298" stroke-width="2"/>
+    <rect x="700" y="395" width="200" height="30" fill="#2a5298"/>
+    <text x="800" y="415" text-anchor="middle" fill="white" font-weight="bold">oauth2_tokens</text>
+    <text x="710" y="440" font-family="Consolas" font-size="10" font-weight="bold">PK access_token</text>
+    <text x="710" y="455" font-family="Consolas" font-size="10">refresh_token UNIQUE</text>
+    <text x="710" y="470" font-family="Consolas" font-size="10" fill="#dc3545">FK client_id</text>
+    <text x="710" y="485" font-family="Consolas" font-size="10" fill="#dc3545">FK user_id</text>
+    <text x="710" y="500" font-family="Consolas" font-size="10">token_family_id</text>
+    <text x="710" y="515" font-family="Consolas" font-size="10">refresh_token_used</text>
+    <text x="710" y="530" font-family="Consolas" font-size="10">revoked</text>
+    <text x="710" y="545" font-family="Consolas" font-size="10">expires_in</text>
+  </g>
+
+  <!-- security_events -->
+  <g>
+    <rect x="490" y="280" width="180" height="115" fill="white" stroke="#2a5298" stroke-width="2"/>
+    <rect x="490" y="280" width="180" height="30" fill="#2a5298"/>
+    <text x="580" y="300" text-anchor="middle" fill="white" font-weight="bold">security_events</text>
+    <text x="500" y="325" font-family="Consolas" font-size="10" font-weight="bold">PK id</text>
+    <text x="500" y="340" font-family="Consolas" font-size="10">event_type</text>
+    <text x="500" y="355" font-family="Consolas" font-size="10">severity</text>
+    <text x="500" y="370" font-family="Consolas" font-size="10">username</text>
+    <text x="500" y="385" font-family="Consolas" font-size="10">timestamp</text>
+  </g>
+
+  <!-- rate_limits -->
+  <g>
+    <rect x="50" y="450" width="180" height="115" fill="white" stroke="#2a5298" stroke-width="2"/>
+    <rect x="50" y="450" width="180" height="30" fill="#2a5298"/>
+    <text x="140" y="470" text-anchor="middle" fill="white" font-weight="bold">rate_limits</text>
+    <text x="60" y="495" font-family="Consolas" font-size="10" font-weight="bold">PK id</text>
+    <text x="60" y="510" font-family="Consolas" font-size="10">key (ip/username)</text>
+    <text x="60" y="525" font-family="Consolas" font-size="10">endpoint</text>
+    <text x="60" y="540" font-family="Consolas" font-size="10">request_count</text>
+    <text x="60" y="555" font-family="Consolas" font-size="10">window_end</text>
+  </g>
+
+  <!-- sessions -->
+  <g>
+    <rect x="270" y="450" width="180" height="115" fill="white" stroke="#2a5298" stroke-width="2"/>
+    <rect x="270" y="450" width="180" height="30" fill="#2a5298"/>
+    <text x="360" y="470" text-anchor="middle" fill="white" font-weight="bold">sessions</text>
+    <text x="280" y="495" font-family="Consolas" font-size="10" font-weight="bold">PK session_id</text>
+    <text x="280" y="510" font-family="Consolas" font-size="10" fill="#dc3545">FK user_id</text>
+    <text x="280" y="525" font-family="Consolas" font-size="10">device_fingerprint</text>
+    <text x="280" y="540" font-family="Consolas" font-size="10">expires_at</text>
+    <text x="280" y="555" font-family="Consolas" font-size="10">last_activity</text>
+  </g>
+
+  <!-- Relationships -->
+  <!-- users 1:N login_attempts -->
+  <line x1="400" y1="150" x2="230" y2="310" stroke="#2a5298" stroke-width="2.5" marker-start="url(#one)" marker-end="url(#many)"/>
+  <text x="300" y="230" font-size="10" fill="#666" font-weight="bold">logs</text>
+
+  <!-- users 1:N account_lockouts -->
+  <line x1="400" y1="180" x2="360" y2="280" stroke="#2a5298" stroke-width="2.5" marker-start="url(#one)" marker-end="url(#many)"/>
+  <text x="370" y="245" font-size="10" fill="#666" font-weight="bold">locks</text>
+
+  <!-- users 1:N sessions -->
+  <line x1="450" y1="240" x2="380" y2="450" stroke="#2a5298" stroke-width="2.5" marker-start="url(#one)" marker-end="url(#many)"/>
+  <text x="400" y="350" font-size="10" fill="#666" font-weight="bold">has</text>
+
+  <!-- users 1:N oauth2_tokens -->
+  <line x1="600" y1="150" x2="700" y2="470" stroke="#2a5298" stroke-width="2.5" marker-start="url(#one)" marker-end="url(#many)"/>
+  <text x="640" y="310" font-size="10" fill="#666" font-weight="bold">owns</text>
+
+  <!-- oauth2_clients 1:N oauth2_authorization_codes -->
+  <line x1="800" y1="190" x2="800" y2="220" stroke="#2a5298" stroke-width="2.5" marker-start="url(#one)" marker-end="url(#many)"/>
+  <text x="810" y="210" font-size="10" fill="#666" font-weight="bold">issues</text>
+
+  <!-- oauth2_clients 1:N oauth2_tokens -->
+  <line x1="830" y1="190" x2="830" y2="395" stroke="#2a5298" stroke-width="2.5" marker-start="url(#one)" marker-end="url(#many)"/>
+  <text x="840" y="290" font-size="10" fill="#666" font-weight="bold">grants</text>
+
+  <!-- users 1:N oauth2_authorization_codes -->
+  <line x1="600" y1="120" x2="700" y2="265" stroke="#2a5298" stroke-width="2.5" marker-start="url(#one)" marker-end="url(#many)"/>
+  <text x="640" y="190" font-size="10" fill="#666" font-weight="bold">authorizes</text>
+
+  <!-- Legend -->
+  <rect x="50" y="600" width="900" height="90" fill="#f8f9fa" stroke="#666"/>
+  <text x="70" y="625" font-size="12" font-weight="bold">Legend:</text>
+
+  <circle cx="80" cy="645" r="5" fill="#2a5298"/>
+  <text x="95" y="650" font-size="10">One (1)</text>
+
+  <line x1="150" y1="645" x2="180" y2="645" stroke="#2a5298" stroke-width="2"/>
+  <line x1="180" y1="640" x2="190" y2="645" stroke="#2a5298" stroke-width="2"/>
+  <line x1="180" y1="650" x2="190" y2="645" stroke="#2a5298" stroke-width="2"/>
+  <text x="200" y="650" font-size="10">Many (*)</text>
+
+  <text x="70" y="675" font-size="10" fill="#dc3545" font-weight="bold">FK</text>
+  <text x="90" y="675" font-size="10">= Foreign Key (enforces referential integrity)</text>
+
+  <text x="350" y="625" font-size="10" font-weight="bold">Security Features:</text>
+  <text x="350" y="645" font-size="10">• TOTP secrets encrypted with Fernet (AES-128)</text>
+  <text x="350" y="660" font-size="10">• Passwords hashed with Argon2id (19 MiB memory)</text>
+  <text x="350" y="675" font-size="10">• Backup codes hashed with SHA-256</text>
+
+  <text x="650" y="625" font-size="10" font-weight="bold">Indexes Created:</text>
+  <text x="650" y="645" font-size="9">• idx_login_attempts_username</text>
+  <text x="650" y="660" font-size="9">• idx_token_access, idx_token_refresh</text>
+  <text x="650" y="675" font-size="9">• idx_rate_limit_key (13 total indexes)</text>
+</svg>

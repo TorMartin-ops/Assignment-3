@@ -188,6 +188,16 @@ def test_security_service():
 
     # Test failure tracking
     test_username = "lockout_test_user"
+
+    # CLEANUP: Remove previous test data to ensure clean state
+    from database import get_db_connection
+    conn = get_db_connection()
+    conn.execute('DELETE FROM login_attempts WHERE username = ?', (test_username,))
+    conn.execute('DELETE FROM account_lockouts WHERE username = ?', (test_username,))
+    conn.commit()
+    conn.close()
+
+    # Now log 3 failures
     for i in range(3):
         security.log_login_attempt(
             test_username,
@@ -198,7 +208,7 @@ def test_security_service():
         )
 
     failures = security.get_recent_failures(test_username)
-    assert failures == 3, "Should track 3 failures"
+    assert failures == 3, f"Should track exactly 3 failures, got {failures}"
     print(f"   Failed attempts tracked: {failures}")
 
     # Apply lockout

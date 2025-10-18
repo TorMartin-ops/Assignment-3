@@ -308,7 +308,7 @@ print(f'Login stats: {stats}')
 ##  Key Accomplishments
 
 ### **No Redis Required!**
-- Database-based rate limiting works fully implementedly
+- Database-based rate limiting works fully implemented
 - Automatic cleanup of old entries
 - Suitable for academic projects and small deployments
 

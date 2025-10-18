@@ -72,7 +72,7 @@ Attacker receives code → exchanges for token → Account compromised
 ```python
 # oauth2_service.py:76-96
 allowed_uris = json.loads(client['redirect_uris'])
-# ['http://localhost:5000/callback', 'http://localhost:3000/callback']
+# ['http://localhost:5001/callback', 'http://localhost:3000/callback']
 
 if redirect_uri not in allowed_uris:
     return error("invalid_redirect_uri")
@@ -235,7 +235,7 @@ if expires_at < int(time.time()):
 ```
 GET /oauth/authorize?
   client_id=test_client_id&
-  redirect_uri=http://localhost:5000/callback&
+  redirect_uri=http://localhost:5001/callback&
   response_type=code&
   scope=profile email&
   state=random_state_123&
@@ -262,7 +262,7 @@ POST /oauth/token
 Body:
   grant_type=authorization_code&
   code=AUTH_CODE&
-  redirect_uri=http://localhost:5000/callback&
+  redirect_uri=http://localhost:5001/callback&
   client_id=test_client_id&
   client_secret=test_client_secret&
   code_verifier=dBjftJeZ4CVP...
