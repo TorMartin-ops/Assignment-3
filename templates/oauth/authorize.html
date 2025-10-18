@@ -1,0 +1,67 @@
+{% extends "base.html" %}
+
+{% block title %}Authorize Application{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card shadow">
+                <div class="card-header bg-info text-white">
+                    <h3 class="mb-0"><i class="fas fa-lock"></i> Authorization Request</h3>
+                </div>
+                <div class="card-body">
+                    <h4>{{ client['client_name'] }}</h4>
+                    <p class="text-muted">wants to access your Recipe App account</p>
+
+                    <div class="alert alert-info">
+                        <strong>This application will be able to:</strong>
+                        <ul class="mt-2 mb-0">
+                            {% for scope_item in scope %}
+                            <li>
+                                {% if scope_item == 'profile' %}
+                                View your profile information (username)
+                                {% elif scope_item == 'email' %}
+                                View your email address
+                                {% else %}
+                                {{ scope_item }}
+                                {% endif %}
+                            </li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+
+                    <div class="card mb-3">
+                        <div class="card-body">
+                            <h6>Logged in as:</h6>
+                            <p class="mb-0"><strong>{{ session.username }}</strong></p>
+                        </div>
+                    </div>
+
+                    <form method="POST" action="{{ url_for('oauth.authorize') }}">
+                        <div class="row">
+                            <div class="col-6">
+                                <button type="submit" name="approved" value="yes" class="btn btn-success w-100">
+                                    <i class="fas fa-check"></i> Authorize
+                                </button>
+                            </div>
+                            <div class="col-6">
+                                <button type="submit" name="approved" value="no" class="btn btn-danger w-100">
+                                    <i class="fas fa-times"></i> Deny
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+
+                    <div class="mt-3">
+                        <small class="text-muted">
+                            <i class="fas fa-info-circle"></i>
+                            You can revoke this authorization at any time from your security settings.
+                        </small>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

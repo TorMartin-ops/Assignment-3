@@ -1,0 +1,79 @@
+{% extends "base.html" %}
+
+{% block title %}Security Settings{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <h2><i class="fas fa-shield-alt"></i> Security Settings</h2>
+
+    <div class="row mt-4">
+        <div class="col-md-6">
+            <div class="card shadow mb-4">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0">Two-Factor Authentication</h5>
+                </div>
+                <div class="card-body">
+                    {% if user['totp_enabled'] %}
+                    <p><span class="badge bg-success">Enabled</span></p>
+                    <p>Your account is protected with two-factor authentication.</p>
+                    <a href="{{ url_for('twofa.disable_2fa') }}" class="btn btn-danger">
+                        <i class="fas fa-times"></i> Disable 2FA
+                    </a>
+                    {% else %}
+                    <p><span class="badge bg-warning">Disabled</span></p>
+                    <p>Add an extra layer of security to your account.</p>
+                    <a href="{{ url_for('twofa.setup_2fa') }}" class="btn btn-success">
+                        <i class="fas fa-plus"></i> Enable 2FA
+                    </a>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-6">
+            <div class="card shadow mb-4">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0">Password</h5>
+                </div>
+                <div class="card-body">
+                    <p>Last changed: <span class="text-muted">Unknown</span></p>
+                    <a href="{{ url_for('auth.change_password') }}" class="btn btn-primary">
+                        <i class="fas fa-key"></i> Change Password
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-12">
+            <div class="card shadow">
+                <div class="card-header bg-secondary text-white">
+                    <h5 class="mb-0">Login Activity</h5>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-3 text-center">
+                            <h3 class="text-primary">{{ stats['total_attempts'] }}</h3>
+                            <p class="text-muted">Total Attempts</p>
+                        </div>
+                        <div class="col-md-3 text-center">
+                            <h3 class="text-success">{{ stats['successful'] }}</h3>
+                            <p class="text-muted">Successful</p>
+                        </div>
+                        <div class="col-md-3 text-center">
+                            <h3 class="text-danger">{{ stats['failed'] }}</h3>
+                            <p class="text-muted">Failed</p>
+                        </div>
+                        <div class="col-md-3 text-center">
+                            <h3 class="text-info">{{ "%.1f" | format(stats['success_rate']) }}%</h3>
+                            <p class="text-muted">Success Rate</p>
+                        </div>
+                    </div>
+                    <p class="text-muted mb-0"><small>Last 24 hours</small></p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

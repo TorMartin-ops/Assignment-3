@@ -205,3 +205,9 @@ cython_debug/
 marimo/_static/
 marimo/_lsp/
 __marimo__/
+
+# Claude Code / AI Assistant
+.claude/                    # Claude Code user settings
+.mcp.json                   # MCP server configuration (local paths)
+claudedocs/                 # AI-generated research documentation (optional - can be committed if useful)
+**/CLAUDE.md               # User-specific Claude instructions (keep project-level CLAUDE.md if needed)

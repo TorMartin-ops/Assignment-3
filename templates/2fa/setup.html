@@ -1,0 +1,54 @@
+{% extends "base.html" %}
+
+{% block title %}Setup Two-Factor Authentication{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card shadow">
+                <div class="card-header bg-success text-white">
+                    <h3 class="mb-0"><i class="fas fa-shield-alt"></i> Setup Two-Factor Authentication</h3>
+                </div>
+                <div class="card-body">
+                    <div class="alert alert-info">
+                        <strong>Why enable 2FA?</strong> Two-factor authentication adds an extra layer of security
+                        to your account by requiring a code from your phone in addition to your password.
+                    </div>
+
+                    <h5 class="mt-4">Step 1: Scan QR Code</h5>
+                    <p>Use an authenticator app (Google Authenticator, Authy, etc.) to scan this QR code:</p>
+
+                    <div class="text-center my-4">
+                        <img src="{{ qr_code }}" alt="2FA QR Code" class="img-fluid border p-3" style="max-width: 300px;">
+                    </div>
+
+                    <h5 class="mt-4">Step 2: Enter Verification Code</h5>
+                    <p>Enter the 6-digit code from your authenticator app:</p>
+
+                    <form method="POST" action="{{ url_for('twofa.setup_2fa') }}">
+                        <div class="mb-3">
+                            <label for="code" class="form-label">Verification Code</label>
+                            <input type="text" class="form-control text-center" id="code" name="code"
+                                   required pattern="[0-9]{6}" maxlength="6"
+                                   style="font-size: 24px; letter-spacing: 10px;">
+                            <small class="form-text text-muted">6-digit code from your authenticator app</small>
+                        </div>
+
+                        <button type="submit" class="btn btn-success w-100">Enable 2FA</button>
+                    </form>
+
+                    <div class="mt-4">
+                        <h6>Manual Entry (if you can't scan):</h6>
+                        <code class="p-2 bg-light d-block text-center">{{ secret }}</code>
+                    </div>
+
+                    <div class="mt-3 text-center">
+                        <a href="{{ url_for('auth.security_settings') }}" class="btn btn-outline-secondary">Cancel</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

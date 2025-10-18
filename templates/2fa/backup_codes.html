@@ -1,0 +1,63 @@
+{% extends "base.html" %}
+
+{% block title %}Backup Codes - 2FA{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card shadow border-warning">
+                <div class="card-header bg-warning text-dark">
+                    <h3 class="mb-0"><i class="fas fa-exclamation-triangle"></i> Save Your Backup Codes</h3>
+                </div>
+                <div class="card-body">
+                    <div class="alert alert-danger">
+                        <strong>IMPORTANT:</strong> Save these backup codes in a safe place.
+                        You won't be able to see them again! Each code can only be used once.
+                    </div>
+
+                    <h5>Your Backup Codes:</h5>
+                    <div class="row mt-3">
+                        {% for code in backup_codes %}
+                        <div class="col-md-6 mb-2">
+                            <code class="p-3 bg-light d-block text-center" style="font-size: 18px;">
+                                {{ code }}
+                            </code>
+                        </div>
+                        {% endfor %}
+                    </div>
+
+                    <div class="mt-4">
+                        <button class="btn btn-secondary" onclick="printCodes()">
+                            <i class="fas fa-print"></i> Print Codes
+                        </button>
+                        <button class="btn btn-outline-secondary" onclick="copyCodes()">
+                            <i class="fas fa-copy"></i> Copy All
+                        </button>
+                    </div>
+
+                    <div class="mt-4 text-center">
+                        <a href="{{ url_for('auth.security_settings') }}" class="btn btn-success">
+                            I've Saved My Codes
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+function printCodes() {
+    window.print();
+}
+
+function copyCodes() {
+    const codes = {{ backup_codes | tojson }};
+    const text = codes.join('\n');
+    navigator.clipboard.writeText(text).then(() => {
+        alert('Backup codes copied to clipboard!');
+    });
+}
+</script>
+{% endblock %}
