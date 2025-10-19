@@ -1,141 +1,461 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<svg width="1000" height="650" xmlns="http://www.w3.org/2000/svg">
+<svg width="100%" height="100%" viewBox="0 0 2000 2400" xmlns="http://www.w3.org/2000/svg" role="img">
+  <title>UML Class Diagram - Service and Utility Layer</title>
+  <desc>Clean, organized class diagram with all 17 classes, consistent fonts, and non-overlapping dependency arrows</desc>
+
   <defs>
-    <linearGradient id="classHeader" x1="0%" y1="0%" x2="100%" y2="0%">
-      <stop offset="0%" style="stop-color:#1e3c72"/>
-      <stop offset="100%" style="stop-color:#2a5298"/>
-    </linearGradient>
-    <marker id="arrow" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto">
-      <polygon points="0 0, 10 3, 0 6" fill="#2a5298"/>
-    </marker>
-    <marker id="diamond" markerWidth="12" markerHeight="12" refX="0" refY="6" orient="auto">
-      <polygon points="0 6, 6 0, 12 6, 6 12" fill="white" stroke="#2a5298" stroke-width="1.5"/>
+    <style>
+      text {
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+        font-size: 12px;
+      }
+      .title { font-size: 24px; font-weight: 700; }
+      .class-name { font-size: 16px; font-weight: 700; }
+      .section-title { font-size: 13px; font-weight: 600; }
+      .method { font-size: 12px; font-family: 'Consolas', 'Monaco', monospace; }
+      .type-hint { font-size: 11px; fill: #64748b; font-family: 'Consolas', 'Monaco', monospace; }
+      .note { font-size: 11px; font-style: italic; }
+      .legend { font-size: 11px; }
+      .annotation { font-size: 11px; font-style: italic; fill: #64748b; }
+    </style>
+
+    <!-- Arrow markers -->
+    <marker id="arrow-dependency" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto">
+      <polygon points="0 0, 10 3, 0 6" fill="#64748b" />
     </marker>
   </defs>
 
-  <text x="500" y="25" text-anchor="middle" font-size="16" font-weight="bold" fill="#1e3c72">
-    UML Class Diagram - Service Layer Architecture
-  </text>
+  <!-- Title -->
+  <text x="1000" y="40" text-anchor="middle" class="title" fill="#1e293b">Service and Utility Classes - UML Class Diagram</text>
+  <text x="1000" y="65" text-anchor="middle" class="annotation">Organized layout: Services (left), Utilities (center), Database/Decorators (right)</text>
 
-  <!-- AuthService -->
-  <g>
-    <rect x="50" y="60" width="230" height="200" fill="#f0f4f8" stroke="#2a5298" stroke-width="2"/>
-    <rect x="50" y="60" width="230" height="35" fill="url(#classHeader)"/>
-    <text x="165" y="82" text-anchor="middle" fill="white" font-weight="bold" font-size="13">AuthService</text>
-    <text x="60" y="110" font-family="Consolas" font-size="10">- hasher: PasswordHasher</text>
-    <text x="60" y="125" font-family="Consolas" font-size="10">- MIN_PASSWORD_LENGTH: 12</text>
-    <line x1="50" y1="135" x2="280" y2="135" stroke="#2a5298"/>
-    <text x="60" y="152" font-family="Consolas" font-size="10">+ register_user(user, pass)</text>
-    <text x="70" y="167" font-family="Consolas" font-size="9" fill="#666">→ (bool, result)</text>
-    <text x="60" y="182" font-family="Consolas" font-size="10">+ authenticate(user, pass)</text>
-    <text x="70" y="197" font-family="Consolas" font-size="9" fill="#666">→ (bool, user|error)</text>
-    <text x="60" y="212" font-family="Consolas" font-size="10">+ change_password()</text>
-    <text x="60" y="227" font-family="Consolas" font-size="10">+ get_user_by_id()</text>
-    <text x="60" y="242" font-family="Consolas" font-size="10">+ get_user_by_username()</text>
+  <!-- ========================================
+       LEFT COLUMN - SERVICES (x=100-800)
+       ======================================== -->
+
+  <!-- AuthService (100, 100) -->
+  <g id="AuthService">
+    <rect x="100" y="100" width="340" height="280" fill="#e0f2fe" stroke="#0284c7" stroke-width="2" rx="4"/>
+    <rect x="100" y="100" width="340" height="36" fill="#0284c7" stroke="#0284c7" stroke-width="2"/>
+    <text x="270" y="123" text-anchor="middle" class="class-name" fill="#ffffff">AuthService</text>
+
+    <!-- Attributes -->
+    <line x1="100" y1="136" x2="440" y2="136" stroke="#0284c7" stroke-width="1"/>
+    <text x="110" y="154" class="method" fill="#1e293b">- hasher: PasswordHasher (Argon2id)</text>
+    <text x="110" y="170" class="method" fill="#1e293b">- time_cost: 2</text>
+    <text x="110" y="186" class="method" fill="#1e293b">- memory_cost: 19456</text>
+    <text x="110" y="202" class="method" fill="#1e293b">- parallelism: 1</text>
+
+    <!-- Methods -->
+    <line x1="100" y1="212" x2="440" y2="212" stroke="#0284c7" stroke-width="1"/>
+    <text x="110" y="228" class="method" fill="#1e293b">+ register_user(username, email, password)</text>
+    <text x="120" y="243" class="type-hint">→ (bool, int|str)</text>
+    <text x="110" y="259" class="method" fill="#1e293b">+ authenticate(username, password)</text>
+    <text x="120" y="274" class="type-hint">→ (bool, dict|str)</text>
+    <text x="110" y="290" class="method" fill="#1e293b">+ change_password(user_id, old, new)</text>
+    <text x="120" y="305" class="type-hint">→ (bool, str|None)</text>
+    <text x="110" y="321" class="method" fill="#1e293b">+ get_user_by_id(user_id) → dict|None</text>
+    <text x="110" y="337" class="method" fill="#1e293b">+ get_user_by_username(username) → dict|None</text>
+
+    <!-- Note -->
+    <rect x="100" y="350" width="340" height="30" fill="#fef3c7" stroke="#f59e0b" stroke-width="1" rx="2"/>
+    <text x="270" y="370" text-anchor="middle" class="note" fill="#92400e">Argon2id • OWASP params • Timing-safe</text>
   </g>
 
-  <!-- OAuth2Service -->
-  <g>
-    <rect x="320" y="60" width="280" height="200" fill="#f0f4f8" stroke="#2a5298" stroke-width="2"/>
-    <rect x="320" y="60" width="280" height="35" fill="url(#classHeader)"/>
-    <text x="460" y="82" text-anchor="middle" fill="white" font-weight="bold" font-size="13">OAuth2Service</text>
-    <text x="330" y="110" font-family="Consolas" font-size="10">- ACCESS_TOKEN_EXPIRES: 3600</text>
-    <text x="330" y="125" font-family="Consolas" font-size="10">- AUTH_CODE_EXPIRES: 600</text>
-    <line x1="320" y1="135" x2="600" y2="135" stroke="#2a5298"/>
-    <text x="330" y="152" font-family="Consolas" font-size="10">+ generate_authorization_code()</text>
-    <text x="330" y="167" font-family="Consolas" font-size="10">+ validate_pkce(verifier, challenge)</text>
-    <text x="340" y="182" font-family="Consolas" font-size="9" fill="#666">→ SHA256 validation</text>
-    <text x="330" y="197" font-family="Consolas" font-size="10">+ generate_tokens(client, user)</text>
-    <text x="330" y="212" font-family="Consolas" font-size="10">+ refresh_access_token()</text>
-    <text x="340" y="227" font-family="Consolas" font-size="9" fill="#666">→ Token rotation + family tracking</text>
-    <text x="330" y="242" font-family="Consolas" font-size="10">+ _revoke_token_family()</text>
+  <!-- OAuth2Service (100, 410) -->
+  <g id="OAuth2Service">
+    <rect x="100" y="410" width="420" height="380" fill="#e0f2fe" stroke="#0284c7" stroke-width="2" rx="4"/>
+    <rect x="100" y="410" width="420" height="36" fill="#0284c7" stroke="#0284c7" stroke-width="2"/>
+    <text x="310" y="433" text-anchor="middle" class="class-name" fill="#ffffff">OAuth2Service</text>
+
+    <!-- Attributes -->
+    <line x1="100" y1="446" x2="520" y2="446" stroke="#0284c7" stroke-width="1"/>
+    <text x="110" y="462" class="method" fill="#1e293b">- ACCESS_TOKEN_EXPIRES: 3600 (1 hour)</text>
+    <text x="110" y="478" class="method" fill="#1e293b">- REFRESH_TOKEN_EXPIRES: 2592000 (30 days)</text>
+    <text x="110" y="494" class="method" fill="#1e293b">- AUTH_CODE_EXPIRES: 600 (10 min)</text>
+
+    <!-- Methods -->
+    <line x1="100" y1="504" x2="520" y2="504" stroke="#0284c7" stroke-width="1"/>
+    <text x="110" y="520" class="method" fill="#1e293b">+ get_client(client_id) → dict|None</text>
+    <text x="110" y="536" class="method" fill="#1e293b">+ validate_client(client_id, secret) → (bool, dict|str)</text>
+    <text x="110" y="552" class="method" fill="#1e293b">+ validate_redirect_uri(client_id, uri) → bool</text>
+    <text x="110" y="568" class="method" fill="#1e293b">+ validate_pkce(verifier, challenge, method) → bool</text>
+    <text x="110" y="584" class="method" fill="#1e293b">+ generate_authorization_code(...) → str</text>
+    <text x="120" y="599" class="type-hint">[10-min expiry]</text>
+    <text x="110" y="615" class="method" fill="#1e293b">+ validate_authorization_code(code, client_id)</text>
+    <text x="120" y="630" class="type-hint">→ (bool, dict) [BEGIN IMMEDIATE]</text>
+    <text x="110" y="646" class="method" fill="#1e293b">+ generate_tokens(client_id, user_id, scope)</text>
+    <text x="120" y="661" class="type-hint">→ dict [access + refresh]</text>
+    <text x="110" y="677" class="method" fill="#1e293b">+ validate_access_token(token) → (bool, dict|str)</text>
+    <text x="110" y="693" class="method" fill="#1e293b">+ refresh_access_token(refresh_token, client_id)</text>
+    <text x="120" y="708" class="type-hint">→ (bool, dict|str) [ROTATION]</text>
+    <text x="110" y="724" class="method" fill="#1e293b">+ revoke_token(token, hint) → bool</text>
+    <text x="110" y="740" class="method" fill="#1e293b">- _revoke_token_family(family_id) → None</text>
+    <text x="110" y="756" class="method" fill="#1e293b">+ get_user_info(user_id) → dict|None</text>
+
+    <!-- Note -->
+    <rect x="100" y="760" width="420" height="30" fill="#fef3c7" stroke="#f59e0b" stroke-width="1" rx="2"/>
+    <text x="310" y="780" text-anchor="middle" class="note" fill="#92400e">PKCE mandatory (S256) • Token rotation • Reuse detection</text>
   </g>
 
-  <!-- TOTPService -->
-  <g>
-    <rect x="640" y="60" width="230" height="200" fill="#f0f4f8" stroke="#2a5298" stroke-width="2"/>
-    <rect x="640" y="60" width="230" height="35" fill="url(#classHeader)"/>
-    <text x="755" y="82" text-anchor="middle" fill="white" font-weight="bold" font-size="13">TOTPService</text>
-    <text x="650" y="110" font-family="Consolas" font-size="10">- encryption: EncryptionSvc</text>
-    <text x="650" y="125" font-family="Consolas" font-size="10">- used_codes_cache: dict</text>
-    <line x1="640" y1="135" x2="870" y2="135" stroke="#2a5298"/>
-    <text x="650" y="152" font-family="Consolas" font-size="10">+ generate_secret()</text>
-    <text x="660" y="167" font-family="Consolas" font-size="9" fill="#666">→ base32 random</text>
-    <text x="650" y="182" font-family="Consolas" font-size="10">+ generate_qr_code()</text>
-    <text x="650" y="197" font-family="Consolas" font-size="10">+ verify_totp(user, code)</text>
-    <text x="660" y="212" font-family="Consolas" font-size="9" fill="#666">→ Replay prevention</text>
-    <text x="650" y="227" font-family="Consolas" font-size="10">+ verify_backup_code()</text>
-    <text x="650" y="242" font-family="Consolas" font-size="10">+ enable_2fa()</text>
+  <!-- TOTPService (100, 820) -->
+  <g id="TOTPService">
+    <rect x="100" y="820" width="380" height="320" fill="#e0f2fe" stroke="#0284c7" stroke-width="2" rx="4"/>
+    <rect x="100" y="820" width="380" height="36" fill="#0284c7" stroke="#0284c7" stroke-width="2"/>
+    <text x="290" y="843" text-anchor="middle" class="class-name" fill="#ffffff">TOTPService</text>
+
+    <!-- Attributes -->
+    <line x1="100" y1="856" x2="480" y2="856" stroke="#0284c7" stroke-width="1"/>
+    <text x="110" y="872" class="method" fill="#1e293b">- encryption: EncryptionService</text>
+    <text x="110" y="888" class="method" fill="#1e293b">- used_codes_cache: dict (replay prevention)</text>
+
+    <!-- Methods -->
+    <line x1="100" y1="898" x2="480" y2="898" stroke="#0284c7" stroke-width="1"/>
+    <text x="110" y="914" class="method" fill="#1e293b">+ generate_secret() → str [base32]</text>
+    <text x="110" y="930" class="method" fill="#1e293b">+ generate_qr_code(secret, username) → str [URI]</text>
+    <text x="110" y="946" class="method" fill="#1e293b">+ enable_2fa(user_id, secret)</text>
+    <text x="120" y="961" class="type-hint">→ (bool, list[str]) [backup codes]</text>
+    <text x="110" y="977" class="method" fill="#1e293b">+ disable_2fa(user_id) → bool</text>
+    <text x="110" y="993" class="method" fill="#1e293b">+ verify_totp(user_id, code)</text>
+    <text x="120" y="1008" class="type-hint">→ (bool, str|None) [±1 window]</text>
+    <text x="110" y="1024" class="method" fill="#1e293b">+ verify_backup_code(user_id, code)</text>
+    <text x="120" y="1039" class="type-hint">→ (bool, int) [single-use]</text>
+    <text x="110" y="1055" class="method" fill="#1e293b">- _generate_backup_code() → str</text>
+    <text x="110" y="1071" class="method" fill="#1e293b">- _cleanup_used_codes(window) → None</text>
+
+    <!-- Note -->
+    <rect x="100" y="1110" width="380" height="30" fill="#fef3c7" stroke="#f59e0b" stroke-width="1" rx="2"/>
+    <text x="290" y="1130" text-anchor="middle" class="note" fill="#92400e">±1 tolerance • Replay prevention • XXXX-XXXX format</text>
   </g>
 
-  <!-- SecurityService -->
-  <g>
-    <rect x="50" y="300" width="220" height="170" fill="#f0f4f8" stroke="#2a5298" stroke-width="2"/>
-    <rect x="50" y="300" width="220" height="35" fill="url(#classHeader)"/>
-    <text x="160" y="322" text-anchor="middle" fill="white" font-weight="bold" font-size="13">SecurityService</text>
-    <text x="60" y="350" font-family="Consolas" font-size="10">- LOCKOUT_THRESHOLD: 3</text>
-    <text x="60" y="365" font-family="Consolas" font-size="10">- LOCKOUT_DURATION: 15min</text>
-    <line x1="50" y1="375" x2="270" y2="375" stroke="#2a5298"/>
-    <text x="60" y="392" font-family="Consolas" font-size="10">+ log_security_event()</text>
-    <text x="60" y="407" font-family="Consolas" font-size="10">+ log_login_attempt()</text>
-    <text x="60" y="422" font-family="Consolas" font-size="10">+ check_account_lockout()</text>
-    <text x="60" y="437" font-family="Consolas" font-size="10">+ apply_account_lockout()</text>
-    <text x="60" y="452" font-family="Consolas" font-size="10">+ get_recent_failures()</text>
+  <!-- SecurityService (100, 1170) -->
+  <g id="SecurityService">
+    <rect x="100" y="1170" width="490" height="340" fill="#e0f2fe" stroke="#0284c7" stroke-width="2" rx="4"/>
+    <rect x="100" y="1170" width="490" height="36" fill="#0284c7" stroke="#0284c7" stroke-width="2"/>
+    <text x="345" y="1193" text-anchor="middle" class="class-name" fill="#ffffff">SecurityService</text>
+
+    <!-- Attributes -->
+    <line x1="100" y1="1206" x2="590" y2="1206" stroke="#0284c7" stroke-width="1"/>
+    <text x="110" y="1222" class="method" fill="#1e293b">+ LOCKOUT_THRESHOLD: 3</text>
+    <text x="110" y="1238" class="method" fill="#1e293b">+ LOCKOUT_DURATION: timedelta(minutes=15)</text>
+    <text x="110" y="1254" class="method" fill="#1e293b">+ CAPTCHA_THRESHOLD: 3</text>
+
+    <!-- Methods -->
+    <line x1="100" y1="1264" x2="590" y2="1264" stroke="#0284c7" stroke-width="1"/>
+    <text x="110" y="1280" class="method" fill="#1e293b">+ log_security_event(type, severity, username, ...)</text>
+    <text x="120" y="1295" class="type-hint">→ int [event_id]</text>
+    <text x="110" y="1311" class="method" fill="#1e293b">+ log_login_attempt(username, ip, ua, success, reason)</text>
+    <text x="120" y="1326" class="type-hint">→ int [attempt_id]</text>
+    <text x="110" y="1342" class="method" fill="#1e293b">+ check_account_lockout(username)</text>
+    <text x="120" y="1357" class="type-hint">→ (bool, str, int)</text>
+    <text x="110" y="1373" class="method" fill="#1e293b">+ get_recent_failures(username, window) → int</text>
+    <text x="110" y="1389" class="method" fill="#1e293b">+ apply_account_lockout(username, failed_attempts)</text>
+    <text x="120" y="1404" class="type-hint">→ bool [BEGIN IMMEDIATE]</text>
+    <text x="110" y="1420" class="method" fill="#1e293b">+ clear_account_lockout(username) → bool</text>
+    <text x="110" y="1436" class="method" fill="#1e293b">+ requires_captcha(username) → bool</text>
+    <text x="110" y="1452" class="method" fill="#1e293b">+ get_login_statistics(username) → dict</text>
+
+    <!-- Note -->
+    <rect x="100" y="1480" width="490" height="30" fill="#fef3c7" stroke="#f59e0b" stroke-width="1" rx="2"/>
+    <text x="345" y="1500" text-anchor="middle" class="note" fill="#92400e">15-min lockout • CAPTCHA trigger • Comprehensive audit</text>
   </g>
 
-  <!-- RateLimiter -->
-  <g>
-    <rect x="310" y="300" width="240" height="170" fill="#f0f4f8" stroke="#2a5298" stroke-width="2"/>
-    <rect x="310" y="300" width="240" height="35" fill="url(#classHeader)"/>
-    <text x="430" y="322" text-anchor="middle" fill="white" font-weight="bold" font-size="13">RateLimiter</text>
-    <text x="320" y="350" font-family="Consolas" font-size="10">- requests_per_minute: 5</text>
-    <text x="320" y="365" font-family="Consolas" font-size="10">- window_minutes: 1</text>
-    <line x1="310" y1="375" x2="550" y2="375" stroke="#2a5298"/>
-    <text x="320" y="392" font-family="Consolas" font-size="10">+ is_rate_limited(key, endpoint)</text>
-    <text x="330" y="407" font-family="Consolas" font-size="9" fill="#666">→ Transaction-safe check</text>
-    <text x="320" y="422" font-family="Consolas" font-size="10">+ record_request(key)</text>
-    <text x="320" y="437" font-family="Consolas" font-size="10">+ limit() [decorator]</text>
-    <text x="320" y="452" font-family="Consolas" font-size="10">+ cleanup_expired()</text>
+  <!-- RateLimiter (100, 1540) -->
+  <g id="RateLimiter">
+    <rect x="100" y="1540" width="360" height="230" fill="#e0f2fe" stroke="#0284c7" stroke-width="2" rx="4"/>
+    <rect x="100" y="1540" width="360" height="36" fill="#0284c7" stroke="#0284c7" stroke-width="2"/>
+    <text x="280" y="1563" text-anchor="middle" class="class-name" fill="#ffffff">RateLimiter</text>
+
+    <!-- Attributes -->
+    <line x1="100" y1="1576" x2="460" y2="1576" stroke="#0284c7" stroke-width="1"/>
+    <text x="110" y="1592" class="method" fill="#1e293b">- requests_per_minute: int</text>
+    <text x="110" y="1608" class="method" fill="#1e293b">- window_minutes: int</text>
+
+    <!-- Methods -->
+    <line x1="100" y1="1618" x2="460" y2="1618" stroke="#0284c7" stroke-width="1"/>
+    <text x="110" y="1634" class="method" fill="#1e293b">+ is_rate_limited(key, endpoint)</text>
+    <text x="120" y="1649" class="type-hint">→ (bool, int, datetime|None)</text>
+    <text x="110" y="1665" class="method" fill="#1e293b">+ record_request(key, endpoint)</text>
+    <text x="120" y="1680" class="type-hint">→ bool [BEGIN IMMEDIATE]</text>
+    <text x="110" y="1696" class="method" fill="#1e293b">+ limit(requests_per_minute, per_user)</text>
+    <text x="120" y="1711" class="type-hint">→ decorator</text>
+
+    <!-- Note -->
+    <rect x="100" y="1740" width="360" height="30" fill="#fef3c7" stroke="#f59e0b" stroke-width="1" rx="2"/>
+    <text x="280" y="1760" text-anchor="middle" class="note" fill="#92400e">Database-based • Per-IP or per-user • Transaction-safe</text>
   </g>
 
-  <!-- EncryptionService -->
-  <g>
-    <rect x="590" y="300" width="240" height="170" fill="#f0f4f8" stroke="#2a5298" stroke-width="2"/>
-    <rect x="590" y="300" width="240" height="35" fill="url(#classHeader)"/>
-    <text x="710" y="322" text-anchor="middle" fill="white" font-weight="bold" font-size="13">EncryptionService</text>
-    <text x="600" y="350" font-family="Consolas" font-size="10">- cipher: Fernet</text>
-    <text x="600" y="365" font-family="Consolas" font-size="10">- algorithm: AES-128-CBC</text>
-    <line x1="590" y1="375" x2="830" y2="375" stroke="#2a5298"/>
-    <text x="600" y="392" font-family="Consolas" font-size="10">+ encrypt(plaintext)</text>
-    <text x="610" y="407" font-family="Consolas" font-size="9" fill="#666">→ Fernet + HMAC</text>
-    <text x="600" y="422" font-family="Consolas" font-size="10">+ decrypt(ciphertext)</text>
-    <text x="600" y="437" font-family="Consolas" font-size="10">+ generate_key()</text>
-    <text x="600" y="452" font-family="Consolas" font-size="10">- _derive_key(password)</text>
-    <text x="610" y="467" font-family="Consolas" font-size="9" fill="#666">→ PBKDF2 100k iterations</text>
+  <!-- EncryptionService (100, 1800) -->
+  <g id="EncryptionService">
+    <rect x="100" y="1800" width="380" height="230" fill="#e0f2fe" stroke="#0284c7" stroke-width="2" rx="4"/>
+    <rect x="100" y="1800" width="380" height="36" fill="#0284c7" stroke="#0284c7" stroke-width="2"/>
+    <text x="290" y="1823" text-anchor="middle" class="class-name" fill="#ffffff">EncryptionService</text>
+
+    <!-- Attributes -->
+    <line x1="100" y1="1836" x2="480" y2="1836" stroke="#0284c7" stroke-width="1"/>
+    <text x="110" y="1852" class="method" fill="#1e293b">- cipher: Fernet (AES-128 CBC + HMAC)</text>
+    <text x="110" y="1868" class="method" fill="#1e293b">- salt: bytes</text>
+    <text x="110" y="1884" class="method" fill="#1e293b">- iterations: 100000</text>
+
+    <!-- Methods -->
+    <line x1="100" y1="1894" x2="480" y2="1894" stroke="#0284c7" stroke-width="1"/>
+    <text x="110" y="1910" class="method" fill="#1e293b">+ encrypt(plaintext: str) → str|None</text>
+    <text x="110" y="1926" class="method" fill="#1e293b">+ decrypt(ciphertext: str) → str|None</text>
+    <text x="110" y="1942" class="method" fill="#1e293b">- _derive_key(password: bytes) → bytes</text>
+    <text x="110" y="1958" class="method" fill="#1e293b">+ generate_key() → str [static]</text>
+
+    <!-- Note -->
+    <rect x="100" y="2000" width="380" height="30" fill="#fef3c7" stroke="#f59e0b" stroke-width="1" rx="2"/>
+    <text x="290" y="2020" text-anchor="middle" class="note" fill="#92400e">Fernet encryption • PBKDF2 key derivation • 100K iterations</text>
   </g>
 
-  <!-- Relationships -->
-  <!-- TOTPService uses EncryptionService -->
-  <path d="M 755 260 L 710 300" stroke="#2a5298" stroke-width="2" marker-end="url(#arrow)"/>
-  <text x="730" y="285" font-size="10" fill="#2a5298" font-weight="bold">uses</text>
+  <!-- ========================================
+       CENTER COLUMN - UTILITIES (x=900-1400)
+       ======================================== -->
 
-  <!-- All services use database -->
-  <path d="M 165 470 L 400 560" stroke="#666" stroke-width="1.5" stroke-dasharray="5,5" marker-end="url(#arrow)"/>
-  <path d="M 430 470 L 450 560" stroke="#666" stroke-width="1.5" stroke-dasharray="5,5" marker-end="url(#arrow)"/>
-  <path d="M 710 470 L 500 560" stroke="#666" stroke-width="1.5" stroke-dasharray="5,5" marker-end="url(#arrow)"/>
+  <!-- PasswordValidator (620, 100) -->
+  <g id="PasswordValidator">
+    <rect x="620" y="100" width="360" height="180" fill="#dbeafe" stroke="#3b82f6" stroke-width="2" rx="4"/>
+    <rect x="620" y="100" width="360" height="36" fill="#3b82f6" stroke="#3b82f6" stroke-width="2"/>
+    <text x="800" y="123" text-anchor="middle" class="class-name" fill="#ffffff">PasswordValidator</text>
 
-  <!-- Database -->
-  <rect x="350" y="560" width="300" height="70" rx="8" fill="#e8f4f8" stroke="#2a5298" stroke-width="2"/>
-  <text x="500" y="590" text-anchor="middle" font-weight="bold" font-size="14" fill="#1e3c72">SQLite Database</text>
-  <text x="500" y="610" text-anchor="middle" font-size="11">get_db_connection() factory pattern</text>
+    <!-- Attributes -->
+    <line x1="620" y1="136" x2="980" y2="136" stroke="#3b82f6" stroke-width="1"/>
+    <text x="630" y="152" class="method" fill="#1e293b">+ MIN_LENGTH: 12</text>
+    <text x="630" y="168" class="method" fill="#1e293b">+ MAX_LENGTH: 128</text>
 
-  <!-- Legend -->
-  <rect x="50" y="615" width="400" height="30" fill="#f8f9fa" stroke="#ddd"/>
-  <text x="60" y="633" font-size="10" font-weight="bold">Notation:</text>
-  <line x1="110" y1="630" x2="140" y2="630" stroke="#2a5298" stroke-width="2"/>
-  <polygon points="140 627, 150 630, 140 633" fill="#2a5298"/>
-  <text x="155" y="633" font-size="9">Association</text>
-  <line x1="250" y1="630" x2="280" y2="630" stroke="#666" stroke-width="1.5" stroke-dasharray="5,5"/>
-  <text x="285" y="633" font-size="9">Dependency (queries)</text>
-  <text x="390" y="633" font-size="9">PK = Primary Key</text>
+    <!-- Methods -->
+    <line x1="620" y1="178" x2="980" y2="178" stroke="#3b82f6" stroke-width="1"/>
+    <text x="630" y="194" class="method" fill="#1e293b">+ validate(password: str) → (bool, str|None)</text>
+    <text x="630" y="210" class="method" fill="#1e293b">+ check_breach(password: str) → (bool, int)</text>
+    <text x="640" y="225" class="type-hint">[HaveIBeenPwned API]</text>
+
+    <!-- Note -->
+    <rect x="620" y="250" width="360" height="30" fill="#fef3c7" stroke="#f59e0b" stroke-width="1" rx="2"/>
+    <text x="800" y="270" text-anchor="middle" class="note" fill="#92400e">NIST SP 800-63B • Breach detection • k-anonymity</text>
+  </g>
+
+  <!-- EmailValidator (620, 310) -->
+  <g id="EmailValidator">
+    <rect x="620" y="310" width="260" height="140" fill="#dbeafe" stroke="#3b82f6" stroke-width="2" rx="4"/>
+    <rect x="620" y="310" width="260" height="36" fill="#3b82f6" stroke="#3b82f6" stroke-width="2"/>
+    <text x="750" y="333" text-anchor="middle" class="class-name" fill="#ffffff">EmailValidator</text>
+
+    <!-- Methods -->
+    <line x1="620" y1="346" x2="880" y2="346" stroke="#3b82f6" stroke-width="1"/>
+    <text x="630" y="362" class="method" fill="#1e293b">+ validate(email: str)</text>
+    <text x="640" y="377" class="type-hint">→ (bool, str|None)</text>
+
+    <!-- Note -->
+    <rect x="620" y="420" width="260" height="30" fill="#fef3c7" stroke="#f59e0b" stroke-width="1" rx="2"/>
+    <text x="750" y="440" text-anchor="middle" class="note" fill="#92400e">RFC 5322 validation</text>
+  </g>
+
+  <!-- UsernameValidator (620, 480) -->
+  <g id="UsernameValidator">
+    <rect x="620" y="480" width="260" height="160" fill="#dbeafe" stroke="#3b82f6" stroke-width="2" rx="4"/>
+    <rect x="620" y="480" width="260" height="36" fill="#3b82f6" stroke="#3b82f6" stroke-width="2"/>
+    <text x="750" y="503" text-anchor="middle" class="class-name" fill="#ffffff">UsernameValidator</text>
+
+    <!-- Attributes -->
+    <line x1="620" y1="516" x2="880" y2="516" stroke="#3b82f6" stroke-width="1"/>
+    <text x="630" y="532" class="method" fill="#1e293b">+ MIN_LENGTH: 3</text>
+    <text x="630" y="548" class="method" fill="#1e293b">+ MAX_LENGTH: 30</text>
+
+    <!-- Methods -->
+    <line x1="620" y1="558" x2="880" y2="558" stroke="#3b82f6" stroke-width="1"/>
+    <text x="630" y="574" class="method" fill="#1e293b">+ validate(username: str)</text>
+    <text x="640" y="589" class="type-hint">→ (bool, str|None)</text>
+
+    <!-- Note -->
+    <rect x="620" y="610" width="260" height="30" fill="#fef3c7" stroke="#f59e0b" stroke-width="1" rx="2"/>
+    <text x="750" y="630" text-anchor="middle" class="note" fill="#92400e">Alphanumeric + underscore</text>
+  </g>
+
+  <!-- ReCaptchaService (620, 670) -->
+  <g id="ReCaptchaService">
+    <rect x="620" y="670" width="360" height="190" fill="#dbeafe" stroke="#3b82f6" stroke-width="2" rx="4"/>
+    <rect x="620" y="670" width="360" height="36" fill="#3b82f6" stroke="#3b82f6" stroke-width="2"/>
+    <text x="800" y="693" text-anchor="middle" class="class-name" fill="#ffffff">ReCaptchaService</text>
+
+    <!-- Attributes -->
+    <line x1="620" y1="706" x2="980" y2="706" stroke="#3b82f6" stroke-width="1"/>
+    <text x="630" y="722" class="method" fill="#1e293b">- RECAPTCHA_SITE_KEY: str</text>
+    <text x="630" y="738" class="method" fill="#1e293b">- RECAPTCHA_SECRET_KEY: str</text>
+
+    <!-- Methods -->
+    <line x1="620" y1="748" x2="980" y2="748" stroke="#3b82f6" stroke-width="1"/>
+    <text x="630" y="764" class="method" fill="#1e293b">+ get_site_key() → str|None</text>
+    <text x="630" y="780" class="method" fill="#1e293b">+ is_enabled() → bool</text>
+    <text x="630" y="796" class="method" fill="#1e293b">+ verify_response(response, remote_addr)</text>
+    <text x="640" y="811" class="type-hint">→ (bool, list[str]|None)</text>
+
+    <!-- Note -->
+    <rect x="620" y="830" width="360" height="30" fill="#fef3c7" stroke="#f59e0b" stroke-width="1" rx="2"/>
+    <text x="800" y="850" text-anchor="middle" class="note" fill="#92400e">Google reCAPTCHA v2 • Bot prevention</text>
+  </g>
+
+  <!-- SecurityHeaders (620, 890) -->
+  <g id="SecurityHeaders">
+    <rect x="620" y="890" width="280" height="130" fill="#dbeafe" stroke="#3b82f6" stroke-width="2" rx="4"/>
+    <rect x="620" y="890" width="280" height="36" fill="#3b82f6" stroke="#3b82f6" stroke-width="2"/>
+    <text x="760" y="913" text-anchor="middle" class="class-name" fill="#ffffff">SecurityHeaders</text>
+    <text x="760" y="922" text-anchor="middle" class="annotation" fill="#ffffff">«utility»</text>
+
+    <!-- Methods -->
+    <line x1="620" y1="926" x2="900" y2="926" stroke="#3b82f6" stroke-width="1"/>
+    <text x="630" y="942" class="method" fill="#1e293b">+ set_security_headers(response)</text>
+    <text x="640" y="957" class="type-hint">→ Response [static]</text>
+
+    <!-- Note -->
+    <rect x="620" y="990" width="280" height="30" fill="#fef3c7" stroke="#f59e0b" stroke-width="1" rx="2"/>
+    <text x="760" y="1010" text-anchor="middle" class="note" fill="#92400e">CSP • HSTS • X-Frame-Options</text>
+  </g>
+
+  <!-- Sanitization (620, 1050) -->
+  <g id="Sanitization">
+    <rect x="620" y="1050" width="240" height="150" fill="#dbeafe" stroke="#3b82f6" stroke-width="2" rx="4"/>
+    <rect x="620" y="1050" width="240" height="36" fill="#3b82f6" stroke="#3b82f6" stroke-width="2"/>
+    <text x="740" y="1073" text-anchor="middle" class="class-name" fill="#ffffff">Sanitization</text>
+    <text x="740" y="1082" text-anchor="middle" class="annotation" fill="#ffffff">«utility»</text>
+
+    <!-- Methods -->
+    <line x1="620" y1="1086" x2="860" y2="1086" stroke="#3b82f6" stroke-width="1"/>
+    <text x="630" y="1102" class="method" fill="#1e293b">+ sanitize_html_input(text)</text>
+    <text x="640" y="1117" class="type-hint">→ str [static]</text>
+    <text x="630" y="1133" class="method" fill="#1e293b">+ sanitize_comment(text)</text>
+    <text x="640" y="1148" class="type-hint">→ str [static]</text>
+
+    <!-- Note -->
+    <rect x="620" y="1170" width="240" height="30" fill="#fef3c7" stroke="#f59e0b" stroke-width="1" rx="2"/>
+    <text x="740" y="1190" text-anchor="middle" class="note" fill="#92400e">XSS prevention • Bleach</text>
+  </g>
+
+  <!-- ========================================
+       RIGHT COLUMN - DECORATORS & DATABASE (x=1500-1900)
+       ======================================== -->
+
+  <!-- Decorators (1500, 100) -->
+  <g id="Decorators">
+    <rect x="1500" y="100" width="340" height="180" fill="#f3e8ff" stroke="#9333ea" stroke-width="2" rx="4"/>
+    <rect x="1500" y="100" width="340" height="36" fill="#9333ea" stroke="#9333ea" stroke-width="2"/>
+    <text x="1670" y="123" text-anchor="middle" class="class-name" fill="#ffffff">Decorators</text>
+    <text x="1670" y="132" text-anchor="middle" class="annotation" fill="#ffffff">«interface»</text>
+
+    <!-- Methods -->
+    <line x1="1500" y1="136" x2="1840" y2="136" stroke="#9333ea" stroke-width="1"/>
+    <text x="1510" y="152" class="method" fill="#1e293b">+ login_required(f) → wrapper</text>
+    <text x="1520" y="167" class="type-hint">[checks session]</text>
+    <text x="1510" y="183" class="method" fill="#1e293b">+ regenerate_session(f) → wrapper</text>
+    <text x="1520" y="198" class="type-hint">[prevents fixation]</text>
+    <text x="1510" y="214" class="method" fill="#1e293b">+ csrf_exempt(f) → wrapper</text>
+    <text x="1520" y="229" class="type-hint">[OAuth2 endpoints]</text>
+    <text x="1510" y="245" class="method" fill="#1e293b">+ rate_limiter.limit(...) → wrapper</text>
+    <text x="1520" y="260" class="type-hint">[rate limiting]</text>
+  </g>
+
+  <!-- Database (1500, 310) -->
+  <g id="Database">
+    <rect x="1500" y="310" width="400" height="110" fill="#ecfdf5" stroke="#10b981" stroke-width="2" rx="4"/>
+    <rect x="1500" y="310" width="400" height="36" fill="#10b981" stroke="#10b981" stroke-width="2"/>
+    <text x="1700" y="333" text-anchor="middle" class="class-name" fill="#ffffff">Database</text>
+    <text x="1700" y="342" text-anchor="middle" class="annotation" fill="#ffffff">«interface»</text>
+
+    <!-- Methods -->
+    <line x1="1500" y1="346" x2="1900" y2="346" stroke="#10b981" stroke-width="1"/>
+    <text x="1510" y="362" class="method" fill="#1e293b">+ get_db_connection() → sqlite3.Connection</text>
+    <text x="1520" y="377" class="type-hint">[factory method for recipe_app.db]</text>
+  </g>
+
+  <!-- ========================================
+       RELATIONSHIPS - Using curved paths to avoid overlaps
+       ======================================== -->
+
+  <!-- AuthService → PasswordValidator (curved up-right) -->
+  <path d="M 440 220 Q 520 180, 620 180" stroke="#64748b" stroke-width="1.5" stroke-dasharray="5,5" fill="none" marker-end="url(#arrow-dependency)"/>
+  <text x="530" y="175" class="legend" fill="#64748b">validates</text>
+
+  <!-- AuthService → EmailValidator (curved right) -->
+  <path d="M 440 260 Q 520 340, 620 380" stroke="#64748b" stroke-width="1.5" stroke-dasharray="5,5" fill="none" marker-end="url(#arrow-dependency)"/>
+
+  <!-- AuthService → UsernameValidator (curved down-right) -->
+  <path d="M 440 300 Q 520 460, 620 550" stroke="#64748b" stroke-width="1.5" stroke-dasharray="5,5" fill="none" marker-end="url(#arrow-dependency)"/>
+
+  <!-- AuthService → Database (long curved path to right) -->
+  <path d="M 270 380 Q 270 450, 900 450 Q 1400 450, 1400 360 Q 1450 360, 1500 360" stroke="#64748b" stroke-width="1.5" stroke-dasharray="5,5" fill="none" marker-end="url(#arrow-dependency)"/>
+  <text x="1420" y="355" class="legend" fill="#64748b">queries</text>
+
+  <!-- OAuth2Service → Database (curved path down-right) -->
+  <path d="M 310 790 Q 310 1850, 900 1850 Q 1400 1850, 1400 380 Q 1450 380, 1500 380" stroke="#64748b" stroke-width="1.5" stroke-dasharray="5,5" fill="none" marker-end="url(#arrow-dependency)"/>
+
+  <!-- OAuth2Service → SecurityService (curved left) -->
+  <path d="M 310 790 Q 310 1320, 345 1170" stroke="#64748b" stroke-width="1.5" stroke-dasharray="5,5" fill="none" marker-end="url(#arrow-dependency)"/>
+  <text x="250" y="1000" class="legend" fill="#64748b">logs to</text>
+
+  <!-- TOTPService → EncryptionService (straight down) -->
+  <line x1="290" y1="1140" x2="290" y2="1800" stroke="#64748b" stroke-width="1.5" stroke-dasharray="5,5" marker-end="url(#arrow-dependency)"/>
+  <text x="295" y="1470" class="legend" fill="#64748b">encrypts</text>
+
+  <!-- TOTPService → Database (curved right) -->
+  <path d="M 480 970 Q 900 970, 900 400 Q 1200 400, 1500 370" stroke="#64748b" stroke-width="1.5" stroke-dasharray="5,5" fill="none" marker-end="url(#arrow-dependency)"/>
+
+  <!-- SecurityService → Database (curved down-right) -->
+  <path d="M 590 1350 Q 900 1350, 900 390 Q 1200 390, 1500 390" stroke="#64748b" stroke-width="1.5" stroke-dasharray="5,5" fill="none" marker-end="url(#arrow-dependency)"/>
+
+  <!-- RateLimiter → Database (curved right) -->
+  <path d="M 460 1655 Q 900 1655, 900 410 Q 1200 410, 1500 400" stroke="#64748b" stroke-width="1.5" stroke-dasharray="5,5" fill="none" marker-end="url(#arrow-dependency)"/>
+
+  <!-- ========================================
+       BLUEPRINT LAYER
+       ======================================== -->
+
+  <g id="Blueprints">
+    <rect x="100" y="2090" width="1800" height="140" fill="#fef3c7" stroke="#f59e0b" stroke-width="2" rx="4"/>
+    <text x="1000" y="2120" text-anchor="middle" class="section-title" fill="#92400e">Flask Blueprints (Routes Layer)</text>
+
+    <text x="120" y="2150" class="method" fill="#1e293b">• AuthBlueprint (/auth/*) → AuthService, SecurityService, RateLimiter, ReCaptchaService</text>
+    <text x="120" y="2175" class="method" fill="#1e293b">• OAuthBlueprint (/oauth/*) → OAuth2Service, SecurityService</text>
+    <text x="120" y="2200" class="method" fill="#1e293b">• TwoFABlueprint (/2fa/*) → TOTPService, AuthService, SecurityService, RateLimiter</text>
+  </g>
+
+  <!-- ========================================
+       LEGEND
+       ======================================== -->
+
+  <g id="Legend">
+    <rect x="100" y="2270" width="1800" height="110" fill="#f8fafc" stroke="#64748b" stroke-width="1" rx="4"/>
+    <text x="120" y="2295" class="section-title" fill="#1e293b">UML Notation Legend</text>
+
+    <!-- Visibility -->
+    <text x="120" y="2320" class="legend" fill="#1e293b" font-weight="600">Visibility:</text>
+    <text x="130" y="2340" class="legend" fill="#1e293b">+ Public  - Private</text>
+
+    <!-- Relationships -->
+    <text x="350" y="2320" class="legend" fill="#1e293b" font-weight="600">Relationships:</text>
+    <line x1="360" y1="2330" x2="430" y2="2330" stroke="#64748b" stroke-width="1.5" stroke-dasharray="5,5" marker-end="url(#arrow-dependency)"/>
+    <text x="440" y="2340" class="legend" fill="#1e293b">Dependency (uses)</text>
+
+    <!-- Stereotypes -->
+    <text x="700" y="2320" class="legend" fill="#1e293b" font-weight="600">Stereotypes:</text>
+    <text x="710" y="2340" class="legend" fill="#1e293b">«interface» - Protocol | «utility» - Static class</text>
+
+    <!-- Security Annotations -->
+    <text x="1050" y="2320" class="legend" fill="#1e293b" font-weight="600">Security Annotations:</text>
+    <text x="1060" y="2340" class="legend" fill="#dc2626">[BEGIN IMMEDIATE]</text>
+    <text x="1210" y="2340" class="legend" fill="#1e293b">Transaction-protected</text>
+    <text x="1060" y="2360" class="legend" fill="#ea580c">[ROTATION]</text>
+    <text x="1150" y="2360" class="legend" fill="#1e293b">Token family rotation</text>
+
+    <!-- Class Types -->
+    <text x="1500" y="2320" class="legend" fill="#1e293b" font-weight="600">Class Types:</text>
+    <rect x="1510" y="2325" width="40" height="14" fill="#e0f2fe" stroke="#0284c7" stroke-width="1" rx="2"/>
+    <text x="1555" y="2335" class="legend" fill="#1e293b">Service</text>
+    <rect x="1625" y="2325" width="40" height="14" fill="#dbeafe" stroke="#3b82f6" stroke-width="1" rx="2"/>
+    <text x="1670" y="2335" class="legend" fill="#1e293b">Utility</text>
+    <rect x="1740" y="2325" width="40" height="14" fill="#f3e8ff" stroke="#9333ea" stroke-width="1" rx="2"/>
+    <text x="1785" y="2335" class="legend" fill="#1e293b">Decorator</text>
+  </g>
+
+  <!-- Footer -->
+  <text x="1000" y="2360" text-anchor="middle" class="note" fill="#64748b">v2.0 - Generated from ground truth analysis - Clean layout with organized columns and non-overlapping arrows</text>
 </svg>

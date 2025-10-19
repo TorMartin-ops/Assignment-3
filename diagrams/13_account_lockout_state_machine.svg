@@ -1,0 +1,159 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="100%" height="100%" viewBox="0 0 1200 650"
+     xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+  <title>Account Lockout State Machine</title>
+  <desc>State transitions between normal, warning (CAPTCHA), locked, and cleared states</desc>
+  <defs>
+    <style>
+      @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&amp;display=swap');
+      text { font-family: 'Inter', system-ui, -apple-system, sans-serif; }
+    </style>
+    <marker id="arrowhead" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto">
+      <polygon points="0 0, 10 3, 0 6" fill="#424242" />
+    </marker>
+  </defs>
+
+  <!-- Title -->
+  <text x="600" y="40" font-size="23px" fill="#1565C0"
+        font-weight="bold" text-anchor="middle">Account Lockout State Machine</text>
+  <text x="600" y="65" font-size="11px" fill="#616161"
+        font-weight="normal" text-anchor="middle">Evidence: security_service.py:16-17, auth_routes.py:78, database_auth.py:113</text>
+
+  <!-- Start Circle -->
+  <circle cx="100" cy="180" r="12" fill="black"/>
+
+  <!-- State: Normal (Top-Left) -->
+  <rect x="200" y="130" width="200" height="140"
+        fill="#E3F2FD" stroke="#1565C0" stroke-width="2.5" rx="12"/>
+  <text x="300" y="165" font-size="14px" fill="#000000"
+        font-weight="bold" text-anchor="middle">Normal</text>
+  <text x="300" y="190" font-size="11px" fill="#616161"
+        font-weight="normal" text-anchor="middle">No restrictions</text>
+  <text x="300" y="208" font-size="11px" fill="#616161"
+        font-weight="normal" text-anchor="middle">Standard login flow</text>
+  <text x="300" y="226" font-size="11px" fill="#616161"
+        font-weight="normal" text-anchor="middle">Attempts: 0</text>
+  <text x="300" y="244" font-size="10px" fill="#757575"
+        font-weight="normal" text-anchor="middle">security_service.py:16</text>
+
+  <!-- State: Warning (Top-Right) -->
+  <rect x="650" y="130" width="250" height="160"
+        fill="#FFF3E0" stroke="#F57C00" stroke-width="2.5" rx="12"/>
+  <text x="775" y="165" font-size="14px" fill="#000000"
+        font-weight="bold" text-anchor="middle">Warning</text>
+  <text x="775" y="190" font-size="11px" fill="#616161"
+        font-weight="normal" text-anchor="middle">CAPTCHA Required</text>
+  <text x="775" y="208" font-size="11px" fill="#616161"
+        font-weight="normal" text-anchor="middle">Failed attempts: 3+</text>
+  <text x="775" y="226" font-size="11px" fill="#616161"
+        font-weight="normal" text-anchor="middle">CAPTCHA_THRESHOLD=3</text>
+  <text x="775" y="244" font-size="10px" fill="#757575"
+        font-weight="normal" text-anchor="middle">auth_routes.py:78</text>
+  <text x="775" y="262" font-size="10px" fill="#757575"
+        font-weight="normal" text-anchor="middle">security_service.py:123</text>
+
+  <!-- State: Cleared (Bottom-Left) -->
+  <rect x="200" y="420" width="200" height="140"
+        fill="#E8F5E9" stroke="#2E7D32" stroke-width="2.5" rx="12"/>
+  <text x="300" y="455" font-size="14px" fill="#000000"
+        font-weight="bold" text-anchor="middle">Cleared</text>
+  <text x="300" y="480" font-size="11px" fill="#616161"
+        font-weight="normal" text-anchor="middle">Transient state</text>
+  <text x="300" y="498" font-size="11px" fill="#616161"
+        font-weight="normal" text-anchor="middle">Lockout record deleted</text>
+  <text x="300" y="516" font-size="11px" fill="#616161"
+        font-weight="normal" text-anchor="middle">Returns to Normal</text>
+  <text x="300" y="534" font-size="10px" fill="#757575"
+        font-weight="normal" text-anchor="middle">database_auth.py:113</text>
+
+  <!-- State: Locked (Bottom-Right) -->
+  <rect x="650" y="400" width="250" height="180"
+        fill="#FFEBEE" stroke="#C62828" stroke-width="2.5" rx="12"/>
+  <text x="775" y="435" font-size="14px" fill="#000000"
+        font-weight="bold" text-anchor="middle">Locked</text>
+  <text x="775" y="460" font-size="11px" fill="#616161"
+        font-weight="normal" text-anchor="middle">Account Locked</text>
+  <text x="775" y="478" font-size="11px" fill="#616161"
+        font-weight="normal" text-anchor="middle">Duration: 15 minutes</text>
+  <text x="775" y="496" font-size="11px" fill="#616161"
+        font-weight="normal" text-anchor="middle">LOCKOUT_THRESHOLD=3</text>
+  <text x="775" y="514" font-size="11px" fill="#616161"
+        font-weight="normal" text-anchor="middle">Table: account_lockouts</text>
+  <text x="775" y="532" font-size="10px" fill="#757575"
+        font-weight="normal" text-anchor="middle">security_service.py:159</text>
+  <text x="775" y="550" font-size="10px" fill="#757575"
+        font-weight="normal" text-anchor="middle">database_auth.py:107</text>
+
+  <!-- Transition: Start -> Normal -->
+  <path d="M 112,180 L 200,180"
+        stroke="#424242" stroke-width="2" fill="none" marker-end="url(#arrowhead)"/>
+  <rect x="130" y="155" width="107" height="18"
+        fill="white" opacity="0.95" rx="4"/>
+  <text x="135" y="168" font-size="11px" fill="#424242"
+        font-weight="normal" text-anchor="start">Account Created</text>
+
+  <!-- Transition: Normal -> Warning (Failed Login) -->
+  <path d="M 400,180 L 650,180"
+        stroke="#424242" stroke-width="2" fill="none" marker-end="url(#arrowhead)"/>
+  <rect x="445" y="155" width="160" height="18"
+        fill="white" opacity="0.95" rx="4"/>
+  <text x="450" y="168" font-size="11px" fill="#424242"
+        font-weight="normal" text-anchor="start">Failed Login [attempts ≥ 3]</text>
+
+  <!-- Transition: Warning -> Normal (Success + CAPTCHA) -->
+  <path d="M 650,220 L 400,220"
+        stroke="#424242" stroke-width="2" fill="none" marker-end="url(#arrowhead)"/>
+  <rect x="420" y="230" width="210" height="18"
+        fill="white" opacity="0.95" rx="4"/>
+  <text x="425" y="243" font-size="11px" fill="#424242"
+        font-weight="normal" text-anchor="start">Successful Login + CAPTCHA Verified</text>
+
+  <!-- Transition: Normal -> Normal (Self-loop, Success) -->
+  <path d="M 220,130 Q 220,90 260,90 Q 300,90 300,130"
+        stroke="#424242" stroke-width="2" fill="none" marker-end="url(#arrowhead)"/>
+  <text x="240" y="80" font-size="11px" fill="#424242"
+        font-weight="normal" text-anchor="start">Successful Login</text>
+
+  <!-- Transition: Warning -> Locked (Continue Failures) -->
+  <path d="M 775,290 L 775,400"
+        stroke="#424242" stroke-width="2" fill="none" marker-end="url(#arrowhead)"/>
+  <rect x="785" y="330" width="120" height="18"
+        fill="white" opacity="0.95" rx="4"/>
+  <text x="790" y="343" font-size="11px" fill="#424242"
+        font-weight="normal" text-anchor="start">Continue Failures</text>
+  <text x="790" y="365" font-size="10px" fill="#616161"
+        font-weight="normal" text-anchor="start">[total ≥ 3]</text>
+
+  <!-- Transition: Warning -> Cleared (Manual Clear) -->
+  <path d="M 670,280 L 380,430"
+        stroke="#424242" stroke-width="2" fill="none" marker-end="url(#arrowhead)"/>
+  <rect x="485" y="340" width="85" height="18"
+        fill="white" opacity="0.95" rx="4"/>
+  <text x="490" y="353" font-size="11px" fill="#424242"
+        font-weight="normal" text-anchor="start">Manual Clear</text>
+
+  <!-- Transition: Locked -> Cleared (Time Expiration) -->
+  <path d="M 650,490 L 400,490"
+        stroke="#424242" stroke-width="2" fill="none" marker-end="url(#arrowhead)"/>
+  <rect x="430" y="500" width="180" height="18"
+        fill="white" opacity="0.95" rx="4"/>
+  <text x="435" y="513" font-size="11px" fill="#424242"
+        font-weight="normal" text-anchor="start">Time Expiration [locked_until &lt; now]</text>
+
+  <!-- Transition: Locked -> Cleared (Admin Unlock) -->
+  <path d="M 660,540 L 390,540"
+        stroke="#424242" stroke-width="2" fill="none" marker-end="url(#arrowhead)"/>
+  <rect x="450" y="550" width="130" height="18"
+        fill="white" opacity="0.95" rx="4"/>
+  <text x="455" y="563" font-size="11px" fill="#424242"
+        font-weight="normal" text-anchor="start">Admin Manual Unlock</text>
+
+  <!-- Transition: Cleared -> Normal (Automatic) -->
+  <path d="M 250,420 L 250,270"
+        stroke="#424242" stroke-width="2" fill="none" marker-end="url(#arrowhead)"/>
+  <rect x="160" y="330" width="105" height="18"
+        fill="white" opacity="0.95" rx="4"/>
+  <text x="165" y="343" font-size="11px" fill="#424242"
+        font-weight="normal" text-anchor="start">Lockout Removed</text>
+
+</svg>

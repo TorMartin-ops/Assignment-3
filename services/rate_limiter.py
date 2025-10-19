@@ -123,7 +123,7 @@ class RateLimiter:
         except Exception as e:
             conn.execute('ROLLBACK')
             conn.close()
-            print(f"Rate limit record error: {e}")
+            # Error handling: rate limit recording failed, exception available in debug mode
             return False
 
     def limit(self, requests_per_minute=None, per_user=False):

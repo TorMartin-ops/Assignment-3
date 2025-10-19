@@ -7,6 +7,7 @@ from services.totp_service import get_totp_service
 from services.security_service import get_security_service
 from services.auth_service import get_auth_service
 from services.rate_limiter import get_rate_limiter
+from utils.decorators import regenerate_session
 
 twofa_bp = Blueprint('twofa', __name__)
 
@@ -98,9 +99,13 @@ def verify_2fa():
             is_valid, remaining = totp_service.verify_backup_code(user_id, code)
 
             if is_valid:
-                # Complete login
+                # SECURITY: Regenerate session ID after successful 2FA verification
+                # Prevents session fixation attacks (second regeneration point)
                 session.pop('pending_2fa_user_id')
                 session.pop('pending_2fa_username')
+                regenerate_session()
+
+                # Complete login
                 session['user_id'] = user_id
                 session['username'] = username
 
@@ -121,9 +126,13 @@ def verify_2fa():
             is_valid, error = totp_service.verify_totp(user_id, code)
 
             if is_valid:
-                # Complete login
+                # SECURITY: Regenerate session ID after successful 2FA verification
+                # Prevents session fixation attacks (second regeneration point)
                 session.pop('pending_2fa_user_id')
                 session.pop('pending_2fa_username')
+                regenerate_session()
+
+                # Complete login
                 session['user_id'] = user_id
                 session['username'] = username
 

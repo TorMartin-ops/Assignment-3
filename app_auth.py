@@ -20,6 +20,11 @@ load_dotenv()
 app = Flask(__name__)
 app.secret_key = os.getenv('SECRET_KEY', 'dev-secret-key-change-in-production')
 
+# Session cookie security configuration
+app.config['SESSION_COOKIE_SECURE'] = True  # Only send over HTTPS
+app.config['SESSION_COOKIE_HTTPONLY'] = True  # Prevent JavaScript access
+app.config['SESSION_COOKIE_SAMESITE'] = 'Lax'  # CSRF protection
+
 # Initialize CSRF Protection
 csrf = CSRFProtect(app)
 
@@ -313,6 +318,13 @@ def ratelimit_error(e):
     """Rate limit exceeded"""
     flash('Too many requests. Please try again later.', 'danger')
     return redirect(url_for('home')), 429
+
+@app.route('/favicon.ico')
+def favicon():
+    """Serve favicon to prevent 500 errors"""
+    # Return empty response with proper content type
+    from flask import Response
+    return Response(status=204)
 
 @app.errorhandler(404)
 def not_found(e):

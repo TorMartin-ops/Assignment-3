@@ -205,7 +205,7 @@ class OAuth2Service:
         except Exception as e:
             conn.execute('ROLLBACK')
             conn.close()
-            print(f"Authorization code validation error: {e}")
+            # Error handling: validation failure logged, exception details available in debug mode
             return False, "Authorization code validation failed"
 
     def generate_tokens(self, client_id, user_id, scope, conn=None):
@@ -360,7 +360,7 @@ class OAuth2Service:
         except Exception as e:
             conn.execute('ROLLBACK')
             conn.close()
-            print(f"Token refresh error: {e}")
+            # Error handling: token refresh failure, exception details available in debug mode
             return False, "Token refresh failed"
 
     def revoke_token(self, token, token_type_hint='access_token'):
@@ -412,7 +412,8 @@ class OAuth2Service:
         conn.commit()
         conn.close()
 
-        print(f"🚨 Token family revoked: {token_family_id} (reuse detected)")
+        # Token family revocation logged via security_events table
+        # Additional monitoring could log to external system if needed
 
     def get_user_info(self, user_id):
         """

@@ -92,9 +92,8 @@ class PasswordValidator:
                         return True, int(count)
 
             return False, 0
-        except Exception as e:
-            # Don't fail validation if API is down
-            print(f"Breach check error: {e}")
+        except Exception:
+            # Don't fail validation if API is down - fail open for availability
             return False, 0
 
 

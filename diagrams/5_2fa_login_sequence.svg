@@ -1,135 +1,319 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<svg width="950" height="800" xmlns="http://www.w3.org/2000/svg">
+<svg width="100%" height="100%" viewBox="0 0 1450 3200" xmlns="http://www.w3.org/2000/svg">
+  <title>2FA Login Sequence - Complete Flow with Session Regeneration</title>
+  <desc>Complete two-factor authentication flow showing password authentication, TOTP verification with replay prevention, backup codes, and proper session regeneration at both authentication boundaries</desc>
   <defs>
-    <marker id="msg" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto">
-      <polygon points="0 0, 10 3, 0 6" fill="#2a5298"/>
+    <style>
+      @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&amp;display=swap');
+      text { font-family: 'Inter', system-ui, -apple-system, sans-serif; }
+      .mono { font-family: 'Consolas', 'Monaco', 'Courier New', monospace; }
+    </style>
+    <marker id="arrow" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto" markerUnits="strokeWidth">
+      <polygon points="0 0, 10 3, 0 6" fill="#1E3C72" />
     </marker>
-    <marker id="ret" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto">
-      <polygon points="0 0, 10 3, 0 6" fill="#666"/>
+    <marker id="arrow-green" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto" markerUnits="strokeWidth">
+      <polygon points="0 0, 10 3, 0 6" fill="#1E7E34" />
+    </marker>
+    <marker id="arrow-red" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto" markerUnits="strokeWidth">
+      <polygon points="0 0, 10 3, 0 6" fill="#C82333" />
+    </marker>
+    <marker id="arrow-gray" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto" markerUnits="strokeWidth">
+      <polygon points="0 0, 10 3, 0 6" fill="#6B7280" />
     </marker>
   </defs>
 
-  <text x="475" y="25" text-anchor="middle" font-size="16" font-weight="bold" fill="#1e3c72">
-    Authentication Flow with Two-Factor Verification (TOTP)
-  </text>
+  <!-- Title -->
+  <text x="700" y="50" font-size="20" fill="#1E3C72" font-weight="bold" text-anchor="middle">2FA Login Sequence - Complete Authentication Flow</text>
+  <text x="700" y="75" font-size="13" fill="#6B7280" text-anchor="middle">Evidence: auth_routes.py:116, twofa_routes.py:106,133, totp_service.py:159-173</text>
 
-  <!-- Actors -->
-  <rect x="30" y="50" width="80" height="40" fill="#1e3c72" rx="5"/>
-  <text x="70" y="75" text-anchor="middle" fill="white" font-weight="bold">User</text>
+  <!-- Participants - FIXED: Increased box width from 130/150 to 135/155 and height from 45 to 48 -->
+  <rect x="50" y="110" width="135" height="48" fill="#1E3C72" stroke="#1E3C72" stroke-width="2" rx="5"/>
+  <text x="117" y="140" font-size="12" fill="#FFFFFF" font-weight="600" text-anchor="middle">User</text>
+  <line x1="117" y1="158" x2="117" y2="3200" stroke="#6B7280" stroke-width="1.5" stroke-dasharray="5,5"/>
 
-  <rect x="180" y="50" width="90" height="40" fill="#1e3c72" rx="5"/>
-  <text x="225" y="75" text-anchor="middle" fill="white" font-weight="bold">Browser</text>
+  <rect x="225" y="110" width="155" height="48" fill="#1E3C72" stroke="#1E3C72" stroke-width="2" rx="5"/>
+  <text x="302" y="127" font-size="11" fill="#FFFFFF" font-weight="600" text-anchor="middle">/auth/login</text>
+  <text x="302" y="145" font-size="10" fill="#E3F2FD" text-anchor="middle">auth_routes.py</text>
+  <line x1="302" y1="158" x2="302" y2="3200" stroke="#6B7280" stroke-width="1.5" stroke-dasharray="5,5"/>
 
-  <rect x="340" y="50" width="90" height="40" fill="#1e3c72" rx="5"/>
-  <text x="385" y="75" text-anchor="middle" fill="white" font-weight="bold">Flask</text>
+  <rect x="425" y="110" width="135" height="48" fill="#1E3C72" stroke="#1E3C72" stroke-width="2" rx="5"/>
+  <text x="492" y="140" font-size="12" fill="#FFFFFF" font-weight="600" text-anchor="middle">AuthService</text>
+  <line x1="492" y1="158" x2="492" y2="3200" stroke="#6B7280" stroke-width="1.5" stroke-dasharray="5,5"/>
 
-  <rect x="500" y="50" width="110" height="40" fill="#1e3c72" rx="5"/>
-  <text x="555" y="75" text-anchor="middle" fill="white" font-weight="bold">AuthService</text>
+  <rect x="605" y="110" width="155" height="48" fill="#1E3C72" stroke="#1E3C72" stroke-width="2" rx="5"/>
+  <text x="682" y="140" font-size="12" fill="#FFFFFF" font-weight="600" text-anchor="middle">SecurityService</text>
+  <line x1="682" y1="158" x2="682" y2="3200" stroke="#6B7280" stroke-width="1.5" stroke-dasharray="5,5"/>
 
-  <rect x="680" y="50" width="110" height="40" fill="#1e3c72" rx="5"/>
-  <text x="735" y="75" text-anchor="middle" fill="white" font-weight="bold">TOTPService</text>
+  <rect x="825" y="110" width="155" height="48" fill="#1E3C72" stroke="#1E3C72" stroke-width="2" rx="5"/>
+  <text x="902" y="127" font-size="11" fill="#FFFFFF" font-weight="600" text-anchor="middle">/twofa/verify-2fa</text>
+  <text x="902" y="145" font-size="10" fill="#E3F2FD" text-anchor="middle">twofa_routes.py</text>
+  <line x1="902" y1="158" x2="902" y2="3200" stroke="#6B7280" stroke-width="1.5" stroke-dasharray="5,5"/>
 
-  <rect x="860" y="50" width="70" height="40" fill="#1e3c72" rx="5"/>
-  <text x="895" y="75" text-anchor="middle" fill="white" font-weight="bold">DB</text>
+  <rect x="1025" y="110" width="135" height="48" fill="#1E3C72" stroke="#1E3C72" stroke-width="2" rx="5"/>
+  <text x="1092" y="140" font-size="12" fill="#FFFFFF" font-weight="600" text-anchor="middle">TOTPService</text>
+  <line x1="1092" y1="158" x2="1092" y2="3200" stroke="#6B7280" stroke-width="1.5" stroke-dasharray="5,5"/>
 
-  <!-- Lifelines -->
-  <line x1="70" y1="90" x2="70" y2="770" stroke="#ddd" stroke-dasharray="5,5"/>
-  <line x1="225" y1="90" x2="225" y2="770" stroke="#ddd" stroke-dasharray="5,5"/>
-  <line x1="385" y1="90" x2="385" y2="770" stroke="#ddd" stroke-dasharray="5,5"/>
-  <line x1="555" y1="90" x2="555" y2="770" stroke="#ddd" stroke-dasharray="5,5"/>
-  <line x1="735" y1="90" x2="735" y2="770" stroke="#ddd" stroke-dasharray="5,5"/>
-  <line x1="895" y1="90" x2="895" y2="770" stroke="#ddd" stroke-dasharray="5,5"/>
+  <rect x="1205" y="110" width="155" height="48" fill="#1E3C72" stroke="#1E3C72" stroke-width="2" rx="5"/>
+  <text x="1282" y="140" font-size="12" fill="#FFFFFF" font-weight="600" text-anchor="middle">Auth Database</text>
+  <line x1="1282" y1="158" x2="1282" y2="3200" stroke="#6B7280" stroke-width="1.5" stroke-dasharray="5,5"/>
 
-  <!-- Phase 1: Password Authentication -->
-  <rect x="20" y="110" width="120" height="25" fill="#fff3cd" stroke="#ffc107" stroke-width="2"/>
-  <text x="80" y="127" text-anchor="middle" font-size="11" font-weight="bold">Phase 1: Password</text>
+  <!-- Phase 1 Header -->
+  <rect x="60" y="190" width="450" height="35" fill="#E3F2FD" stroke="#1E3C72" stroke-width="2" rx="8"/>
+  <text x="285" y="213" font-size="14" fill="#1E3C72" font-weight="700" text-anchor="middle">Phase 1: Password Authentication</text>
 
-  <line x1="70" y1="150" x2="225" y2="150" stroke="#2a5298" stroke-width="2" marker-end="url(#msg)"/>
-  <text x="147" y="145" font-size="10">POST /login</text>
-  <text x="147" y="165" font-size="9" fill="#666">{username, password}</text>
+  <!-- FIXED: Standardized step spacing to 45px consistently -->
+  <!-- Step 1: User submits login -->
+  <text x="25" y="263" font-size="11" fill="#6B7280" font-weight="600">1</text>
+  <line x1="117" y1="260" x2="302" y2="260" stroke="#1E3C72" stroke-width="2.5" marker-end="url(#arrow)"/>
+  <text x="210" y="254" font-size="11" fill="#000000" font-weight="600" text-anchor="middle">POST username + password</text>
 
-  <line x1="225" y1="180" x2="385" y2="180" stroke="#2a5298" stroke-width="2" marker-end="url(#msg)"/>
-  <text x="305" y="175" font-size="10">login()</text>
+  <!-- Step 2-3: Account lockout check -->
+  <text x="25" y="308" font-size="11" fill="#6B7280" font-weight="600">2</text>
+  <line x1="302" y1="305" x2="682" y2="305" stroke="#1E3C72" stroke-width="2" marker-end="url(#arrow)"/>
+  <text x="492" y="299" font-size="11" fill="#000000" text-anchor="middle">check_account_lockout(username)</text>
 
-  <line x1="385" y1="200" x2="555" y2="200" stroke="#2a5298" stroke-width="2" marker-end="url(#msg)"/>
-  <text x="470" y="195" font-size="10">authenticate()</text>
+  <text x="25" y="353" font-size="11" fill="#6B7280" font-weight="600">3</text>
+  <line x1="682" y1="350" x2="1282" y2="350" stroke="#1E3C72" stroke-width="2" marker-end="url(#arrow)"/>
+  <text x="982" y="339" font-size="10" fill="#000000" text-anchor="middle" class="mono">SELECT * FROM account_lockouts</text>
+  <text x="982" y="355" font-size="10" fill="#6B7280" text-anchor="middle" class="mono">WHERE username = ? AND locked_until > now()</text>
 
-  <line x1="555" y1="220" x2="895" y2="220" stroke="#2a5298" stroke-width="2" marker-end="url(#msg)"/>
-  <text x="725" y="215" font-size="10">SELECT user WHERE username=?</text>
+  <text x="25" y="398" font-size="11" fill="#6B7280" font-weight="600">4</text>
+  <line x1="1282" y1="395" x2="682" y2="395" stroke="#6B7280" stroke-width="2" stroke-dasharray="4,4" marker-end="url(#arrow-gray)"/>
+  <text x="982" y="389" font-size="11" fill="#6B7280" text-anchor="middle">lockout data or null</text>
 
-  <line x1="895" y1="240" x2="555" y2="240" stroke="#666" stroke-dasharray="3,3" marker-end="url(#ret)"/>
-  <text x="725" y="255" font-size="9">User row</text>
+  <!-- Step 5-7: CAPTCHA check -->
+  <text x="25" y="443" font-size="11" fill="#6B7280" font-weight="600">5</text>
+  <line x1="302" y1="440" x2="682" y2="440" stroke="#1E3C72" stroke-width="2" marker-end="url(#arrow)"/>
+  <text x="492" y="434" font-size="11" fill="#000000" text-anchor="middle">requires_captcha(username)</text>
 
-  <!-- Argon2 verification -->
-  <rect x="500" y="260" width="110" height="50" fill="#fff3cd" stroke="#ffc107" stroke-width="1.5"/>
-  <text x="555" y="278" text-anchor="middle" font-family="Consolas" font-size="9">Argon2id verify</text>
-  <text x="555" y="293" text-anchor="middle" font-size="9" fill="#dc3545">~120ms</text>
-  <text x="555" y="305" text-anchor="middle" font-size="8">(19 MiB memory)</text>
+  <text x="25" y="488" font-size="11" fill="#6B7280" font-weight="600">6</text>
+  <line x1="682" y1="485" x2="1282" y2="485" stroke="#1E3C72" stroke-width="2" marker-end="url(#arrow)"/>
+  <text x="982" y="474" font-size="10" fill="#000000" text-anchor="middle" class="mono">SELECT COUNT(*) FROM login_attempts</text>
+  <text x="982" y="490" font-size="10" fill="#6B7280" text-anchor="middle" class="mono">WHERE username = ? AND success = 0 AND timestamp > now() - 15min</text>
 
-  <line x1="555" y1="320" x2="385" y2="320" stroke="#666" stroke-dasharray="3,3" marker-end="url(#ret)"/>
-  <text x="470" y="335" font-size="9">Valid + totp_enabled=true</text>
+  <text x="25" y="533" font-size="11" fill="#6B7280" font-weight="600">7</text>
+  <line x1="1282" y1="530" x2="682" y2="530" stroke="#6B7280" stroke-width="2" stroke-dasharray="4,4" marker-end="url(#arrow-gray)"/>
+  <text x="982" y="524" font-size="11" fill="#6B7280" text-anchor="middle">failure_count</text>
 
-  <!-- Check if 2FA enabled -->
-  <rect x="340" y="345" width="90" height="40" fill="#d4edda" stroke="#28a745" stroke-width="1.5"/>
-  <text x="385" y="360" text-anchor="middle" font-size="9">Check 2FA</text>
-  <text x="385" y="375" text-anchor="middle" font-size="9" font-weight="bold">Enabled</text>
+  <!-- CAPTCHA note -->
+  <rect x="230" y="555" width="250" height="60" fill="#FFF3CD" stroke="#B36B00" stroke-width="2" rx="8"/>
+  <text x="355" y="575" font-size="11" fill="#B36B00" font-weight="700" text-anchor="middle">If failure_count ≥ 3:</text>
+  <text x="355" y="592" font-size="10" fill="#000000" text-anchor="middle">reCAPTCHA v2 verification required</text>
+  <text x="355" y="607" font-size="10" fill="#6B7280" text-anchor="middle">Google reCAPTCHA API integration</text>
 
-  <!-- Store pending 2FA -->
-  <text x="385" y="405" text-anchor="middle" font-size="9" fill="#666">Store pending_2fa_user_id</text>
-  <text x="385" y="418" text-anchor="middle" font-size="9" fill="#666">in session</text>
+  <!-- Step 8: Authenticate -->
+  <text x="25" y="658" font-size="11" fill="#6B7280" font-weight="600">8</text>
+  <line x1="302" y1="655" x2="492" y2="655" stroke="#1E3C72" stroke-width="2" marker-end="url(#arrow)"/>
+  <text x="397" y="649" font-size="11" fill="#000000" font-weight="600" text-anchor="middle">authenticate(username, password)</text>
 
-  <line x1="385" y1="430" x2="225" y2="430" stroke="#666" stroke-dasharray="3,3" marker-end="url(#ret)"/>
-  <text x="305" y="425" font-size="10">Redirect /verify-2fa</text>
+  <!-- Step 9-10: Database query -->
+  <text x="25" y="703" font-size="11" fill="#6B7280" font-weight="600">9</text>
+  <line x1="492" y1="700" x2="1282" y2="700" stroke="#1E3C72" stroke-width="2" marker-end="url(#arrow)"/>
+  <text x="887" y="694" font-size="10" fill="#000000" text-anchor="middle" class="mono">SELECT * FROM users WHERE username = ?</text>
 
-  <line x1="225" y1="450" x2="70" y2="450" stroke="#666" stroke-dasharray="3,3" marker-end="url(#ret)"/>
-  <text x="147" y="465" font-size="10">Show 2FA form</text>
+  <text x="25" y="748" font-size="11" fill="#6B7280" font-weight="600">10</text>
+  <line x1="1282" y1="745" x2="492" y2="745" stroke="#6B7280" stroke-width="2" stroke-dasharray="4,4" marker-end="url(#arrow-gray)"/>
+  <text x="887" y="739" font-size="11" fill="#6B7280" text-anchor="middle">user row (password hash, totp_enabled, etc.)</text>
 
-  <!-- Phase 2: TOTP Verification -->
-  <rect x="20" y="480" width="120" height="25" fill="#f8d7da" stroke="#dc3545" stroke-width="2"/>
-  <text x="80" y="497" text-anchor="middle" font-size="11" font-weight="bold">Phase 2: TOTP</text>
+  <!-- Argon2id verification box -->
+  <rect x="420" y="770" width="260" height="75" fill="#E8F5E9" stroke="#1E7E34" stroke-width="2" rx="8"/>
+  <text x="550" y="790" font-size="12" fill="#1E7E34" font-weight="700" text-anchor="middle">Argon2id Password Verification</text>
+  <text x="550" y="808" font-size="10" fill="#000000" text-anchor="middle" class="mono">Argon2id.verify(stored_hash, password)</text>
+  <text x="550" y="823" font-size="10" fill="#6B7280" text-anchor="middle">Parameters: time_cost=2, memory_cost=19456, parallelism=1</text>
+  <text x="550" y="838" font-size="10" fill="#6B7280" text-anchor="middle">~120ms constant-time operation</text>
 
-  <line x1="70" y1="520" x2="225" y2="520" stroke="#dc3545" stroke-width="2" marker-end="url(#msg)"/>
-  <text x="147" y="515" font-size="10" font-weight="bold">Enter 6-digit code</text>
-  <text x="147" y="535" font-size="9">{code: "123456"}</text>
+  <!-- Step 11: Success -->
+  <text x="25" y="888" font-size="11" fill="#6B7280" font-weight="600">11</text>
+  <line x1="492" y1="885" x2="302" y2="885" stroke="#1E7E34" stroke-width="2.5" marker-end="url(#arrow-green)"/>
+  <text x="397" y="879" font-size="11" fill="#1E7E34" font-weight="700" text-anchor="middle">Success: True, user_dict</text>
 
-  <line x1="225" y1="550" x2="385" y2="550" stroke="#2a5298" stroke-width="2" marker-end="url(#msg)"/>
-  <text x="305" y="545" font-size="10">POST /verify-2fa</text>
+  <!-- Step 12-13: Logging -->
+  <text x="25" y="933" font-size="11" fill="#6B7280" font-weight="600">12</text>
+  <line x1="302" y1="930" x2="682" y2="930" stroke="#1E3C72" stroke-width="2" marker-end="url(#arrow)"/>
+  <text x="492" y="924" font-size="10" fill="#000000" text-anchor="middle">log_login_attempt(username, IP, UA, success=True)</text>
 
-  <line x1="385" y1="570" x2="735" y2="570" stroke="#2a5298" stroke-width="2" marker-end="url(#msg)"/>
-  <text x="560" y="565" font-size="10">verify_totp(user_id, code)</text>
+  <text x="25" y="978" font-size="11" fill="#6B7280" font-weight="600">13</text>
+  <line x1="302" y1="975" x2="682" y2="975" stroke="#1E3C72" stroke-width="2" marker-end="url(#arrow)"/>
+  <text x="492" y="969" font-size="11" fill="#000000" text-anchor="middle">clear_account_lockout(username)</text>
 
-  <line x1="735" y1="590" x2="895" y2="590" stroke="#2a5298" stroke-width="2" marker-end="url(#msg)"/>
-  <text x="815" y="585" font-size="10">SELECT totp_secret</text>
+  <!-- SESSION REGENERATION #1 - Critical Security Point -->
+  <rect x="200" y="1000" width="300" height="90" fill="#C8E6C9" stroke="#1E7E34" stroke-width="3" rx="8"/>
+  <text x="350" y="1020" font-size="12" fill="#1E7E34" font-weight="700" text-anchor="middle">🔒 SESSION REGENERATION POINT #1</text>
+  <text x="350" y="1038" font-size="11" fill="#000000" font-weight="600" text-anchor="middle" class="mono">regenerate_session()</text>
+  <text x="350" y="1054" font-size="10" fill="#6B7280" text-anchor="middle">Prevents session fixation after password auth</text>
+  <text x="350" y="1069" font-size="10" fill="#1E7E34" font-weight="600" text-anchor="middle">Evidence: auth_routes.py:116</text>
+  <text x="350" y="1083" font-size="9" fill="#6B7280" text-anchor="middle">decorators.py:23 - Session ID regeneration implemented</text>
 
-  <line x1="895" y1="610" x2="735" y2="610" stroke="#666" stroke-dasharray="3,3" marker-end="url(#ret)"/>
-  <text x="815" y="625" font-size="9">encrypted_secret</text>
+  <!-- Step 14: Check 2FA status -->
+  <text x="25" y="1133" font-size="11" fill="#6B7280" font-weight="600">14</text>
+  <rect x="230" y="1115" width="180" height="35" fill="#F8FAFC" stroke="#1E3C72" stroke-width="1.5" rx="5"/>
+  <text x="320" y="1137" font-size="11" fill="#000000" text-anchor="middle">Check user['totp_enabled']</text>
 
-  <!-- Decrypt -->
-  <rect x="680" y="635" width="110" height="35" fill="#fff3cd" stroke="#ffc107"/>
-  <text x="735" y="650" text-anchor="middle" font-size="9">Decrypt with Fernet</text>
-  <text x="735" y="663" text-anchor="middle" font-family="Consolas" font-size="8">AES-128 + HMAC</text>
+  <!-- 2FA branch -->
+  <rect x="220" y="1170" width="200" height="75" fill="#FFEBEE" stroke="#C82333" stroke-width="2" rx="8"/>
+  <text x="320" y="1190" font-size="11" fill="#C82333" font-weight="700" text-anchor="middle">If totp_enabled == 1:</text>
+  <text x="320" y="1207" font-size="10" fill="#000000" text-anchor="middle" class="mono">session['pending_2fa_user_id'] = user['id']</text>
+  <text x="320" y="1223" font-size="10" fill="#000000" text-anchor="middle" class="mono">session['pending_2fa_username'] = username</text>
+  <text x="320" y="1238" font-size="10" fill="#C82333" font-weight="600" text-anchor="middle">→ Step-up authentication required</text>
 
-  <!-- Generate TOTP -->
-  <rect x="680" y="680" width="110" height="35" fill="#d4edda" stroke="#28a745"/>
-  <text x="735" y="695" text-anchor="middle" font-family="Consolas" font-size="9">pyotp.TOTP(secret)</text>
-  <text x="735" y="708" text-anchor="middle" font-size="8">.verify(code)</text>
+  <!-- Step 15: Redirect to 2FA -->
+  <text x="25" y="1288" font-size="11" fill="#6B7280" font-weight="600">15</text>
+  <line x1="302" y1="1285" x2="117" y2="1285" stroke="#C82333" stroke-width="2.5" marker-end="url(#arrow-red)"/>
+  <text x="210" y="1279" font-size="11" fill="#C82333" font-weight="700" text-anchor="middle">302 Redirect to /twofa/verify-2fa</text>
 
-  <!-- Check replay -->
-  <rect x="680" y="725" width="110" height="35" fill="#e8f4f8" stroke="#2a5298"/>
-  <text x="735" y="738" text-anchor="middle" font-size="9">Check cache:</text>
-  <text x="735" y="751" text-anchor="middle" font-family="Consolas" font-size="8">user:code:window</text>
+  <!-- Phase 2 Header -->
+  <rect x="60" y="1330" width="600" height="35" fill="#FFEBEE" stroke="#C82333" stroke-width="2" rx="8"/>
+  <text x="360" y="1353" font-size="14" fill="#C82333" font-weight="700" text-anchor="middle">Phase 2: TOTP Verification (Step-Up Authentication)</text>
 
-  <line x1="735" y1="765" x2="385" y2="765" stroke="#666" stroke-dasharray="3,3" marker-end="url(#ret)"/>
-  <text x="560" y="780" font-size="9" font-weight="bold" fill="#28a745">Valid (not replayed)</text>
+  <!-- Step 16: GET verify page -->
+  <text x="25" y="1413" font-size="11" fill="#6B7280" font-weight="600">16</text>
+  <line x1="117" y1="1410" x2="902" y2="1410" stroke="#C82333" stroke-width="2.5" marker-end="url(#arrow-red)"/>
+  <text x="510" y="1404" font-size="11" fill="#C82333" font-weight="600" text-anchor="middle">GET /twofa/verify-2fa</text>
 
-  <!-- Complete login -->
-  <text x="385" y="800" text-anchor="middle" font-size="9">session['user_id'] = user_id</text>
+  <text x="25" y="1458" font-size="11" fill="#6B7280" font-weight="600">17</text>
+  <line x1="902" y1="1455" x2="117" y2="1455" stroke="#6B7280" stroke-width="2" stroke-dasharray="4,4" marker-end="url(#arrow-gray)"/>
+  <text x="510" y="1449" font-size="11" fill="#6B7280" text-anchor="middle">Show 2FA form (6-digit code + backup code option)</text>
 
-  <line x1="385" y1="815" x2="70" y2="815" stroke="#666" stroke-dasharray="3,3" marker-end="url(#ret)"/>
-  <text x="227" y="810" font-size="10" fill="#28a745" font-weight="bold">Login successful</text>
+  <!-- Step 18: POST verification code -->
+  <text x="25" y="1503" font-size="11" fill="#6B7280" font-weight="600">18</text>
+  <line x1="117" y1="1500" x2="902" y2="1500" stroke="#C82333" stroke-width="2.5" marker-end="url(#arrow-red)"/>
+  <text x="510" y="1489" font-size="11" fill="#C82333" font-weight="700" text-anchor="middle">POST code=123456, use_backup=false</text>
+  <text x="510" y="1505" font-size="10" fill="#B36B00" font-weight="600" text-anchor="middle">Rate Limit: 5 req/min per-IP (twofa_routes.py:83)</text>
 
-  <!-- Legend -->
-  <rect x="50" y="755" width="600" height="35" fill="#f8f9fa" stroke="#666"/>
-  <text x="60" y="773" font-size="10" font-weight="bold">Security:</text>
-  <text x="120" y="773" font-size="9">Password never stored plaintext | TOTP secrets encrypted | Replay cache prevents code reuse</text>
+  <!-- Step 19: Verify TOTP -->
+  <text x="25" y="1548" font-size="11" fill="#6B7280" font-weight="600">19</text>
+  <line x1="902" y1="1545" x2="1092" y2="1545" stroke="#1E3C72" stroke-width="2" marker-end="url(#arrow)"/>
+  <text x="997" y="1539" font-size="11" fill="#000000" font-weight="600" text-anchor="middle">verify_totp(user_id, code)</text>
+
+  <!-- Step 20-21: Get TOTP secret -->
+  <text x="25" y="1593" font-size="11" fill="#6B7280" font-weight="600">20</text>
+  <line x1="1092" y1="1590" x2="1282" y2="1590" stroke="#1E3C72" stroke-width="2" marker-end="url(#arrow)"/>
+  <text x="1187" y="1579" font-size="10" fill="#000000" text-anchor="middle" class="mono">SELECT totp_secret, totp_enabled</text>
+  <text x="1187" y="1595" font-size="10" fill="#6B7280" text-anchor="middle" class="mono">FROM users WHERE id = ?</text>
+
+  <text x="25" y="1638" font-size="11" fill="#6B7280" font-weight="600">21</text>
+  <line x1="1282" y1="1635" x2="1092" y2="1635" stroke="#6B7280" stroke-width="2" stroke-dasharray="4,4" marker-end="url(#arrow-gray)"/>
+  <text x="1187" y="1629" font-size="11" fill="#6B7280" text-anchor="middle">encrypted_secret, totp_enabled=1</text>
+
+  <!-- TOTP verification process box - FIXED: Moved to right to prevent overlap -->
+  <rect x="1050" y="1660" width="320" height="200" fill="#FFF3CD" stroke="#B36B00" stroke-width="2" rx="8"/>
+  <text x="1210" y="1680" font-size="12" fill="#B36B00" font-weight="700" text-anchor="middle">TOTP Verification Process:</text>
+
+  <text x="1210" y="1705" font-size="11" fill="#1E7E34" font-weight="700" text-anchor="middle">1. Decrypt TOTP Secret</text>
+  <text x="1210" y="1721" font-size="10" fill="#6B7280" text-anchor="middle">Fernet symmetric encryption (AES-128-CBC + HMAC)</text>
+  <text x="1210" y="1736" font-size="10" fill="#6B7280" text-anchor="middle">PBKDF2 key derivation: 100,000 iterations</text>
+
+  <text x="1210" y="1760" font-size="11" fill="#C82333" font-weight="700" text-anchor="middle">2. Replay Attack Prevention</text>
+  <text x="1210" y="1776" font-size="10" fill="#000000" text-anchor="middle" class="mono">cache_key = f"{user_id}:{code}:{window}"</text>
+  <text x="1210" y="1791" font-size="10" fill="#6B7280" text-anchor="middle">Check in-memory used_codes_cache</text>
+  <text x="1210" y="1806" font-size="9" fill="#1E7E34" font-weight="600" text-anchor="middle">Evidence: totp_service.py:159-173</text>
+
+  <text x="1210" y="1830" font-size="11" fill="#1E3C72" font-weight="700" text-anchor="middle">3. TOTP Verification</text>
+  <text x="1210" y="1846" font-size="10" fill="#000000" text-anchor="middle" class="mono">pyotp.TOTP(secret).verify(code, valid_window=1)</text>
+  <text x="1210" y="1861" font-size="10" fill="#6B7280" text-anchor="middle">±1 step tolerance = ±30 seconds</text>
+
+  <!-- Step 22: Success -->
+  <text x="25" y="1913" font-size="11" fill="#6B7280" font-weight="600">22</text>
+  <line x1="1092" y1="1910" x2="902" y2="1910" stroke="#1E7E34" stroke-width="2.5" marker-end="url(#arrow-green)"/>
+  <text x="997" y="1904" font-size="11" fill="#1E7E34" font-weight="700" text-anchor="middle">True (TOTP valid)</text>
+
+  <!-- Step 23: Remove pending session vars -->
+  <text x="25" y="1958" font-size="11" fill="#6B7280" font-weight="600">23</text>
+  <rect x="830" y="1940" width="280" height="50" fill="#F8FAFC" stroke="#1E3C72" stroke-width="1.5" rx="5"/>
+  <text x="970" y="1960" font-size="10" fill="#000000" text-anchor="middle" class="mono">session.pop('pending_2fa_user_id')</text>
+  <text x="970" y="1975" font-size="10" fill="#000000" text-anchor="middle" class="mono">session.pop('pending_2fa_username')</text>
+
+  <!-- SESSION REGENERATION #2 - Critical Security Point -->
+  <rect x="800" y="2010" width="320" height="90" fill="#C8E6C9" stroke="#1E7E34" stroke-width="3" rx="8"/>
+  <text x="960" y="2030" font-size="12" fill="#1E7E34" font-weight="700" text-anchor="middle">🔒 SESSION REGENERATION POINT #2</text>
+  <text x="960" y="2048" font-size="11" fill="#000000" font-weight="600" text-anchor="middle" class="mono">regenerate_session()</text>
+  <text x="960" y="2064" font-size="10" fill="#6B7280" text-anchor="middle">Prevents session fixation after 2FA verification</text>
+  <text x="960" y="2079" font-size="10" fill="#1E7E34" font-weight="600" text-anchor="middle">Evidence: twofa_routes.py:133</text>
+  <text x="960" y="2093" font-size="9" fill="#6B7280" text-anchor="middle">decorators.py:23 - Session ID regeneration implemented</text>
+
+  <!-- Step 24: Set user session -->
+  <text x="25" y="2143" font-size="11" fill="#6B7280" font-weight="600">24</text>
+  <rect x="830" y="2125" width="280" height="50" fill="#E8F5E9" stroke="#1E7E34" stroke-width="2" rx="5"/>
+  <text x="970" y="2145" font-size="10" fill="#1E7E34" font-weight="600" text-anchor="middle" class="mono">session['user_id'] = user_id</text>
+  <text x="970" y="2160" font-size="10" fill="#1E7E34" font-weight="600" text-anchor="middle" class="mono">session['username'] = username</text>
+
+  <!-- Step 25: Log security event -->
+  <text x="25" y="2213" font-size="11" fill="#6B7280" font-weight="600">25</text>
+  <line x1="902" y1="2210" x2="682" y2="2210" stroke="#1E3C72" stroke-width="2" marker-end="url(#arrow)"/>
+  <text x="792" y="2199" font-size="10" fill="#000000" text-anchor="middle">log_security_event('2fa_verified',</text>
+  <text x="792" y="2215" font-size="10" fill="#6B7280" text-anchor="middle">username, IP, severity='info')</text>
+
+  <!-- Step 26: Success redirect -->
+  <text x="25" y="2263" font-size="11" fill="#6B7280" font-weight="600">26</text>
+  <line x1="902" y1="2260" x2="117" y2="2260" stroke="#1E7E34" stroke-width="3" marker-end="url(#arrow-green)"/>
+  <text x="510" y="2254" font-size="12" fill="#1E7E34" font-weight="700" text-anchor="middle">302 Redirect to /home (Login Complete ✓)</text>
+
+  <!-- Alternative Flow Header -->
+  <rect x="60" y="2320" width="700" height="35" fill="#FFF3E0" stroke="#B36B00" stroke-width="2" rx="8"/>
+  <text x="410" y="2343" font-size="14" fill="#B36B00" font-weight="700" text-anchor="middle">Alternative Flow: Backup Code Verification</text>
+
+  <!-- CRITICAL FIX: Backup code flow box - Increased height from 220 to 350 and adjusted all text positions -->
+  <rect x="80" y="2380" width="650" height="350" fill="#FFF9C4" stroke="#B36B00" stroke-width="2" rx="8"/>
+  <text x="405" y="2410" font-size="13" fill="#B36B00" font-weight="700" text-anchor="middle">Backup Code Verification Process:</text>
+
+  <text x="405" y="2445" font-size="11" fill="#000000" font-weight="600" text-anchor="middle">1. User enters backup code in format: ABCD-EFGH</text>
+  <text x="405" y="2465" font-size="10" fill="#6B7280" text-anchor="middle">8 alphanumeric characters with dash separator</text>
+
+  <text x="405" y="2500" font-size="11" fill="#000000" font-weight="600" text-anchor="middle">2. Hash provided code:</text>
+  <text x="405" y="2520" font-size="10" fill="#000000" text-anchor="middle" class="mono">code_hash = SHA256(code.upper().encode())</text>
+  <text x="405" y="2538" font-size="9" fill="#6B7280" text-anchor="middle">Evidence: totp_service.py:201</text>
+
+  <text x="405" y="2573" font-size="11" fill="#000000" font-weight="600" text-anchor="middle">3. Verify against stored backup codes:</text>
+  <text x="405" y="2593" font-size="10" fill="#000000" text-anchor="middle" class="mono">SELECT backup_codes FROM users WHERE id = ?</text>
+  <text x="405" y="2611" font-size="10" fill="#6B7280" text-anchor="middle">JSON array of SHA256 hashes (10 codes generated initially)</text>
+
+  <text x="405" y="2646" font-size="11" fill="#1E7E34" font-weight="700" text-anchor="middle">4. Single-Use Enforcement:</text>
+  <text x="405" y="2666" font-size="10" fill="#1E7E34" text-anchor="middle">Remove used code_hash from array → UPDATE users SET backup_codes = ?</text>
+  <text x="405" y="2684" font-size="10" fill="#B36B00" font-weight="600" text-anchor="middle">Return remaining code count to user</text>
+
+  <!-- Step 27: After backup code success - All text now within box bounds -->
+  <text x="405" y="2712" font-size="11" fill="#1E7E34" font-weight="700" text-anchor="middle">After successful backup code verification:</text>
+  <text x="405" y="2679" font-size="10" fill="#000000" text-anchor="middle">→ Same session regeneration flow as TOTP (twofa_routes.py:106)</text>
+  <text x="405" y="2696" font-size="10" fill="#000000" text-anchor="middle">→ Log security event: '2fa_backup_used' with remaining count</text>
+  <text x="405" y="2713" font-size="10" fill="#1E7E34" text-anchor="middle">→ Show warning if remaining codes &lt; 3</text>
+
+  <!-- Summary Section - FIXED: Increased height from 380 to 450 -->
+  <rect x="50" y="2780" width="1320" height="450" fill="#FAFAFA" stroke="#1E3C72" stroke-width="2" rx="10"/>
+  <text x="70" y="2815" font-size="16" fill="#1E3C72" font-weight="700" text-anchor="start">2FA Security Implementation Summary</text>
+
+  <!-- Row 1: Session Security -->
+  <text x="90" y="2855" font-size="13" fill="#1E7E34" font-weight="700" text-anchor="start">🔒 Session Fixation Prevention (IMPLEMENTED):</text>
+  <text x="110" y="2875" font-size="11" fill="#000000" text-anchor="start">• Regeneration Point #1: After password authentication (auth_routes.py:116)</text>
+  <text x="110" y="2892" font-size="11" fill="#000000" text-anchor="start">• Regeneration Point #2: After TOTP verification (twofa_routes.py:133) or backup code (line 106)</text>
+  <text x="110" y="2909" font-size="11" fill="#6B7280" text-anchor="start">• Implementation: decorators.py:23 - regenerate_session() decorator</text>
+  <text x="110" y="2926" font-size="11" fill="#6B7280" text-anchor="start">• Security: Prevents attacker from fixing session ID before authentication completes</text>
+
+  <!-- Row 2: TOTP Replay Prevention -->
+  <text x="90" y="2960" font-size="13" fill="#C82333" font-weight="700" text-anchor="start">⚡ TOTP Replay Attack Prevention:</text>
+  <text x="110" y="2980" font-size="11" fill="#000000" text-anchor="start">• In-memory cache: {user_id}:{code}:{time_window} (totp_service.py:159-173)</text>
+  <text x="110" y="2997" font-size="11" fill="#000000" text-anchor="start">• Time window: 30-second intervals (TOTP standard)</text>
+  <text x="110" y="3014" font-size="11" fill="#6B7280" text-anchor="start">• Cache cleanup: Removes entries older than 90 seconds (3 windows)</text>
+  <text x="110" y="3031" font-size="11" fill="#6B7280" text-anchor="start">• Prevention: Same code cannot be used twice in same time window</text>
+
+  <!-- Row 3: TOTP Verification -->
+  <text x="90" y="3065" font-size="13" fill="#1E3C72" font-weight="700" text-anchor="start">⏰ TOTP Time Window Tolerance:</text>
+  <text x="110" y="3085" font-size="11" fill="#000000" text-anchor="start">• valid_window=1: Accepts codes from current window and ±1 adjacent windows</text>
+  <text x="110" y="3102" font-size="11" fill="#6B7280" text-anchor="start">• Tolerance: ±30 seconds (1 step before and after current window)</text>
+  <text x="110" y="3119" font-size="11" fill="#6B7280" text-anchor="start">• Balances security with clock skew tolerance (RFC 6238 recommendation)</text>
+
+  <!-- Row 4: Additional Security -->
+  <text x="700" y="2960" font-size="13" fill="#B36B00" font-weight="700" text-anchor="start">🛡️ Additional Security Measures:</text>
+  <text x="720" y="2980" font-size="11" fill="#000000" text-anchor="start">• Rate Limiting: 5 req/min per-IP on /verify-2fa</text>
+  <text x="720" y="2997" font-size="11" fill="#000000" text-anchor="start">• Backup Codes: SHA256 hashed, single-use (10 total)</text>
+  <text x="720" y="3014" font-size="11" fill="#000000" text-anchor="start">• TOTP Secret: Fernet encrypted at rest</text>
+  <text x="720" y="3031" font-size="11" fill="#000000" text-anchor="start">• PBKDF2: 100,000 iterations for key derivation</text>
+  <text x="720" y="3048" font-size="11" fill="#6B7280" text-anchor="start">• Security Logging: All 2FA events audited</text>
+
+  <!-- Row 5: Step-Up Auth -->
+  <text x="700" y="3082" font-size="13" fill="#1E3C72" font-weight="700" text-anchor="start">🎯 Step-Up Authentication Pattern:</text>
+  <text x="720" y="3102" font-size="11" fill="#000000" text-anchor="start">• Phase 1: Password validates identity</text>
+  <text x="720" y="3119" font-size="11" fill="#000000" text-anchor="start">• Phase 2: TOTP/Backup code validates possession</text>
+  <text x="720" y="3136" font-size="11" fill="#6B7280" text-anchor="start">• Pending session: Temporary storage between phases</text>
+  <text x="720" y="3153" font-size="11" fill="#6B7280" text-anchor="start">• Final session: Only created after both factors pass</text>
+
 </svg>

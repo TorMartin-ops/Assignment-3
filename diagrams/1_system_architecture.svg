@@ -1,137 +1,132 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<svg width="900" height="700" xmlns="http://www.w3.org/2000/svg">
+<svg width="100%" height="100%" viewBox="0 0 1600 2100"
+     xmlns="http://www.w3.org/2000/svg">
+  <title>System Architecture - Authentication System</title>
+  <desc>Complete architecture verified against codebase with file:line references</desc>
   <defs>
     <style>
-      .layer-box { fill: #f0f4f8; stroke: #2a5298; stroke-width: 2; }
-      .layer-header { fill: url(#layerGradient); }
-      .component { fill: white; stroke: #2a5298; stroke-width: 1.5; }
-      .arrow { stroke: #666; stroke-width: 2; fill: none; marker-end: url(#arrowhead); }
-      .label { font-family: Arial, sans-serif; font-size: 11px; }
-      .title { font-family: Arial, sans-serif; font-size: 13px; font-weight: bold; }
-      .header-text { font-family: Arial, sans-serif; font-size: 12px; font-weight: bold; fill: white; }
+      @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&amp;display=swap');
+      text { font-family: 'Inter', system-ui, sans-serif; }
     </style>
-    <linearGradient id="layerGradient" x1="0%" y1="0%" x2="100%" y2="0%">
-      <stop offset="0%" style="stop-color:#1e3c72;stop-opacity:1" />
-      <stop offset="100%" style="stop-color:#2a5298;stop-opacity:1" />
-    </linearGradient>
     <marker id="arrowhead" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto">
-      <polygon points="0 0, 10 3, 0 6" fill="#666"/>
+      <polygon points="0 0, 10 3, 0 6" fill="#6B7280" />
     </marker>
   </defs>
-
-  <!-- Title -->
-  <text x="450" y="25" text-anchor="middle" class="title" font-size="16" fill="#1e3c72">
-    System Architecture - Service-Oriented Layered Design
-  </text>
-
-  <!-- Layer 1: Presentation -->
-  <rect x="50" y="50" width="800" height="120" class="layer-box"/>
-  <rect x="50" y="50" width="800" height="30" class="layer-header"/>
-  <text x="450" y="70" text-anchor="middle" class="header-text">PRESENTATION LAYER - Flask Blueprints</text>
-
-  <rect x="80" y="95" width="220" height="60" class="component"/>
-  <text x="190" y="115" text-anchor="middle" class="title" fill="#2a5298">auth_routes.py</text>
-  <text x="190" y="132" text-anchor="middle" class="label" font-size="9">/register, /login, /logout</text>
-  <text x="190" y="145" text-anchor="middle" class="label" font-size="9">Blueprint: 'auth'</text>
-
-  <rect x="340" y="95" width="220" height="60" class="component"/>
-  <text x="450" y="115" text-anchor="middle" class="title" fill="#2a5298">oauth_routes.py</text>
-  <text x="450" y="132" text-anchor="middle" class="label" font-size="9">/oauth/authorize, /oauth/token</text>
-  <text x="450" y="145" text-anchor="middle" class="label" font-size="9">Blueprint: 'oauth'</text>
-
-  <rect x="600" y="95" width="220" height="60" class="component"/>
-  <text x="710" y="115" text-anchor="middle" class="title" fill="#2a5298">twofa_routes.py</text>
-  <text x="710" y="132" text-anchor="middle" class="label" font-size="9">/setup-2fa, /verify-2fa</text>
-  <text x="710" y="145" text-anchor="middle" class="label" font-size="9">Blueprint: 'twofa'</text>
-
-  <!-- Layer 2: Business Logic -->
-  <rect x="50" y="200" width="800" height="180" class="layer-box"/>
-  <rect x="50" y="200" width="800" height="30" class="layer-header"/>
-  <text x="450" y="220" text-anchor="middle" class="header-text">BUSINESS LOGIC LAYER - Service Classes (Singleton Pattern)</text>
-
-  <rect x="70" y="245" width="150" height="120" class="component"/>
-  <text x="145" y="263" text-anchor="middle" class="title" fill="#2a5298">AuthService</text>
-  <text x="145" y="280" text-anchor="middle" class="label" font-size="9">258 lines</text>
-  <line x1="70" y1="285" x2="220" y2="285" stroke="#2a5298"/>
-  <text x="80" y="300" class="label" font-size="9">+ register_user()</text>
-  <text x="80" y="315" class="label" font-size="9">+ authenticate()</text>
-  <text x="80" y="330" class="label" font-size="9">+ change_password()</text>
-  <text x="80" y="345" class="label" font-size="9">Argon2id hashing</text>
-
-  <rect x="240" y="245" width="150" height="120" class="component"/>
-  <text x="315" y="263" text-anchor="middle" class="title" fill="#2a5298">OAuth2Service</text>
-  <text x="315" y="280" text-anchor="middle" class="label" font-size="9">454 lines</text>
-  <line x1="240" y1="285" x2="390" y2="285" stroke="#2a5298"/>
-  <text x="250" y="300" class="label" font-size="9">+ generate_auth_code()</text>
-  <text x="250" y="315" class="label" font-size="9">+ validate_pkce()</text>
-  <text x="250" y="330" class="label" font-size="9">+ refresh_token()</text>
-  <text x="250" y="345" class="label" font-size="9">PKCE + rotation</text>
-
-  <rect x="410" y="245" width="150" height="120" class="component"/>
-  <text x="485" y="263" text-anchor="middle" class="title" fill="#2a5298">TOTPService</text>
-  <text x="485" y="280" text-anchor="middle" class="label" font-size="9">260 lines</text>
-  <line x1="410" y1="285" x2="560" y2="285" stroke="#2a5298"/>
-  <text x="420" y="300" class="label" font-size="9">+ generate_secret()</text>
-  <text x="420" y="315" class="label" font-size="9">+ verify_totp()</text>
-  <text x="420" y="330" class="label" font-size="9">+ generate_qr_code()</text>
-  <text x="420" y="345" class="label" font-size="9">RFC 6238 TOTP</text>
-
-  <rect x="580" y="245" width="150" height="120" class="component"/>
-  <text x="655" y="263" text-anchor="middle" class="title" fill="#2a5298">SecurityService</text>
-  <text x="655" y="280" text-anchor="middle" class="label" font-size="9">325 lines</text>
-  <line x1="580" y1="285" x2="730" y2="285" stroke="#2a5298"/>
-  <text x="590" y="300" class="label" font-size="9">+ apply_lockout()</text>
-  <text x="590" y="315" class="label" font-size="9">+ log_security_event()</text>
-  <text x="590" y="330" class="label" font-size="9">+ track_login_attempts()</text>
-  <text x="590" y="345" class="label" font-size="9">Audit logging</text>
-
-  <!-- Arrows from Layer 1 to Layer 2 -->
-  <path d="M 190 155 L 145 245" class="arrow"/>
-  <path d="M 450 155 L 315 245" class="arrow"/>
-  <path d="M 450 155 L 485 245" class="arrow"/>
-  <path d="M 710 155 L 485 245" class="arrow"/>
-  <path d="M 190 155 L 655 245" class="arrow"/>
-
-  <!-- Layer 3: Data Access -->
-  <rect x="50" y="410" width="800" height="120" class="layer-box"/>
-  <rect x="50" y="410" width="800" height="30" class="layer-header"/>
-  <text x="450" y="430" text-anchor="middle" class="header-text">DATA ACCESS LAYER - Database Connections</text>
-
-  <rect x="150" y="455" width="250" height="60" class="component"/>
-  <text x="275" y="475" text-anchor="middle" class="title" fill="#2a5298">database.py</text>
-  <text x="275" y="492" text-anchor="middle" class="label" font-size="9">get_db_connection() factory</text>
-  <text x="275" y="505" text-anchor="middle" class="label" font-size="9">SQLite Row factory</text>
-
-  <rect x="450" y="455" width="250" height="60" class="component"/>
-  <text x="575" y="475" text-anchor="middle" class="title" fill="#2a5298">database_auth.py</text>
-  <text x="575" y="492" text-anchor="middle" class="label" font-size="9">Schema: 8 auth tables + indexes</text>
-  <text x="575" y="505" text-anchor="middle" class="label" font-size="9">BEGIN IMMEDIATE support</text>
-
-  <!-- Arrows from Layer 2 to Layer 3 -->
-  <path d="M 145 365 L 275 455" class="arrow"/>
-  <path d="M 315 365 L 275 455" class="arrow"/>
-  <path d="M 485 365 L 575 455" class="arrow"/>
-  <path d="M 655 365 L 575 455" class="arrow"/>
-
-  <!-- Layer 4: Database -->
-  <rect x="200" y="560" width="500" height="100" rx="10" fill="#e8f4f8" stroke="#2a5298" stroke-width="3" stroke-dasharray="10,5"/>
-  <text x="450" y="590" text-anchor="middle" class="title" font-size="14" fill="#1e3c72">SQLite Database</text>
-  <text x="450" y="610" text-anchor="middle" class="label">recipe_app.db</text>
-  <text x="450" y="628" text-anchor="middle" class="label" font-size="10">13 tables | 13 indexes | ACID transactions</text>
-  <text x="450" y="645" text-anchor="middle" class="label" font-size="10">File-based | Zero configuration</text>
-
-  <!-- Arrows from Layer 3 to Database -->
-  <path d="M 275 515 L 400 560" class="arrow" stroke-dasharray="5,5"/>
-  <path d="M 575 515 L 500 560" class="arrow" stroke-dasharray="5,5"/>
-  <text x="335" y="540" class="label" font-size="10" fill="#666">queries</text>
-  <text x="540" y="540" class="label" font-size="10" fill="#666">queries</text>
-
-  <!-- Legend -->
-  <rect x="50" y="670" width="300" height="25" fill="#f8f9fa" stroke="#ddd"/>
-  <rect x="60" y="677" width="15" height="10" class="component"/>
-  <text x="80" y="685" class="label" font-size="9">Component/Module</text>
-  <line x1="160" y1="682" x2="190" y2="682" class="arrow"/>
-  <text x="195" y="685" class="label" font-size="9">Dependency</text>
-  <line x1="280" y1="682" x2="310" y2="682" stroke="#666" stroke-width="2" stroke-dasharray="5,5"/>
-  <text x="315" y="685" class="label" font-size="9">Data flow</text>
+  <text x="800" y="50" font-size="24.0" fill="#1E3C72" font-weight="bold" text-anchor="middle">System Architecture - Authentication System</text>
+  <rect x="50" y="90" width="1500" height="240" fill="none" stroke="#C82333" stroke-width="3" rx="8" opacity="1" stroke-dasharray="10,5"/>
+  <text x="70" y="125" font-size="16" fill="#C82333" font-weight="bold" text-anchor="start">🌐 Trust Boundary: Internet</text>
+  <rect x="120" y="150" width="380" height="140" fill="#E3F2FD" stroke="#1E3C72" stroke-width="2" rx="8" opacity="1" />
+  <text x="140" y="180" font-size="14" fill="#1E3C72" font-weight="bold" text-anchor="start">Web Browser</text>
+  <text x="140" y="210" font-size="12" fill="#000000" font-weight="normal" text-anchor="start">• User Agent (JavaScript, Cookies)</text>
+  <text x="140" y="235" font-size="12" fill="#000000" font-weight="normal" text-anchor="start">• Secure, HttpOnly, SameSite cookies (app_auth.py:24)</text>
+  <text x="140" y="260" font-size="12" fill="#000000" font-weight="normal" text-anchor="start">• Client-side PKCE (code_verifier)</text>
+  <rect x="1100" y="150" width="380" height="140" fill="#FFF3E0" stroke="#B36B00" stroke-width="2" rx="8" opacity="1" />
+  <text x="1120" y="180" font-size="14" fill="#B36B00" font-weight="bold" text-anchor="start">External OAuth Provider</text>
+  <text x="1120" y="210" font-size="12" fill="#000000" font-weight="normal" text-anchor="start">• Google, GitHub, etc.</text>
+  <text x="1120" y="235" font-size="12" fill="#000000" font-weight="normal" text-anchor="start">• Future integration</text>
+  <rect x="50" y="360" width="1500" height="90" fill="#E8F5E9" stroke="#1E7E34" stroke-width="2" rx="8" opacity="1" />
+  <text x="70" y="395" font-size="16" fill="#1E7E34" font-weight="bold" text-anchor="start">🔒 TLS/HTTPS Layer (Port 5001)</text>
+  <text x="70" y="425" font-size="11" fill="#000000" font-weight="normal" text-anchor="start">HTTPS termination, HSTS enforcement (utils/security_headers.py:36)</text>
+  <rect x="50" y="480" width="1500" height="1200" fill="none" stroke="#1E3C72" stroke-width="3" rx="8" opacity="1" />
+  <text x="70" y="520" font-size="16" fill="#1E3C72" font-weight="bold" text-anchor="start">🏗️ Flask Application (app_auth.py:20)</text>
+  <rect x="120" y="560" width="480" height="140" fill="#F3E5F5" stroke="#9C27B0" stroke-width="2" rx="8" opacity="1" />
+  <text x="140" y="595" font-size="14" fill="#9C27B0" font-weight="bold" text-anchor="start">Middleware Stack</text>
+  <text x="160" y="625" font-size="12" fill="#000000" font-weight="normal" text-anchor="start">🛡️ CSRF Protection (app_auth.py:29)</text>
+  <text x="160" y="650" font-size="12" fill="#000000" font-weight="normal" text-anchor="start">🔐 Security Headers (app_auth.py:53)</text>
+  <text x="160" y="675" font-size="12" fill="#000000" font-weight="normal" text-anchor="start">⏱️ Rate Limiter (5 req/min)</text>
+  <text x="120" y="750" font-size="14" fill="#1E3C72" font-weight="bold" text-anchor="start">Route Blueprints:</text>
+  <rect x="120" y="780" width="400" height="180" fill="#E1F5FE" stroke="#1E3C72" stroke-width="2" rx="8" opacity="1" />
+  <text x="140" y="815" font-size="14" fill="#1E3C72" font-weight="bold" text-anchor="start">auth_bp (routes/auth_routes.py:12)</text>
+  <text x="150" y="845" font-size="12" fill="#000000" font-weight="normal" text-anchor="start">• /register</text>
+  <text x="150" y="870" font-size="12" fill="#000000" font-weight="normal" text-anchor="start">• /login (line 60)</text>
+  <text x="150" y="895" font-size="12" fill="#000000" font-weight="normal" text-anchor="start">• /logout</text>
+  <text x="150" y="920" font-size="12" fill="#000000" font-weight="normal" text-anchor="start">• /change-password</text>
+  <rect x="580" y="780" width="400" height="180" fill="#E1F5FE" stroke="#1E3C72" stroke-width="2" rx="8" opacity="1" />
+  <text x="600" y="815" font-size="14" fill="#1E3C72" font-weight="bold" text-anchor="start">oauth_bp (routes/oauth_routes.py:22)</text>
+  <text x="610" y="845" font-size="12" fill="#000000" font-weight="normal" text-anchor="start">• /oauth/authorize (line 35)</text>
+  <text x="610" y="870" font-size="12" fill="#000000" font-weight="normal" text-anchor="start">• /oauth/token (line 133)</text>
+  <text x="610" y="895" font-size="12" fill="#000000" font-weight="normal" text-anchor="start">• /oauth/userinfo (line 214)</text>
+  <text x="610" y="920" font-size="12" fill="#000000" font-weight="normal" text-anchor="start">• /oauth/revoke (line 242)</text>
+  <rect x="1040" y="780" width="400" height="180" fill="#E1F5FE" stroke="#1E3C72" stroke-width="2" rx="8" opacity="1" />
+  <text x="1060" y="815" font-size="14" fill="#1E3C72" font-weight="bold" text-anchor="start">twofa_bp (routes/twofa_routes.py:12)</text>
+  <text x="1070" y="845" font-size="12" fill="#000000" font-weight="normal" text-anchor="start">• /setup-2fa (line 21)</text>
+  <text x="1070" y="870" font-size="12" fill="#000000" font-weight="normal" text-anchor="start">• /verify-2fa (line 82)</text>
+  <text x="1070" y="895" font-size="12" fill="#000000" font-weight="normal" text-anchor="start">• /backup-codes</text>
+  <text x="1070" y="920" font-size="12" fill="#000000" font-weight="normal" text-anchor="start">• /disable-2fa (line 171)</text>
+  <text x="120" y="1010" font-size="14" fill="#1E3C72" font-weight="bold" text-anchor="start">Service Layer (Singletons):</text>
+  <rect x="120" y="1040" width="280" height="140" fill="#E8F5E9" stroke="#1E7E34" stroke-width="2" rx="8" opacity="1" />
+  <text x="135" y="1070" font-size="14" fill="#1E7E34" font-weight="bold" text-anchor="start">AuthService</text>
+  <text x="135" y="1095" font-size="11" fill="#6B7280" font-weight="normal" text-anchor="start">(services/auth_service.py:13)</text>
+  <text x="140" y="1120" font-size="11" fill="#000000" font-weight="normal" text-anchor="start">Argon2id: t=2, m=19456, p=1</text>
+  <text x="140" y="1142" font-size="11" fill="#000000" font-weight="normal" text-anchor="start">Timing-safe authentication</text>
+  <rect x="420" y="1040" width="280" height="140" fill="#E8F5E9" stroke="#1E7E34" stroke-width="2" rx="8" opacity="1" />
+  <text x="435" y="1070" font-size="14" fill="#1E7E34" font-weight="bold" text-anchor="start">OAuth2Service</text>
+  <text x="435" y="1095" font-size="11" fill="#6B7280" font-weight="normal" text-anchor="start">(services/oauth2_service.py:14)</text>
+  <text x="440" y="1120" font-size="11" fill="#000000" font-weight="normal" text-anchor="start">PKCE (S256) line 98</text>
+  <text x="440" y="1142" font-size="11" fill="#000000" font-weight="normal" text-anchor="start">Token Rotation line 290</text>
+  <rect x="720" y="1040" width="280" height="140" fill="#E8F5E9" stroke="#1E7E34" stroke-width="2" rx="8" opacity="1" />
+  <text x="735" y="1070" font-size="14" fill="#1E7E34" font-weight="bold" text-anchor="start">TOTPService</text>
+  <text x="735" y="1095" font-size="11" fill="#6B7280" font-weight="normal" text-anchor="start">(services/totp_service.py:16)</text>
+  <text x="740" y="1120" font-size="11" fill="#000000" font-weight="normal" text-anchor="start">pyotp, QR Code line 36</text>
+  <text x="740" y="1142" font-size="11" fill="#000000" font-weight="normal" text-anchor="start">Replay Prevention line 130</text>
+  <rect x="1020" y="1040" width="280" height="140" fill="#E8F5E9" stroke="#1E7E34" stroke-width="2" rx="8" opacity="1" />
+  <text x="1035" y="1070" font-size="14" fill="#1E7E34" font-weight="bold" text-anchor="start">RateLimiter</text>
+  <text x="1035" y="1095" font-size="11" fill="#6B7280" font-weight="normal" text-anchor="start">(services/rate_limiter.py:11)</text>
+  <text x="1040" y="1120" font-size="11" fill="#000000" font-weight="normal" text-anchor="start">Database-backed</text>
+  <text x="1040" y="1142" font-size="11" fill="#000000" font-weight="normal" text-anchor="start">BEGIN IMMEDIATE line 96</text>
+  <rect x="120" y="1210" width="280" height="140" fill="#E8F5E9" stroke="#1E7E34" stroke-width="2" rx="8" opacity="1" />
+  <text x="135" y="1240" font-size="14" fill="#1E7E34" font-weight="bold" text-anchor="start">SecurityService</text>
+  <text x="135" y="1265" font-size="11" fill="#6B7280" font-weight="normal" text-anchor="start">(services/security_service.py:9)</text>
+  <text x="140" y="1290" font-size="11" fill="#000000" font-weight="normal" text-anchor="start">3 failures → 15min lockout</text>
+  <text x="140" y="1312" font-size="11" fill="#000000" font-weight="normal" text-anchor="start">CAPTCHA after 3 failures</text>
+  <rect x="420" y="1210" width="280" height="140" fill="#E8F5E9" stroke="#1E7E34" stroke-width="2" rx="8" opacity="1" />
+  <text x="435" y="1240" font-size="14" fill="#1E7E34" font-weight="bold" text-anchor="start">EncryptionService</text>
+  <text x="435" y="1265" font-size="11" fill="#6B7280" font-weight="normal" text-anchor="start">(utils/encryption.py:16)</text>
+  <text x="440" y="1290" font-size="11" fill="#000000" font-weight="normal" text-anchor="start">Fernet (AES-128 CBC)</text>
+  <text x="440" y="1312" font-size="11" fill="#000000" font-weight="normal" text-anchor="start">PBKDF2: 100k iterations</text>
+  <rect x="120" y="1410" width="1320" height="240" fill="#E3F2FD" stroke="#1E3C72" stroke-width="2" rx="8" opacity="1" />
+  <text x="140" y="1450" font-size="14" fill="#1E3C72" font-weight="bold" text-anchor="start">💾 SQLite Database (database_auth.py:9)</text>
+  <text x="160" y="1485" font-size="12" fill="#000000" font-weight="normal" text-anchor="start">• users (line 22, 16 columns, totp_secret encrypted)</text>
+  <text x="160" y="1513" font-size="12" fill="#000000" font-weight="normal" text-anchor="start">• login_attempts (line 87, 7 columns, 2 indexes)</text>
+  <text x="160" y="1541" font-size="12" fill="#000000" font-weight="normal" text-anchor="start">• account_lockouts (line 113, 7 columns)</text>
+  <text x="160" y="1569" font-size="12" fill="#000000" font-weight="normal" text-anchor="start">• rate_limits (line 133, 6 columns)</text>
+  <text x="160" y="1597" font-size="12" fill="#000000" font-weight="normal" text-anchor="start">• security_events (line 153, 9 columns)</text>
+  <text x="780" y="1485" font-size="12" fill="#000000" font-weight="normal" text-anchor="start">• oauth2_clients (line 180, 13 columns)</text>
+  <text x="780" y="1513" font-size="12" fill="#000000" font-weight="normal" text-anchor="start">• oauth2_authorization_codes (line 209)</text>
+  <text x="780" y="1541" font-size="12" fill="#000000" font-weight="normal" text-anchor="start">• oauth2_tokens (line 235, family tracking)</text>
+  <text x="780" y="1569" font-size="12" fill="#000000" font-weight="normal" text-anchor="start">• sessions (line 274, fingerprinting)</text>
+  <text x="120" y="1710" font-size="14" fill="#1E3C72" font-weight="bold" text-anchor="start">External Services:</text>
+  <rect x="120" y="1750" width="580" height="110" fill="#FFEBEE" stroke="#C82333" stroke-width="2" rx="8" opacity="1" />
+  <text x="140" y="1785" font-size="14" fill="#C82333" font-weight="bold" text-anchor="start">🌍 Google reCAPTCHA v2 (utils/recaptcha.py:10)</text>
+  <text x="150" y="1815" font-size="12" fill="#000000" font-weight="normal" text-anchor="start">Triggered after 3 login failures (routes/auth_routes.py:78)</text>
+  <text x="150" y="1840" font-size="12" fill="#000000" font-weight="normal" text-anchor="start">Site key in template context</text>
+  <rect x="760" y="1750" width="680" height="110" fill="#FFF3E0" stroke="#B36B00" stroke-width="2" rx="8" opacity="1" />
+  <text x="780" y="1785" font-size="14" fill="#B36B00" font-weight="bold" text-anchor="start">🌍 HaveIBeenPwned API (utils/validators.py:82)</text>
+  <text x="790" y="1815" font-size="12" fill="#000000" font-weight="normal" text-anchor="start">k-anonymity password breach checking</text>
+  <text x="790" y="1840" font-size="12" fill="#000000" font-weight="normal" text-anchor="start">SHA-1 prefix query (5 hex chars) - line 88</text>
+  <path d="M 310,290 L 310,360" stroke="#6B7280" stroke-width="2" fill="none" marker-end="url(#arrowhead)"/>
+  <text x="330" y="325" font-size="12" fill="#6B7280" font-weight="normal" text-anchor="start">HTTPS Request</text>
+  <path d="M 310,450 L 310,560" stroke="#6B7280" stroke-width="2" fill="none" marker-end="url(#arrowhead)"/>
+  <text x="330" y="505" font-size="12" fill="#6B7280" font-weight="normal" text-anchor="start">Decrypted</text>
+  <path d="M 360,700 L 360,780" stroke="#6B7280" stroke-width="2" fill="none" marker-end="url(#arrowhead)"/>
+  <text x="380" y="740" font-size="12" fill="#6B7280" font-weight="normal" text-anchor="start">Route Handler</text>
+  <path d="M 320,960 L 260,1040" stroke="#6B7280" stroke-width="2" fill="none" marker-end="url(#arrowhead)"/>
+  <text x="270" y="1000" font-size="12" fill="#6B7280" font-weight="normal" text-anchor="start">AuthService</text>
+  <path d="M 780,960 L 560,1040" stroke="#6B7280" stroke-width="2" fill="none" marker-end="url(#arrowhead)"/>
+  <text x="670" y="1000" font-size="12" fill="#6B7280" font-weight="normal" text-anchor="start">OAuth2Service</text>
+  <path d="M 1240,960 L 860,1040" stroke="#6B7280" stroke-width="2" fill="none" marker-end="url(#arrowhead)"/>
+  <text x="1050" y="1000" font-size="12" fill="#6B7280" font-weight="normal" text-anchor="start">TOTPService</text>
+  <path d="M 260,1180 L 500,1410" stroke="#6B7280" stroke-width="2" fill="none" marker-end="url(#arrowhead)"/>
+  <text x="380" y="1295" font-size="12" fill="#6B7280" font-weight="normal" text-anchor="start">Database Queries</text>
+  <path d="M 180,1350 L 300,1750" stroke="#6B7280" stroke-width="2" fill="none" marker-end="url(#arrowhead)"/>
+  <text x="200" y="1550" font-size="12" fill="#6B7280" font-weight="normal" text-anchor="start">reCAPTCHA</text>
+  <path d="M 320,1350 L 950,1750" stroke="#6B7280" stroke-width="2" fill="none" marker-end="url(#arrowhead)"/>
+  <text x="635" y="1550" font-size="12" fill="#6B7280" font-weight="normal" text-anchor="start">HaveIBeenPwned</text>
+  <rect x="50" y="1920" width="1500" height="160" fill="#FAFAFA" stroke="#6B7280" stroke-width="1" rx="8" opacity="1" />
+  <text x="70" y="1960" font-size="14" fill="#6B7280" font-weight="bold" text-anchor="start">Legend:</text>
+  <text x="150" y="1960" font-size="11" fill="#6B7280" font-weight="normal" text-anchor="start">━ ━ Trust Boundary  |  🔒 TLS/HTTPS  |  🛡️ Middleware  |  📋 Routes  |  ⚙️ Services  |  💾 Database  |  🌍 External API</text>
+  <text x="70" y="2000" font-size="12" fill="#6B7280" font-weight="bold" text-anchor="start">Trust Boundaries:</text>
+  <text x="70" y="2025" font-size="11" fill="#000000" font-weight="normal" text-anchor="start">1. Internet to Application: HTTPS, HSTS, CSP, CSRF tokens, Rate limiting</text>
+  <text x="70" y="2050" font-size="11" fill="#000000" font-weight="normal" text-anchor="start">2. Application to Database: Parameterized queries, Transaction isolation (BEGIN IMMEDIATE)</text>
+  <text x="70" y="2075" font-size="11" fill="#000000" font-weight="normal" text-anchor="start">3. OAuth2 Client to Server: PKCE, Client auth, Redirect URI exact match</text>
 </svg>

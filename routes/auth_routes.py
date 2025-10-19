@@ -7,6 +7,7 @@ from services.auth_service import get_auth_service
 from services.security_service import get_security_service
 from services.rate_limiter import get_rate_limiter
 from utils.recaptcha import get_recaptcha_service
+from utils.decorators import regenerate_session
 
 auth_bp = Blueprint('auth', __name__)
 
@@ -110,6 +111,10 @@ def login():
             # Clear lockout
             security_service.clear_account_lockout(username)
 
+            # SECURITY: Regenerate session ID after successful password authentication
+            # Prevents session fixation attacks
+            regenerate_session()
+
             # Check if 2FA is enabled
             if user.get('totp_enabled'):
                 # Store pending login in session
@@ -117,7 +122,7 @@ def login():
                 session['pending_2fa_username'] = user['username']
                 return redirect(url_for('twofa.verify_2fa'))
             else:
-                # Complete login
+                # Complete login (no 2FA required)
                 session['user_id'] = user['id']
                 session['username'] = user['username']
                 flash(f'Welcome back, {username}!', 'success')

@@ -1,0 +1,239 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="100%" height="100%" viewBox="0 0 1200 2050"
+     xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+  <title>Token Family Rotation - OAuth2 Refresh Token Security</title>
+  <desc>Shows normal token rotation and refresh token reuse detection with family-wide revocation</desc>
+  <defs>
+    <style>
+      @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&amp;display=swap');
+      text { font-family: 'Inter', system-ui, -apple-system, sans-serif; }
+    </style>
+    <marker id="arrowhead" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto">
+      <polygon points="0 0, 10 3, 0 6" fill="#1E3C72" />
+    </marker>
+    <marker id="arrowhead-danger" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto">
+      <polygon points="0 0, 10 3, 0 6" fill="#C82333" />
+    </marker>
+  </defs>
+  <text x="600" y="50" font-size="20.8px" fill="#1E3C72"
+        font-weight="bold" text-anchor="middle">Token Family Rotation &amp; Reuse Detection</text>
+  <rect x="100" y="100" width="200" height="80"
+        fill="#E3F2FD" stroke="#1E3C72" stroke-width="2"
+        rx="8" opacity="1"/>
+  <text x="200.0" y="125" font-size="14px" fill="#1E3C72"
+        font-weight="bold" text-anchor="middle">Client</text>
+  <text x="110" y="150" font-size="11px" fill="#000000"
+        font-weight="normal" text-anchor="start">OAuth2 Client</text>
+  <text x="110" y="168" font-size="11px" fill="#000000"
+        font-weight="normal" text-anchor="start">Application</text>
+  <rect x="450" y="100" width="200" height="80"
+        fill="#E8F5E9" stroke="#1E7E34" stroke-width="2"
+        rx="8" opacity="1"/>
+  <text x="550.0" y="125" font-size="14px" fill="#1E7E34"
+        font-weight="bold" text-anchor="middle">Server</text>
+  <text x="460" y="150" font-size="11px" fill="#000000"
+        font-weight="normal" text-anchor="start">Authorization</text>
+  <text x="460" y="168" font-size="11px" fill="#000000"
+        font-weight="normal" text-anchor="start">Server</text>
+  <rect x="800" y="100" width="280" height="80"
+        fill="#FFF3E0" stroke="#B36B00" stroke-width="2"
+        rx="8" opacity="1"/>
+  <text x="940.0" y="125" font-size="14px" fill="#B36B00"
+        font-weight="bold" text-anchor="middle">Database</text>
+  <text x="810" y="150" font-size="11px" fill="#000000"
+        font-weight="normal" text-anchor="start">oauth2_tokens table</text>
+  <rect x="50" y="220" width="1100" height="680"
+        fill="#F0F8FF" stroke="#1E3C72" stroke-width="3"
+        rx="8" opacity="1"/>
+  <text x="70" y="260" font-size="16px" fill="#1E3C72"
+        font-weight="bold" text-anchor="start">SCENARIO 1: Normal Token Rotation</text>
+  <text x="70" y="310" font-size="12px" fill="#000000"
+        font-weight="bold" text-anchor="start">1. Client Requests Token Refresh</text>
+  <line x1="200" y1="330" x2="550" y2="330" stroke="#1E3C72" stroke-width="2" marker-end="url(#arrowhead)"/>
+  <rect x="305.0" y="310.0" width="150" height="25"
+        fill="white" stroke="#1E3C72" stroke-width="1"
+        rx="4" opacity="1"/>
+  <text x="380.0" y="326.0" font-size="11px" fill="#1E3C72"
+        font-weight="normal" text-anchor="middle">POST /oauth/token</text>
+  <rect x="100" y="345" width="300" height="50"
+        fill="#FFFACD" stroke="#6B7280" stroke-width="1"
+        rx="4" opacity="1"/>
+  <text x="110" y="363" font-size="11px" fill="#000000"
+        font-weight="normal" text-anchor="start">grant_type=refresh_token</text>
+  <text x="110" y="379" font-size="11px" fill="#000000"
+        font-weight="normal" text-anchor="start">refresh_token=RT1</text>
+  <text x="70" y="435" font-size="12px" fill="#000000"
+        font-weight="bold" text-anchor="start">2. Server Validates Refresh Token</text>
+  <line x1="550" y1="455" x2="940" y2="455" stroke="#1E7E34" stroke-width="2" marker-end="url(#arrowhead)"/>
+  <rect x="670.0" y="435.0" width="160" height="25"
+        fill="white" stroke="#1E7E34" stroke-width="1"
+        rx="4" opacity="1"/>
+  <text x="750.0" y="451.0" font-size="11px" fill="#1E7E34"
+        font-weight="normal" text-anchor="middle">BEGIN IMMEDIATE</text>
+  <rect x="750" y="465" width="380" height="70"
+        fill="#FFFACD" stroke="#6B7280" stroke-width="1"
+        rx="4" opacity="1"/>
+  <text x="760" y="483" font-size="11px" fill="#000000"
+        font-weight="normal" text-anchor="start">SELECT * FROM oauth2_tokens</text>
+  <text x="760" y="499" font-size="11px" fill="#000000"
+        font-weight="normal" text-anchor="start">WHERE refresh_token=RT1 AND revoked=0</text>
+  <text x="760" y="515" font-size="11px" fill="#000000"
+        font-weight="normal" text-anchor="start">Result: token_family_id=fam123, refresh_token_used=0</text>
+  <text x="70" y="575" font-size="12px" fill="#000000"
+        font-weight="bold" text-anchor="start">3. Mark Old Token as Used (Not Revoked)</text>
+  <line x1="550" y1="595" x2="940" y2="595" stroke="#B36B00" stroke-width="2" marker-end="url(#arrowhead)"/>
+  <rect x="690.0" y="575.0" width="140" height="25"
+        fill="white" stroke="#B36B00" stroke-width="1"
+        rx="4" opacity="1"/>
+  <text x="760.0" y="591.0" font-size="11px" fill="#B36B00"
+        font-weight="normal" text-anchor="middle">UPDATE</text>
+  <rect x="750" y="605" width="380" height="50"
+        fill="#FFFACD" stroke="#6B7280" stroke-width="1"
+        rx="4" opacity="1"/>
+  <text x="760" y="623" font-size="11px" fill="#000000"
+        font-weight="normal" text-anchor="start">UPDATE oauth2_tokens SET refresh_token_used=1</text>
+  <text x="760" y="639" font-size="11px" fill="#000000"
+        font-weight="normal" text-anchor="start">WHERE refresh_token=RT1</text>
+  <text x="70" y="695" font-size="12px" fill="#000000"
+        font-weight="bold" text-anchor="start">4. Generate New Tokens (Same Family)</text>
+  <rect x="400" y="705" width="300" height="80"
+        fill="#FFFACD" stroke="#6B7280" stroke-width="1"
+        rx="4" opacity="1"/>
+  <text x="410" y="723" font-size="11px" fill="#000000"
+        font-weight="normal" text-anchor="start">New access_token: AT2</text>
+  <text x="410" y="739" font-size="11px" fill="#000000"
+        font-weight="normal" text-anchor="start">New refresh_token: RT2</text>
+  <text x="410" y="755" font-size="11px" fill="#000000"
+        font-weight="normal" text-anchor="start">token_family_id: fam123 (inherited)</text>
+  <text x="410" y="771" font-size="11px" fill="#000000"
+        font-weight="normal" text-anchor="start">refresh_token_used: 0</text>
+  <text x="70" y="825" font-size="12px" fill="#000000"
+        font-weight="bold" text-anchor="start">5. Store New Tokens</text>
+  <line x1="550" y1="845" x2="940" y2="845" stroke="#1E7E34" stroke-width="2" marker-end="url(#arrowhead)"/>
+  <rect x="690.0" y="825.0" width="140" height="25"
+        fill="white" stroke="#1E7E34" stroke-width="1"
+        rx="4" opacity="1"/>
+  <text x="760.0" y="841.0" font-size="11px" fill="#1E7E34"
+        font-weight="normal" text-anchor="middle">INSERT</text>
+  <rect x="750" y="855" width="380" height="70"
+        fill="#FFFACD" stroke="#6B7280" stroke-width="1"
+        rx="4" opacity="1"/>
+  <text x="760" y="873" font-size="11px" fill="#000000"
+        font-weight="normal" text-anchor="start">INSERT INTO oauth2_tokens</text>
+  <text x="760" y="889" font-size="11px" fill="#000000"
+        font-weight="normal" text-anchor="start">(access_token=AT2, refresh_token=RT2,</text>
+  <text x="760" y="905" font-size="11px" fill="#000000"
+        font-weight="normal" text-anchor="start"> token_family_id=fam123, refresh_token_used=0)</text>
+  <text x="70" y="965" font-size="12px" fill="#000000"
+        font-weight="bold" text-anchor="start">6. Return New Tokens to Client</text>
+  <line x1="550" y1="985" x2="200" y2="985" stroke="#1E7E34" stroke-width="2" marker-end="url(#arrowhead)"/>
+  <rect x="305.0" y="965.0" width="150" height="25"
+        fill="white" stroke="#1E7E34" stroke-width="1"
+        rx="4" opacity="1"/>
+  <text x="380.0" y="981.0" font-size="11px" fill="#1E7E34"
+        font-weight="normal" text-anchor="middle">200 OK</text>
+  <rect x="100" y="995" width="300" height="50"
+        fill="#FFFACD" stroke="#6B7280" stroke-width="1"
+        rx="4" opacity="1"/>
+  <text x="110" y="1013" font-size="11px" fill="#000000"
+        font-weight="normal" text-anchor="start">{access_token: AT2, refresh_token: RT2}</text>
+  <text x="110" y="1029" font-size="11px" fill="#000000"
+        font-weight="normal" text-anchor="start">Client stores RT2, discards RT1</text>
+  <rect x="50" y="1085" width="1100" height="70"
+        fill="#FFFAF0" stroke="#B36B00" stroke-width="2"
+        rx="8" opacity="1"/>
+  <text x="600" y="1125" font-size="14px" fill="#B36B00"
+        font-weight="bold" text-anchor="middle">Time passes... Client continues using RT2 normally</text>
+  <rect x="50" y="1195" width="1100" height="760"
+        fill="#FFF0F5" stroke="#C82333" stroke-width="3"
+        rx="8" opacity="1"/>
+  <text x="70" y="1240" font-size="16px" fill="#C82333"
+        font-weight="bold" text-anchor="start">SCENARIO 2: Refresh Token Reuse Detection</text>
+  <rect x="70" y="1260" width="1060" height="50"
+        fill="#FFD700" stroke="#C82333" stroke-width="2"
+        rx="8" opacity="1"/>
+  <text x="600" y="1290" font-size="12px" fill="#C82333"
+        font-weight="bold" text-anchor="middle">⚠️ SECURITY BREACH: Attacker obtains old RT1 from logs/network</text>
+  <text x="70" y="1350" font-size="12px" fill="#000000"
+        font-weight="bold" text-anchor="start">1. Attacker Attempts to Use Old Token</text>
+  <line x1="200" y1="1370" x2="550" y2="1370" stroke="#C82333" stroke-width="2" marker-end="url(#arrowhead-danger)"/>
+  <rect x="305.0" y="1350.0" width="150" height="25"
+        fill="white" stroke="#C82333" stroke-width="1"
+        rx="4" opacity="1"/>
+  <text x="380.0" y="1366.0" font-size="11px" fill="#C82333"
+        font-weight="normal" text-anchor="middle">POST /oauth/token</text>
+  <rect x="100" y="1385" width="300" height="50"
+        fill="#FFFACD" stroke="#6B7280" stroke-width="1"
+        rx="4" opacity="1"/>
+  <text x="110" y="1403" font-size="11px" fill="#000000"
+        font-weight="normal" text-anchor="start">grant_type=refresh_token</text>
+  <text x="110" y="1419" font-size="11px" fill="#000000"
+        font-weight="normal" text-anchor="start">refresh_token=RT1 (OLD TOKEN)</text>
+  <text x="70" y="1475" font-size="12px" fill="#000000"
+        font-weight="bold" text-anchor="start">2. Server Detects Token Already Used</text>
+  <line x1="550" y1="1495" x2="940" y2="1495" stroke="#C82333" stroke-width="2" marker-end="url(#arrowhead-danger)"/>
+  <rect x="690.0" y="1475.0" width="140" height="25"
+        fill="white" stroke="#C82333" stroke-width="1"
+        rx="4" opacity="1"/>
+  <text x="760.0" y="1491.0" font-size="11px" fill="#C82333"
+        font-weight="normal" text-anchor="middle">SELECT</text>
+  <rect x="750" y="1505" width="380" height="70"
+        fill="#FFFACD" stroke="#6B7280" stroke-width="1"
+        rx="4" opacity="1"/>
+  <text x="760" y="1523" font-size="11px" fill="#000000"
+        font-weight="normal" text-anchor="start">SELECT * FROM oauth2_tokens</text>
+  <text x="760" y="1539" font-size="11px" fill="#000000"
+        font-weight="normal" text-anchor="start">WHERE refresh_token=RT1</text>
+  <text x="760" y="1555" font-size="11px" fill="#000000"
+        font-weight="normal" text-anchor="start">Result: refresh_token_used=1 ⚠️ REUSE!</text>
+  <text x="70" y="1615" font-size="12px" fill="#000000"
+        font-weight="bold" text-anchor="start">3. Revoke Entire Token Family</text>
+  <line x1="550" y1="1635" x2="940" y2="1635" stroke="#C82333" stroke-width="2" marker-end="url(#arrowhead-danger)"/>
+  <rect x="680.0" y="1615.0" width="160" height="25"
+        fill="white" stroke="#C82333" stroke-width="1"
+        rx="4" opacity="1"/>
+  <text x="760.0" y="1631.0" font-size="11px" fill="#C82333"
+        font-weight="normal" text-anchor="middle">REVOKE ALL</text>
+  <rect x="750" y="1645" width="380" height="85"
+        fill="#FFFACD" stroke="#6B7280" stroke-width="1"
+        rx="4" opacity="1"/>
+  <text x="760" y="1663" font-size="11px" fill="#000000"
+        font-weight="normal" text-anchor="start">UPDATE oauth2_tokens</text>
+  <text x="760" y="1679" font-size="11px" fill="#000000"
+        font-weight="normal" text-anchor="start">SET revoked=1, revoked_at=NOW()</text>
+  <text x="760" y="1695" font-size="11px" fill="#000000"
+        font-weight="normal" text-anchor="start">WHERE token_family_id=fam123</text>
+  <text x="760" y="1711" font-size="11px" fill="#000000"
+        font-weight="normal" text-anchor="start">→ Revokes RT1, RT2, AT2, all family tokens</text>
+  <text x="70" y="1770" font-size="12px" fill="#000000"
+        font-weight="bold" text-anchor="start">4. Log Critical Security Event</text>
+  <rect x="750" y="1780" width="380" height="50"
+        fill="#FFFACD" stroke="#6B7280" stroke-width="1"
+        rx="4" opacity="1"/>
+  <text x="760" y="1798" font-size="11px" fill="#000000"
+        font-weight="normal" text-anchor="start">INSERT INTO security_events</text>
+  <text x="760" y="1814" font-size="11px" fill="#000000"
+        font-weight="normal" text-anchor="start">(event_type=token_reuse, severity=critical)</text>
+  <text x="70" y="1870" font-size="12px" fill="#000000"
+        font-weight="bold" text-anchor="start">5. Return Error to Client</text>
+  <line x1="550" y1="1890" x2="200" y2="1890" stroke="#C82333" stroke-width="2" marker-end="url(#arrowhead-danger)"/>
+  <rect x="305.0" y="1870.0" width="150" height="25"
+        fill="white" stroke="#C82333" stroke-width="1"
+        rx="4" opacity="1"/>
+  <text x="380.0" y="1886.0" font-size="11px" fill="#C82333"
+        font-weight="normal" text-anchor="middle">400 Bad Request</text>
+  <rect x="100" y="1900" width="300" height="50"
+        fill="#FFFACD" stroke="#6B7280" stroke-width="1"
+        rx="4" opacity="1"/>
+  <text x="110" y="1918" font-size="11px" fill="#000000"
+        font-weight="normal" text-anchor="start">error: Token reuse detected</text>
+  <text x="110" y="1934" font-size="11px" fill="#000000"
+        font-weight="normal" text-anchor="start">All tokens revoked, re-auth required</text>
+  <rect x="70" y="1975" width="1060" height="70"
+        fill="#FFE4E1" stroke="#C82333" stroke-width="2"
+        rx="8" opacity="1"/>
+  <text x="600" y="2005" font-size="12px" fill="#C82333"
+        font-weight="bold" text-anchor="middle">Impact: Legitimate client's RT2 now invalid</text>
+  <text x="600" y="2030" font-size="11px" fill="#000000"
+        font-weight="normal" text-anchor="middle">User must re-authenticate through normal OAuth2 flow</text>
+</svg>

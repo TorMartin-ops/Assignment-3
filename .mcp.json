@@ -1,0 +1,31 @@
+{
+  "mcpServers": {
+    "playwright": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "@playwright/mcp@latest"
+      ],
+      "description": "Official Playwright MCP server for browser automation with accessibility tree-based interaction",
+      "env": {}
+    },
+    "puppeteer": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "@modelcontextprotocol/server-puppeteer@latest"
+      ],
+      "description": "Anthropic's Puppeteer MCP server for lightweight browser automation and JavaScript execution",
+      "env": {}
+    },
+    "context7": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "@upstash/context7-mcp@latest"
+      ],
+      "description": "Context7 MCP server for version-specific library documentation and code examples",
+      "env": {}
+    }
+  }
+}

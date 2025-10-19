@@ -55,9 +55,8 @@ class SecurityService:
         conn.commit()
         conn.close()
 
-        # Print critical events to console
-        if severity == 'critical':
-            print(f"🚨 CRITICAL: {event_type} - {username} from {ip_address}")
+        # Log critical events (already logged to database above)
+        # Additional logging could be added here if needed (syslog, monitoring system, etc.)
 
         return event_id
 
@@ -208,7 +207,7 @@ class SecurityService:
                 severity='critical'
             )
 
-            print(f"Account locked: {username} after {failed_count} failures")
+            # Account locked event already logged to security_events table
             return True
 
         except Exception as e:

@@ -1,190 +1,481 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<svg width="1000" height="700" xmlns="http://www.w3.org/2000/svg">
+<svg width="100%" height="100%" viewBox="0 0 1800 2700"
+     xmlns="http://www.w3.org/2000/svg">
+  <title>Database Entity-Relationship Diagram - v2.0</title>
+  <desc>Complete schema with 9 tables, organized layout, no crossing FK arrows</desc>
+
   <defs>
-    <marker id="one" markerWidth="12" markerHeight="12" refX="6" refY="6">
-      <circle cx="6" cy="6" r="4" fill="#2a5298"/>
-    </marker>
-    <marker id="many" markerWidth="12" markerHeight="12" refX="0" refY="6">
-      <line x1="0" y1="0" x2="0" y2="12" stroke="#2a5298" stroke-width="2"/>
-      <line x1="0" y1="3" x2="8" y2="6" stroke="#2a5298" stroke-width="2"/>
-      <line x1="0" y1="9" x2="8" y2="6" stroke="#2a5298" stroke-width="2"/>
+    <style>
+      @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&amp;display=swap');
+      text { font-family: 'Inter', system-ui, -apple-system, sans-serif; }
+    </style>
+    <marker id="fk-arrow" markerWidth="10" markerHeight="10" refX="9" refY="5" orient="auto">
+      <polygon points="0 0, 10 5, 0 10" fill="#2563EB" />
     </marker>
   </defs>
 
-  <text x="500" y="25" text-anchor="middle" font-size="16" font-weight="bold" fill="#1e3c72">
-    Database Entity-Relationship Diagram (13 Tables)
+  <!-- Title -->
+  <text x="900" y="40" font-size="22" fill="#1E3C72" font-weight="bold" text-anchor="middle">
+    Database Schema (recipe_app.db)
+  </text>
+  <text x="900" y="70" font-size="13" fill="#6B7280" text-anchor="middle">
+    9 Tables • 15 Indexes • 8 Foreign Keys with CASCADE
   </text>
 
-  <!-- users (central table) -->
-  <g>
-    <rect x="400" y="60" width="200" height="180" fill="#e8f4f8" stroke="#2a5298" stroke-width="2"/>
-    <rect x="400" y="60" width="200" height="30" fill="#1e3c72"/>
-    <text x="500" y="80" text-anchor="middle" fill="white" font-weight="bold">users</text>
-    <text x="410" y="105" font-family="Consolas" font-size="10" font-weight="bold">PK id</text>
-    <text x="410" y="120" font-family="Consolas" font-size="10">username UNIQUE</text>
-    <text x="410" y="135" font-family="Consolas" font-size="10">email UNIQUE</text>
-    <text x="410" y="150" font-family="Consolas" font-size="10">password (Argon2id)</text>
-    <text x="410" y="165" font-family="Consolas" font-size="10">totp_secret (encrypted)</text>
-    <text x="410" y="180" font-family="Consolas" font-size="10">totp_enabled</text>
-    <text x="410" y="195" font-family="Consolas" font-size="10">backup_codes (hashed)</text>
-    <text x="410" y="210" font-family="Consolas" font-size="10">oauth_provider</text>
-    <text x="410" y="225" font-family="Consolas" font-size="10">last_login</text>
-  </g>
+  <!-- LEFT COLUMN: Core Auth Tables -->
 
-  <!-- login_attempts -->
-  <g>
-    <rect x="50" y="280" width="180" height="130" fill="white" stroke="#2a5298" stroke-width="2"/>
-    <rect x="50" y="280" width="180" height="30" fill="#2a5298"/>
-    <text x="140" y="300" text-anchor="middle" fill="white" font-weight="bold">login_attempts</text>
-    <text x="60" y="325" font-family="Consolas" font-size="10" font-weight="bold">PK id</text>
-    <text x="60" y="340" font-family="Consolas" font-size="10" fill="#dc3545">FK username</text>
-    <text x="60" y="355" font-family="Consolas" font-size="10">ip_address</text>
-    <text x="60" y="370" font-family="Consolas" font-size="10">success</text>
-    <text x="60" y="385" font-family="Consolas" font-size="10">failure_reason</text>
-    <text x="60" y="400" font-family="Consolas" font-size="10">timestamp</text>
-  </g>
+  <!-- users table -->
+  <rect x="50" y="110" width="500" height="500" fill="#E3F2FD" stroke="#1E3C72" stroke-width="2" rx="8"/>
+  <rect x="50" y="110" width="500" height="40" fill="#1E3C72" rx="8"/>
+  <text x="300" y="137" font-size="16" fill="#FFFFFF" font-weight="bold" text-anchor="middle">users 🔑</text>
 
-  <!-- account_lockouts -->
-  <g>
-    <rect x="270" y="280" width="180" height="115" fill="white" stroke="#2a5298" stroke-width="2"/>
-    <rect x="270" y="280" width="180" height="30" fill="#2a5298"/>
-    <text x="360" y="300" text-anchor="middle" fill="white" font-weight="bold">account_lockouts</text>
-    <text x="280" y="325" font-family="Consolas" font-size="10" font-weight="bold">PK id</text>
-    <text x="280" y="340" font-family="Consolas" font-size="10">username UNIQUE</text>
-    <text x="280" y="355" font-family="Consolas" font-size="10">locked_until</text>
-    <text x="280" y="370" font-family="Consolas" font-size="10">failed_attempts</text>
-    <text x="280" y="385" font-family="Consolas" font-size="10">lockout_reason</text>
-  </g>
+  <text x="70" y="175" font-size="13" fill="#1E7E34" font-weight="bold">🔑 id</text>
+  <text x="240" y="175" font-size="12" fill="#6B7280">INTEGER PK AUTOINCREMENT</text>
 
-  <!-- oauth2_clients -->
-  <g>
-    <rect x="700" y="60" width="200" height="130" fill="white" stroke="#2a5298" stroke-width="2"/>
-    <rect x="700" y="60" width="200" height="30" fill="#2a5298"/>
-    <text x="800" y="80" text-anchor="middle" fill="white" font-weight="bold">oauth2_clients</text>
-    <text x="710" y="105" font-family="Consolas" font-size="10" font-weight="bold">PK client_id</text>
-    <text x="710" y="120" font-family="Consolas" font-size="10">client_secret_hash</text>
-    <text x="710" y="135" font-family="Consolas" font-size="10">client_name</text>
-    <text x="710" y="150" font-family="Consolas" font-size="10">redirect_uris (JSON)</text>
-    <text x="710" y="165" font-family="Consolas" font-size="10">require_pkce</text>
-    <text x="710" y="180" font-family="Consolas" font-size="10">created_at</text>
-  </g>
+  <text x="70" y="197" font-size="13" fill="#1E7E34" font-weight="bold">username</text>
+  <rect x="230" y="186" width="250" height="16" fill="#FEF3C7" opacity="0.3"/>
+  <text x="240" y="197" font-size="12" fill="#6B7280">TEXT UNIQUE NOT NULL</text>
 
-  <!-- oauth2_authorization_codes -->
-  <g>
-    <rect x="700" y="220" width="200" height="145" fill="white" stroke="#2a5298" stroke-width="2"/>
-    <rect x="700" y="220" width="200" height="30" fill="#2a5298"/>
-    <text x="800" y="240" text-anchor="middle" fill="white" font-weight="bold" font-size="11">oauth2_auth_codes</text>
-    <text x="710" y="265" font-family="Consolas" font-size="10" font-weight="bold">PK code</text>
-    <text x="710" y="280" font-family="Consolas" font-size="10" fill="#dc3545">FK client_id</text>
-    <text x="710" y="295" font-family="Consolas" font-size="10" fill="#dc3545">FK user_id</text>
-    <text x="710" y="310" font-family="Consolas" font-size="10">code_challenge</text>
-    <text x="710" y="325" font-family="Consolas" font-size="10">code_challenge_method</text>
-    <text x="710" y="340" font-family="Consolas" font-size="10">used (boolean)</text>
-    <text x="710" y="355" font-family="Consolas" font-size="10">expires_at</text>
-  </g>
+  <text x="70" y="219" font-size="13" fill="#1E7E34" font-weight="bold">email</text>
+  <rect x="230" y="208" width="250" height="16" fill="#FEF3C7" opacity="0.3"/>
+  <text x="240" y="219" font-size="12" fill="#6B7280">TEXT UNIQUE NOT NULL</text>
 
-  <!-- oauth2_tokens -->
-  <g>
-    <rect x="700" y="395" width="200" height="160" fill="white" stroke="#2a5298" stroke-width="2"/>
-    <rect x="700" y="395" width="200" height="30" fill="#2a5298"/>
-    <text x="800" y="415" text-anchor="middle" fill="white" font-weight="bold">oauth2_tokens</text>
-    <text x="710" y="440" font-family="Consolas" font-size="10" font-weight="bold">PK access_token</text>
-    <text x="710" y="455" font-family="Consolas" font-size="10">refresh_token UNIQUE</text>
-    <text x="710" y="470" font-family="Consolas" font-size="10" fill="#dc3545">FK client_id</text>
-    <text x="710" y="485" font-family="Consolas" font-size="10" fill="#dc3545">FK user_id</text>
-    <text x="710" y="500" font-family="Consolas" font-size="10">token_family_id</text>
-    <text x="710" y="515" font-family="Consolas" font-size="10">refresh_token_used</text>
-    <text x="710" y="530" font-family="Consolas" font-size="10">revoked</text>
-    <text x="710" y="545" font-family="Consolas" font-size="10">expires_in</text>
-  </g>
+  <text x="70" y="241" font-size="12" fill="#000000">password</text>
+  <text x="240" y="241" font-size="12" fill="#6B7280">TEXT NOT NULL (Argon2id)</text>
 
-  <!-- security_events -->
-  <g>
-    <rect x="490" y="280" width="180" height="115" fill="white" stroke="#2a5298" stroke-width="2"/>
-    <rect x="490" y="280" width="180" height="30" fill="#2a5298"/>
-    <text x="580" y="300" text-anchor="middle" fill="white" font-weight="bold">security_events</text>
-    <text x="500" y="325" font-family="Consolas" font-size="10" font-weight="bold">PK id</text>
-    <text x="500" y="340" font-family="Consolas" font-size="10">event_type</text>
-    <text x="500" y="355" font-family="Consolas" font-size="10">severity</text>
-    <text x="500" y="370" font-family="Consolas" font-size="10">username</text>
-    <text x="500" y="385" font-family="Consolas" font-size="10">timestamp</text>
-  </g>
+  <text x="70" y="263" font-size="12" fill="#000000">password_salt</text>
+  <text x="240" y="263" font-size="12" fill="#6B7280">TEXT</text>
 
-  <!-- rate_limits -->
-  <g>
-    <rect x="50" y="450" width="180" height="115" fill="white" stroke="#2a5298" stroke-width="2"/>
-    <rect x="50" y="450" width="180" height="30" fill="#2a5298"/>
-    <text x="140" y="470" text-anchor="middle" fill="white" font-weight="bold">rate_limits</text>
-    <text x="60" y="495" font-family="Consolas" font-size="10" font-weight="bold">PK id</text>
-    <text x="60" y="510" font-family="Consolas" font-size="10">key (ip/username)</text>
-    <text x="60" y="525" font-family="Consolas" font-size="10">endpoint</text>
-    <text x="60" y="540" font-family="Consolas" font-size="10">request_count</text>
-    <text x="60" y="555" font-family="Consolas" font-size="10">window_end</text>
-  </g>
+  <text x="70" y="285" font-size="12" fill="#000000">password_version</text>
+  <text x="240" y="285" font-size="12" fill="#6B7280">INTEGER DEFAULT 1</text>
 
-  <!-- sessions -->
-  <g>
-    <rect x="270" y="450" width="180" height="115" fill="white" stroke="#2a5298" stroke-width="2"/>
-    <rect x="270" y="450" width="180" height="30" fill="#2a5298"/>
-    <text x="360" y="470" text-anchor="middle" fill="white" font-weight="bold">sessions</text>
-    <text x="280" y="495" font-family="Consolas" font-size="10" font-weight="bold">PK session_id</text>
-    <text x="280" y="510" font-family="Consolas" font-size="10" fill="#dc3545">FK user_id</text>
-    <text x="280" y="525" font-family="Consolas" font-size="10">device_fingerprint</text>
-    <text x="280" y="540" font-family="Consolas" font-size="10">expires_at</text>
-    <text x="280" y="555" font-family="Consolas" font-size="10">last_activity</text>
-  </g>
+  <text x="70" y="307" font-size="12" fill="#000000">is_active</text>
+  <text x="240" y="307" font-size="12" fill="#6B7280">INTEGER DEFAULT 1</text>
 
-  <!-- Relationships -->
-  <!-- users 1:N login_attempts -->
-  <line x1="400" y1="150" x2="230" y2="310" stroke="#2a5298" stroke-width="2.5" marker-start="url(#one)" marker-end="url(#many)"/>
-  <text x="300" y="230" font-size="10" fill="#666" font-weight="bold">logs</text>
+  <text x="70" y="329" font-size="12" fill="#000000">email_verified</text>
+  <text x="240" y="329" font-size="12" fill="#6B7280">INTEGER DEFAULT 0</text>
 
-  <!-- users 1:N account_lockouts -->
-  <line x1="400" y1="180" x2="360" y2="280" stroke="#2a5298" stroke-width="2.5" marker-start="url(#one)" marker-end="url(#many)"/>
-  <text x="370" y="245" font-size="10" fill="#666" font-weight="bold">locks</text>
+  <text x="70" y="351" font-size="12" fill="#000000">totp_secret</text>
+  <text x="240" y="351" font-size="12" fill="#6B7280">TEXT (Fernet encrypted)</text>
 
-  <!-- users 1:N sessions -->
-  <line x1="450" y1="240" x2="380" y2="450" stroke="#2a5298" stroke-width="2.5" marker-start="url(#one)" marker-end="url(#many)"/>
-  <text x="400" y="350" font-size="10" fill="#666" font-weight="bold">has</text>
+  <text x="70" y="373" font-size="12" fill="#000000">totp_enabled</text>
+  <text x="240" y="373" font-size="12" fill="#6B7280">INTEGER DEFAULT 0</text>
 
-  <!-- users 1:N oauth2_tokens -->
-  <line x1="600" y1="150" x2="700" y2="470" stroke="#2a5298" stroke-width="2.5" marker-start="url(#one)" marker-end="url(#many)"/>
-  <text x="640" y="310" font-size="10" fill="#666" font-weight="bold">owns</text>
+  <text x="70" y="395" font-size="12" fill="#000000">backup_codes</text>
+  <text x="240" y="395" font-size="12" fill="#6B7280">TEXT (JSON SHA256 array)</text>
 
-  <!-- oauth2_clients 1:N oauth2_authorization_codes -->
-  <line x1="800" y1="190" x2="800" y2="220" stroke="#2a5298" stroke-width="2.5" marker-start="url(#one)" marker-end="url(#many)"/>
-  <text x="810" y="210" font-size="10" fill="#666" font-weight="bold">issues</text>
+  <text x="70" y="417" font-size="12" fill="#000000">oauth_provider</text>
+  <text x="240" y="417" font-size="12" fill="#6B7280">TEXT</text>
 
-  <!-- oauth2_clients 1:N oauth2_tokens -->
-  <line x1="830" y1="190" x2="830" y2="395" stroke="#2a5298" stroke-width="2.5" marker-start="url(#one)" marker-end="url(#many)"/>
-  <text x="840" y="290" font-size="10" fill="#666" font-weight="bold">grants</text>
+  <text x="70" y="439" font-size="12" fill="#000000">oauth_user_id</text>
+  <text x="240" y="439" font-size="12" fill="#6B7280">TEXT</text>
 
-  <!-- users 1:N oauth2_authorization_codes -->
-  <line x1="600" y1="120" x2="700" y2="265" stroke="#2a5298" stroke-width="2.5" marker-start="url(#one)" marker-end="url(#many)"/>
-  <text x="640" y="190" font-size="10" fill="#666" font-weight="bold">authorizes</text>
+  <text x="70" y="461" font-size="12" fill="#000000">oauth_linked</text>
+  <text x="240" y="461" font-size="12" fill="#6B7280">INTEGER DEFAULT 0</text>
 
-  <!-- Legend -->
-  <rect x="50" y="600" width="900" height="90" fill="#f8f9fa" stroke="#666"/>
-  <text x="70" y="625" font-size="12" font-weight="bold">Legend:</text>
+  <text x="70" y="483" font-size="12" fill="#000000">last_login</text>
+  <text x="240" y="483" font-size="12" fill="#6B7280">TIMESTAMP</text>
 
-  <circle cx="80" cy="645" r="5" fill="#2a5298"/>
-  <text x="95" y="650" font-size="10">One (1)</text>
+  <!-- login_attempts table -->
+  <rect x="50" y="650" width="500" height="280" fill="#E3F2FD" stroke="#1E3C72" stroke-width="2" rx="8"/>
+  <rect x="50" y="650" width="500" height="40" fill="#1E3C72" rx="8"/>
+  <text x="300" y="677" font-size="16" fill="#FFFFFF" font-weight="bold" text-anchor="middle">login_attempts</text>
 
-  <line x1="150" y1="645" x2="180" y2="645" stroke="#2a5298" stroke-width="2"/>
-  <line x1="180" y1="640" x2="190" y2="645" stroke="#2a5298" stroke-width="2"/>
-  <line x1="180" y1="650" x2="190" y2="645" stroke="#2a5298" stroke-width="2"/>
-  <text x="200" y="650" font-size="10">Many (*)</text>
+  <text x="70" y="715" font-size="13" fill="#1E7E34" font-weight="bold">🔑 id</text>
+  <text x="240" y="715" font-size="12" fill="#6B7280">INTEGER PK AUTOINCREMENT</text>
 
-  <text x="70" y="675" font-size="10" fill="#dc3545" font-weight="bold">FK</text>
-  <text x="90" y="675" font-size="10">= Foreign Key (enforces referential integrity)</text>
+  <text x="70" y="740" font-size="12" fill="#000000">username</text>
+  <text x="240" y="740" font-size="12" fill="#6B7280">TEXT NOT NULL</text>
 
-  <text x="350" y="625" font-size="10" font-weight="bold">Security Features:</text>
-  <text x="350" y="645" font-size="10">• TOTP secrets encrypted with Fernet (AES-128)</text>
-  <text x="350" y="660" font-size="10">• Passwords hashed with Argon2id (19 MiB memory)</text>
-  <text x="350" y="675" font-size="10">• Backup codes hashed with SHA-256</text>
+  <text x="70" y="765" font-size="12" fill="#000000">ip_address</text>
+  <text x="240" y="765" font-size="12" fill="#6B7280">TEXT NOT NULL</text>
 
-  <text x="650" y="625" font-size="10" font-weight="bold">Indexes Created:</text>
-  <text x="650" y="645" font-size="9">• idx_login_attempts_username</text>
-  <text x="650" y="660" font-size="9">• idx_token_access, idx_token_refresh</text>
-  <text x="650" y="675" font-size="9">• idx_rate_limit_key (13 total indexes)</text>
+  <text x="70" y="790" font-size="12" fill="#000000">user_agent</text>
+  <text x="240" y="790" font-size="12" fill="#6B7280">TEXT</text>
+
+  <text x="70" y="815" font-size="12" fill="#000000">success</text>
+  <text x="240" y="815" font-size="12" fill="#6B7280">INTEGER DEFAULT 0</text>
+
+  <text x="70" y="840" font-size="12" fill="#000000">failure_reason</text>
+  <text x="240" y="840" font-size="12" fill="#6B7280">TEXT</text>
+
+  <text x="70" y="865" font-size="12" fill="#000000">timestamp</text>
+  <text x="240" y="865" font-size="12" fill="#6B7280">TIMESTAMP DEFAULT CURRENT_TIMESTAMP</text>
+
+  <text x="70" y="895" font-size="11" fill="#1E7E34" font-weight="bold">INDEX:</text>
+  <text x="140" y="895" font-size="11" fill="#6B7280">(username, timestamp), (ip_address, timestamp)</text>
+
+  <!-- sessions table -->
+  <rect x="50" y="970" width="500" height="350" fill="#E3F2FD" stroke="#1E3C72" stroke-width="2" rx="8"/>
+  <rect x="50" y="970" width="500" height="40" fill="#1E3C72" rx="8"/>
+  <text x="300" y="997" font-size="16" fill="#FFFFFF" font-weight="bold" text-anchor="middle">sessions</text>
+
+  <text x="70" y="1035" font-size="13" fill="#1E7E34" font-weight="bold">🔑 id</text>
+  <text x="240" y="1035" font-size="12" fill="#6B7280">INTEGER PK AUTOINCREMENT</text>
+
+  <text x="70" y="1060" font-size="13" fill="#1E7E34" font-weight="bold">session_id</text>
+  <rect x="230" y="1049" width="250" height="16" fill="#FEF3C7" opacity="0.3"/>
+  <text x="240" y="1060" font-size="12" fill="#6B7280">TEXT UNIQUE NOT NULL</text>
+
+  <text x="70" y="1085" font-size="13" fill="#2563EB" font-weight="bold">🔗 user_id</text>
+  <text x="240" y="1085" font-size="12" fill="#6B7280">INTEGER FK → users ON DELETE CASCADE</text>
+
+  <text x="70" y="1110" font-size="12" fill="#000000">session_data</text>
+  <text x="240" y="1110" font-size="12" fill="#6B7280">TEXT</text>
+
+  <text x="70" y="1135" font-size="12" fill="#000000">ip_address</text>
+  <text x="240" y="1135" font-size="12" fill="#6B7280">TEXT</text>
+
+  <text x="70" y="1160" font-size="12" fill="#000000">user_agent</text>
+  <text x="240" y="1160" font-size="12" fill="#6B7280">TEXT</text>
+
+  <text x="70" y="1185" font-size="12" fill="#000000">device_fingerprint</text>
+  <text x="240" y="1185" font-size="12" fill="#6B7280">TEXT</text>
+
+  <text x="70" y="1210" font-size="12" fill="#000000">is_active</text>
+  <text x="240" y="1210" font-size="12" fill="#6B7280">INTEGER DEFAULT 1</text>
+
+  <text x="70" y="1235" font-size="12" fill="#000000">created_at</text>
+  <text x="240" y="1235" font-size="12" fill="#6B7280">TIMESTAMP DEFAULT CURRENT_TIMESTAMP</text>
+
+  <text x="70" y="1260" font-size="12" fill="#000000">last_activity</text>
+  <text x="240" y="1260" font-size="12" fill="#6B7280">TIMESTAMP DEFAULT CURRENT_TIMESTAMP</text>
+
+  <text x="70" y="1285" font-size="12" fill="#000000">expires_at</text>
+  <text x="240" y="1285" font-size="12" fill="#6B7280">TIMESTAMP NOT NULL</text>
+
+  <text x="70" y="1310" font-size="11" fill="#1E7E34" font-weight="bold">INDEX:</text>
+  <text x="140" y="1310" font-size="11" fill="#6B7280">(session_id), (user_id, is_active)</text>
+
+  <!-- MIDDLE COLUMN: OAuth2 Tables -->
+
+  <!-- oauth2_clients table -->
+  <rect x="600" y="110" width="550" height="480" fill="#E3F2FD" stroke="#1E3C72" stroke-width="2" rx="8"/>
+  <rect x="600" y="110" width="550" height="40" fill="#1E3C72" rx="8"/>
+  <text x="875" y="137" font-size="16" fill="#FFFFFF" font-weight="bold" text-anchor="middle">oauth2_clients</text>
+
+  <text x="620" y="175" font-size="13" fill="#1E7E34" font-weight="bold">🔑 id</text>
+  <text x="790" y="175" font-size="12" fill="#6B7280">INTEGER PK AUTOINCREMENT</text>
+
+  <text x="620" y="200" font-size="13" fill="#1E7E34" font-weight="bold">client_id</text>
+  <rect x="780" y="189" width="300" height="16" fill="#FEF3C7" opacity="0.3"/>
+  <text x="790" y="200" font-size="12" fill="#6B7280">TEXT UNIQUE NOT NULL</text>
+
+  <text x="620" y="225" font-size="12" fill="#000000">client_secret_hash</text>
+  <text x="790" y="225" font-size="12" fill="#6B7280">TEXT NOT NULL</text>
+
+  <text x="620" y="250" font-size="12" fill="#000000">client_name</text>
+  <text x="790" y="250" font-size="12" fill="#6B7280">TEXT NOT NULL</text>
+
+  <text x="620" y="275" font-size="12" fill="#000000">redirect_uris</text>
+  <text x="790" y="275" font-size="12" fill="#6B7280">TEXT (JSON array) NOT NULL</text>
+
+  <text x="620" y="300" font-size="12" fill="#000000">default_redirect_uri</text>
+  <text x="790" y="300" font-size="12" fill="#6B7280">TEXT</text>
+
+  <text x="620" y="325" font-size="12" fill="#000000">grant_types</text>
+  <text x="790" y="325" font-size="12" fill="#6B7280">TEXT DEFAULT 'authorization_code refresh_token'</text>
+
+  <text x="620" y="350" font-size="12" fill="#000000">response_types</text>
+  <text x="790" y="350" font-size="12" fill="#6B7280">TEXT DEFAULT 'code'</text>
+
+  <text x="620" y="375" font-size="12" fill="#000000">scope</text>
+  <text x="790" y="375" font-size="12" fill="#6B7280">TEXT DEFAULT 'profile email'</text>
+
+  <text x="620" y="400" font-size="12" fill="#000000">token_endpoint_auth_method</text>
+  <text x="790" y="400" font-size="12" fill="#6B7280">TEXT DEFAULT 'client_secret_post'</text>
+
+  <text x="620" y="425" font-size="12" fill="#000000">require_pkce</text>
+  <text x="790" y="425" font-size="12" fill="#6B7280">INTEGER DEFAULT 1</text>
+
+  <text x="620" y="450" font-size="12" fill="#000000">public_key</text>
+  <text x="790" y="450" font-size="12" fill="#6B7280">TEXT</text>
+
+  <text x="620" y="475" font-size="13" fill="#2563EB" font-weight="bold">🔗 user_id</text>
+  <text x="790" y="475" font-size="12" fill="#6B7280">INTEGER FK → users ON DELETE CASCADE</text>
+
+  <text x="620" y="500" font-size="12" fill="#000000">created_at</text>
+  <text x="790" y="500" font-size="12" fill="#6B7280">TIMESTAMP DEFAULT CURRENT_TIMESTAMP</text>
+
+  <text x="620" y="525" font-size="12" fill="#000000">updated_at</text>
+  <text x="790" y="525" font-size="12" fill="#6B7280">TIMESTAMP DEFAULT CURRENT_TIMESTAMP</text>
+
+  <text x="620" y="560" font-size="11" fill="#1E7E34" font-weight="bold">INDEX:</text>
+  <text x="690" y="560" font-size="11" fill="#6B7280">(client_id)</text>
+
+  <!-- oauth2_authorization_codes table -->
+  <rect x="600" y="630" width="550" height="380" fill="#E3F2FD" stroke="#1E3C72" stroke-width="2" rx="8"/>
+  <rect x="600" y="630" width="550" height="40" fill="#1E3C72" rx="8"/>
+  <text x="875" y="657" font-size="16" fill="#FFFFFF" font-weight="bold" text-anchor="middle">oauth2_authorization_codes</text>
+
+  <text x="620" y="695" font-size="13" fill="#1E7E34" font-weight="bold">🔑 id</text>
+  <text x="790" y="695" font-size="12" fill="#6B7280">INTEGER PK AUTOINCREMENT</text>
+
+  <text x="620" y="720" font-size="13" fill="#1E7E34" font-weight="bold">code</text>
+  <rect x="780" y="709" width="300" height="16" fill="#FEF3C7" opacity="0.3"/>
+  <text x="790" y="720" font-size="12" fill="#6B7280">TEXT UNIQUE NOT NULL</text>
+
+  <text x="620" y="745" font-size="13" fill="#2563EB" font-weight="bold">🔗 client_id</text>
+  <text x="790" y="745" font-size="12" fill="#6B7280">TEXT FK → oauth2_clients ON DELETE CASCADE</text>
+
+  <text x="620" y="770" font-size="13" fill="#2563EB" font-weight="bold">🔗 user_id</text>
+  <text x="790" y="770" font-size="12" fill="#6B7280">INTEGER FK → users ON DELETE CASCADE</text>
+
+  <text x="620" y="795" font-size="12" fill="#000000">redirect_uri</text>
+  <text x="790" y="795" font-size="12" fill="#6B7280">TEXT NOT NULL</text>
+
+  <text x="620" y="820" font-size="12" fill="#000000">scope</text>
+  <text x="790" y="820" font-size="12" fill="#6B7280">TEXT</text>
+
+  <text x="620" y="845" font-size="12" fill="#000000">code_challenge</text>
+  <text x="790" y="845" font-size="12" fill="#6B7280">TEXT (S256 PKCE)</text>
+
+  <text x="620" y="870" font-size="12" fill="#000000">code_challenge_method</text>
+  <text x="790" y="870" font-size="12" fill="#6B7280">TEXT</text>
+
+  <text x="620" y="895" font-size="12" fill="#000000">used</text>
+  <text x="790" y="895" font-size="12" fill="#6B7280">INTEGER DEFAULT 0 (single-use)</text>
+
+  <text x="620" y="920" font-size="12" fill="#000000">expires_at</text>
+  <text x="790" y="920" font-size="12" fill="#6B7280">TIMESTAMP NOT NULL (10min TTL)</text>
+
+  <text x="620" y="945" font-size="12" fill="#000000">created_at</text>
+  <text x="790" y="945" font-size="12" fill="#6B7280">TIMESTAMP DEFAULT CURRENT_TIMESTAMP</text>
+
+  <text x="620" y="980" font-size="11" fill="#1E7E34" font-weight="bold">INDEX:</text>
+  <text x="690" y="980" font-size="11" fill="#6B7280">(code)</text>
+
+  <!-- oauth2_tokens table -->
+  <rect x="600" y="1050" width="550" height="450" fill="#E3F2FD" stroke="#1E3C72" stroke-width="2" rx="8"/>
+  <rect x="600" y="1050" width="550" height="40" fill="#1E3C72" rx="8"/>
+  <text x="875" y="1077" font-size="16" fill="#FFFFFF" font-weight="bold" text-anchor="middle">oauth2_tokens</text>
+
+  <text x="620" y="1115" font-size="13" fill="#1E7E34" font-weight="bold">🔑 id</text>
+  <text x="790" y="1115" font-size="12" fill="#6B7280">INTEGER PK AUTOINCREMENT</text>
+
+  <text x="620" y="1140" font-size="13" fill="#1E7E34" font-weight="bold">access_token</text>
+  <rect x="780" y="1129" width="300" height="16" fill="#FEF3C7" opacity="0.3"/>
+  <text x="790" y="1140" font-size="12" fill="#6B7280">TEXT UNIQUE NOT NULL</text>
+
+  <text x="620" y="1165" font-size="13" fill="#1E7E34" font-weight="bold">refresh_token</text>
+  <rect x="780" y="1154" width="300" height="16" fill="#FEF3C7" opacity="0.3"/>
+  <text x="790" y="1165" font-size="12" fill="#6B7280">TEXT UNIQUE</text>
+
+  <text x="620" y="1190" font-size="12" fill="#000000">token_type</text>
+  <text x="790" y="1190" font-size="12" fill="#6B7280">TEXT DEFAULT 'Bearer'</text>
+
+  <text x="620" y="1215" font-size="13" fill="#2563EB" font-weight="bold">🔗 client_id</text>
+  <text x="790" y="1215" font-size="12" fill="#6B7280">TEXT FK → oauth2_clients ON DELETE CASCADE</text>
+
+  <text x="620" y="1240" font-size="13" fill="#2563EB" font-weight="bold">🔗 user_id</text>
+  <text x="790" y="1240" font-size="12" fill="#6B7280">INTEGER FK → users ON DELETE CASCADE</text>
+
+  <text x="620" y="1265" font-size="12" fill="#000000">scope</text>
+  <text x="790" y="1265" font-size="12" fill="#6B7280">TEXT</text>
+
+  <text x="620" y="1290" font-size="12" fill="#000000">token_family_id</text>
+  <text x="790" y="1290" font-size="12" fill="#6B7280">TEXT NOT NULL (rotation tracking)</text>
+
+  <text x="620" y="1315" font-size="12" fill="#000000">refresh_token_used</text>
+  <text x="790" y="1315" font-size="12" fill="#6B7280">INTEGER DEFAULT 0 (reuse detection)</text>
+
+  <text x="620" y="1340" font-size="12" fill="#000000">revoked</text>
+  <text x="790" y="1340" font-size="12" fill="#6B7280">INTEGER DEFAULT 0</text>
+
+  <text x="620" y="1365" font-size="12" fill="#000000">revoked_at</text>
+  <text x="790" y="1365" font-size="12" fill="#6B7280">TIMESTAMP</text>
+
+  <text x="620" y="1390" font-size="12" fill="#000000">issued_at</text>
+  <text x="790" y="1390" font-size="12" fill="#6B7280">INTEGER NOT NULL (unix timestamp)</text>
+
+  <text x="620" y="1415" font-size="12" fill="#000000">expires_in</text>
+  <text x="790" y="1415" font-size="12" fill="#6B7280">INTEGER NOT NULL (3600s = 1 hour)</text>
+
+  <text x="620" y="1440" font-size="12" fill="#000000">refresh_token_expires_at</text>
+  <text x="790" y="1440" font-size="12" fill="#6B7280">INTEGER (2592000s = 30 days)</text>
+
+  <text x="620" y="1475" font-size="11" fill="#1E7E34" font-weight="bold">INDEX:</text>
+  <text x="690" y="1475" font-size="11" fill="#6B7280">(access_token), (refresh_token), (token_family_id)</text>
+
+  <!-- RIGHT COLUMN: Security Tables -->
+
+  <!-- account_lockouts table -->
+  <rect x="1200" y="110" width="550" height="280" fill="#E3F2FD" stroke="#1E3C72" stroke-width="2" rx="8"/>
+  <rect x="1200" y="110" width="550" height="40" fill="#1E3C72" rx="8"/>
+  <text x="1475" y="137" font-size="16" fill="#FFFFFF" font-weight="bold" text-anchor="middle">account_lockouts</text>
+
+  <text x="1220" y="175" font-size="13" fill="#1E7E34" font-weight="bold">🔑 id</text>
+  <text x="1390" y="175" font-size="12" fill="#6B7280">INTEGER PK AUTOINCREMENT</text>
+
+  <text x="1220" y="200" font-size="13" fill="#1E7E34" font-weight="bold">username</text>
+  <rect x="1380" y="189" width="300" height="16" fill="#FEF3C7" opacity="0.3"/>
+  <text x="1390" y="200" font-size="12" fill="#6B7280">TEXT UNIQUE NOT NULL</text>
+
+  <text x="1220" y="225" font-size="12" fill="#000000">locked_until</text>
+  <text x="1390" y="225" font-size="12" fill="#6B7280">TIMESTAMP NOT NULL</text>
+
+  <text x="1220" y="250" font-size="12" fill="#000000">failed_attempts</text>
+  <text x="1390" y="250" font-size="12" fill="#6B7280">INTEGER DEFAULT 0</text>
+
+  <text x="1220" y="275" font-size="12" fill="#000000">lockout_reason</text>
+  <text x="1390" y="275" font-size="12" fill="#6B7280">TEXT</text>
+
+  <text x="1220" y="300" font-size="12" fill="#000000">locked_at</text>
+  <text x="1390" y="300" font-size="12" fill="#6B7280">TIMESTAMP DEFAULT CURRENT_TIMESTAMP</text>
+
+  <text x="1220" y="325" font-size="12" fill="#000000">locked_by</text>
+  <text x="1390" y="325" font-size="12" fill="#6B7280">TEXT DEFAULT 'system'</text>
+
+  <text x="1220" y="360" font-size="11" fill="#1E7E34" font-weight="bold">INDEX:</text>
+  <text x="1290" y="360" font-size="11" fill="#6B7280">(locked_until)</text>
+
+  <!-- rate_limits table -->
+  <rect x="1200" y="430" width="550" height="300" fill="#E3F2FD" stroke="#1E3C72" stroke-width="2" rx="8"/>
+  <rect x="1200" y="430" width="550" height="40" fill="#1E3C72" rx="8"/>
+  <text x="1475" y="457" font-size="16" fill="#FFFFFF" font-weight="bold" text-anchor="middle">rate_limits</text>
+
+  <text x="1220" y="495" font-size="13" fill="#1E7E34" font-weight="bold">🔑 id</text>
+  <text x="1390" y="495" font-size="12" fill="#6B7280">INTEGER PK AUTOINCREMENT</text>
+
+  <text x="1220" y="520" font-size="12" fill="#000000">key</text>
+  <text x="1390" y="520" font-size="12" fill="#6B7280">TEXT NOT NULL (ip:x or user:x)</text>
+
+  <text x="1220" y="545" font-size="12" fill="#000000">endpoint</text>
+  <text x="1390" y="545" font-size="12" fill="#6B7280">TEXT NOT NULL</text>
+
+  <text x="1220" y="570" font-size="12" fill="#000000">request_count</text>
+  <text x="1390" y="570" font-size="12" fill="#6B7280">INTEGER DEFAULT 1</text>
+
+  <text x="1220" y="595" font-size="12" fill="#000000">window_start</text>
+  <text x="1390" y="595" font-size="12" fill="#6B7280">TIMESTAMP DEFAULT CURRENT_TIMESTAMP</text>
+
+  <text x="1220" y="620" font-size="12" fill="#000000">window_end</text>
+  <text x="1390" y="620" font-size="12" fill="#6B7280">TIMESTAMP NOT NULL</text>
+
+  <text x="1220" y="655" font-size="11" fill="#1E7E34" font-weight="bold">UNIQUE:</text>
+  <text x="1290" y="655" font-size="11" fill="#6B7280">(key, endpoint, window_start)</text>
+
+  <text x="1220" y="680" font-size="11" fill="#1E7E34" font-weight="bold">INDEX:</text>
+  <text x="1290" y="680" font-size="11" fill="#6B7280">(key, endpoint, window_end)</text>
+
+  <!-- security_events table -->
+  <rect x="1200" y="770" width="550" height="350" fill="#E3F2FD" stroke="#1E3C72" stroke-width="2" rx="8"/>
+  <rect x="1200" y="770" width="550" height="40" fill="#1E3C72" rx="8"/>
+  <text x="1475" y="797" font-size="16" fill="#FFFFFF" font-weight="bold" text-anchor="middle">security_events</text>
+
+  <text x="1220" y="835" font-size="13" fill="#1E7E34" font-weight="bold">🔑 id</text>
+  <text x="1390" y="835" font-size="12" fill="#6B7280">INTEGER PK AUTOINCREMENT</text>
+
+  <text x="1220" y="860" font-size="12" fill="#000000">event_type</text>
+  <text x="1390" y="860" font-size="12" fill="#6B7280">TEXT NOT NULL</text>
+
+  <text x="1220" y="885" font-size="12" fill="#000000">severity</text>
+  <text x="1390" y="885" font-size="12" fill="#6B7280">TEXT DEFAULT 'info'</text>
+
+  <text x="1220" y="910" font-size="12" fill="#000000">username</text>
+  <text x="1390" y="910" font-size="12" fill="#6B7280">TEXT</text>
+
+  <text x="1220" y="935" font-size="12" fill="#000000">ip_address</text>
+  <text x="1390" y="935" font-size="12" fill="#6B7280">TEXT</text>
+
+  <text x="1220" y="960" font-size="12" fill="#000000">user_agent</text>
+  <text x="1390" y="960" font-size="12" fill="#6B7280">TEXT</text>
+
+  <text x="1220" y="985" font-size="12" fill="#000000">endpoint</text>
+  <text x="1390" y="985" font-size="12" fill="#6B7280">TEXT</text>
+
+  <text x="1220" y="1010" font-size="12" fill="#000000">metadata</text>
+  <text x="1390" y="1010" font-size="12" fill="#6B7280">TEXT (JSON)</text>
+
+  <text x="1220" y="1035" font-size="12" fill="#000000">timestamp</text>
+  <text x="1390" y="1035" font-size="12" fill="#6B7280">TIMESTAMP DEFAULT CURRENT_TIMESTAMP</text>
+
+  <text x="1220" y="1075" font-size="11" fill="#1E7E34" font-weight="bold">INDEX:</text>
+  <text x="1290" y="1075" font-size="11" fill="#6B7280">(event_type, timestamp), (username, timestamp)</text>
+
+  <!-- Foreign Key Arrows - Clean, non-crossing routing -->
+
+  <!-- users → sessions (left side, straight down) -->
+  <path d="M 300,610 L 300,970"
+        stroke="#2563EB" stroke-width="2" fill="none" marker-end="url(#fk-arrow)"/>
+  <text x="310" y="790" font-size="11" fill="#2563EB" font-weight="bold">1:N</text>
+
+  <!-- users → oauth2_clients (curve to middle) -->
+  <path d="M 550,360 Q 575,360 600,390"
+        stroke="#2563EB" stroke-width="2" fill="none" marker-end="url(#fk-arrow)"/>
+  <text x="560" y="355" font-size="11" fill="#2563EB" font-weight="bold">1:N</text>
+
+  <!-- users → oauth2_authorization_codes (curve to middle lower) -->
+  <path d="M 300,610 Q 300,750 600,750"
+        stroke="#2563EB" stroke-width="2" fill="none" marker-end="url(#fk-arrow)"/>
+  <text x="450" y="745" font-size="11" fill="#2563EB" font-weight="bold">1:N</text>
+
+  <!-- users → oauth2_tokens (curve from bottom) -->
+  <path d="M 300,1320 Q 450,1320 600,1320"
+        stroke="#2563EB" stroke-width="2" fill="none" marker-end="url(#fk-arrow)"/>
+  <text x="450" y="1315" font-size="11" fill="#2563EB" font-weight="bold">1:N</text>
+
+  <!-- oauth2_clients → oauth2_authorization_codes (straight down) -->
+  <path d="M 875,590 L 875,630"
+        stroke="#2563EB" stroke-width="2" fill="none" marker-end="url(#fk-arrow)"/>
+  <text x="885" y="615" font-size="11" fill="#2563EB" font-weight="bold">1:N</text>
+
+  <!-- oauth2_clients → oauth2_tokens (straight down) -->
+  <path d="M 875,590 Q 875,820 875,1050"
+        stroke="#2563EB" stroke-width="2" fill="none" marker-end="url(#fk-arrow)"/>
+  <text x="885" y="820" font-size="11" fill="#2563EB" font-weight="bold">1:N</text>
+
+  <!-- oauth2_authorization_codes → oauth2_clients (already covered above) -->
+  <!-- oauth2_tokens → oauth2_clients (already covered above) -->
+
+  <!-- Legend Box -->
+  <rect x="50" y="1550" width="1700" height="520" fill="#FAFAFA" stroke="#6B7280" stroke-width="1" rx="8"/>
+
+  <text x="70" y="1590" font-size="16" fill="#1E3C72" font-weight="bold">Database Schema Details</text>
+
+  <text x="90" y="1630" font-size="13" fill="#000000" font-weight="bold">✓ Primary Keys (9 tables):</text>
+  <text x="110" y="1655" font-size="12" fill="#6B7280">All tables use INTEGER PRIMARY KEY AUTOINCREMENT for auto-generated IDs</text>
+
+  <text x="90" y="1690" font-size="13" fill="#000000" font-weight="bold">✓ UNIQUE Constraints:</text>
+  <text x="110" y="1715" font-size="12" fill="#6B7280">• users: username, email</text>
+  <text x="110" y="1740" font-size="12" fill="#6B7280">• account_lockouts: username</text>
+  <text x="110" y="1765" font-size="12" fill="#6B7280">• oauth2_clients: client_id</text>
+  <text x="110" y="1790" font-size="12" fill="#6B7280">• oauth2_authorization_codes: code</text>
+  <text x="110" y="1815" font-size="12" fill="#6B7280">• oauth2_tokens: access_token, refresh_token</text>
+  <text x="110" y="1840" font-size="12" fill="#6B7280">• sessions: session_id</text>
+  <text x="110" y="1865" font-size="12" fill="#6B7280">• rate_limits: UNIQUE(key, endpoint, window_start)</text>
+
+  <text x="90" y="1900" font-size="13" fill="#000000" font-weight="bold">✓ Foreign Keys (8 total, all with ON DELETE CASCADE):</text>
+  <text x="110" y="1925" font-size="12" fill="#6B7280">• oauth2_clients.user_id → users.id</text>
+  <text x="110" y="1950" font-size="12" fill="#6B7280">• oauth2_authorization_codes.client_id → oauth2_clients.client_id</text>
+  <text x="110" y="1975" font-size="12" fill="#6B7280">• oauth2_authorization_codes.user_id → users.id</text>
+  <text x="110" y="2000" font-size="12" fill="#6B7280">• oauth2_tokens.client_id → oauth2_clients.client_id</text>
+  <text x="110" y="2025" font-size="12" fill="#6B7280">• oauth2_tokens.user_id → users.id</text>
+  <text x="110" y="2050" font-size="12" fill="#6B7280">• sessions.user_id → users.id</text>
+
+  <text x="900" y="1630" font-size="13" fill="#000000" font-weight="bold">✓ Indexes (15 total):</text>
+  <text x="920" y="1655" font-size="12" fill="#6B7280">• login_attempts: (username, timestamp), (ip_address, timestamp)</text>
+  <text x="920" y="1680" font-size="12" fill="#6B7280">• account_lockouts: (locked_until)</text>
+  <text x="920" y="1705" font-size="12" fill="#6B7280">• rate_limits: (key, endpoint, window_end)</text>
+  <text x="920" y="1730" font-size="12" fill="#6B7280">• security_events: (event_type, timestamp), (username, timestamp)</text>
+  <text x="920" y="1755" font-size="12" fill="#6B7280">• oauth2_clients: (client_id)</text>
+  <text x="920" y="1780" font-size="12" fill="#6B7280">• oauth2_authorization_codes: (code)</text>
+  <text x="920" y="1805" font-size="12" fill="#6B7280">• oauth2_tokens: (access_token), (refresh_token), (token_family_id)</text>
+  <text x="920" y="1830" font-size="12" fill="#6B7280">• sessions: (session_id), (user_id, is_active)</text>
+
+  <text x="900" y="1865" font-size="13" fill="#000000" font-weight="bold">✓ Security Features:</text>
+  <text x="920" y="1890" font-size="12" fill="#6B7280">• Password: Argon2id (t=2, m=19456 KiB, p=1, hash=32B, salt=16B)</text>
+  <text x="920" y="1915" font-size="12" fill="#6B7280">• TOTP: Fernet encrypted (AES-128 CBC + HMAC, PBKDF2 100k iterations)</text>
+  <text x="920" y="1940" font-size="12" fill="#6B7280">• Backup Codes: JSON array of SHA-256 hashes</text>
+  <text x="920" y="1965" font-size="12" fill="#6B7280">• OAuth2: PKCE required, token rotation with family tracking</text>
+  <text x="920" y="1990" font-size="12" fill="#6B7280">• Sessions: Device fingerprinting, IP tracking, expiration</text>
+  <text x="920" y="2015" font-size="12" fill="#6B7280">• Rate Limiting: Database-backed with sliding window</text>
+
+  <text x="90" y="2105" font-size="13" fill="#000000" font-weight="bold">✓ Token Lifetimes:</text>
+  <text x="110" y="2130" font-size="12" fill="#6B7280">• Authorization Codes: 10 minutes</text>
+  <text x="110" y="2155" font-size="12" fill="#6B7280">• Access Tokens: 3600s (1 hour)</text>
+  <text x="110" y="2180" font-size="12" fill="#6B7280">• Refresh Tokens: 2592000s (30 days)</text>
+
+  <!-- Version stamp -->
+  <text x="1750" y="2670" font-size="10" fill="#6B7280" text-anchor="end">v2.0 - Clean Layout</text>
 </svg>

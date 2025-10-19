@@ -23,9 +23,12 @@ def set_security_headers(response):
     """
     response.headers['Content-Security-Policy'] = (
         "default-src 'self'; "
-        "script-src 'self' https://cdn.jsdelivr.net; "
-        "style-src 'self' https://cdn.jsdelivr.net 'unsafe-inline'; "
-        "img-src 'self' https: data:;"
+        "script-src 'self' https://cdn.jsdelivr.net https://www.google.com https://www.gstatic.com; "
+        "style-src 'self' https://cdn.jsdelivr.net https://cdnjs.cloudflare.com 'unsafe-inline'; "
+        "font-src 'self' https://cdnjs.cloudflare.com https://cdn.jsdelivr.net; "
+        "img-src 'self' https: data:; "
+        "connect-src 'self' https://cdn.jsdelivr.net https://cdnjs.cloudflare.com; "
+        "frame-src https://www.google.com;"
     )
     response.headers['X-Content-Type-Options'] = 'nosniff'
     response.headers['X-Frame-Options'] = 'DENY'

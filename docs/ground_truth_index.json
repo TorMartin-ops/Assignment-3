@@ -1,0 +1,1099 @@
+{
+  "metadata": {
+    "generated_at": "2025-10-19T16:40:00Z",
+    "total_files_analyzed": 18,
+    "evidence_based": true,
+    "analysis_scope": "routes, services, utils, app_auth.py, database_auth.py",
+    "version": "2.0"
+  },
+  "system_architecture": {
+    "components": [
+      {
+        "name": "Flask Application",
+        "type": "web_framework",
+        "file": "app_auth.py",
+        "line": 20,
+        "description": "Main Flask application with security configurations",
+        "connections": ["auth_bp", "oauth_bp", "twofa_bp", "CSRFProtect", "Recipe Database", "Auth Database"]
+      },
+      {
+        "name": "Authentication Blueprint",
+        "type": "blueprint",
+        "file": "routes/auth_routes.py",
+        "line": 12,
+        "description": "Handles user registration, login, logout, password changes",
+        "connections": ["AuthService", "SecurityService", "RateLimiter", "ReCaptchaService"]
+      },
+      {
+        "name": "OAuth2 Blueprint",
+        "type": "blueprint",
+        "file": "routes/oauth_routes.py",
+        "line": 22,
+        "description": "OAuth2 Authorization Code Flow with PKCE endpoints",
+        "connections": ["OAuth2Service", "SecurityService"]
+      },
+      {
+        "name": "2FA Blueprint",
+        "type": "blueprint",
+        "file": "routes/twofa_routes.py",
+        "line": 12,
+        "description": "Two-Factor Authentication setup and verification",
+        "connections": ["TOTPService", "SecurityService", "AuthService", "RateLimiter"]
+      },
+      {
+        "name": "Recipe Database",
+        "type": "database",
+        "file": "database.py",
+        "line": 1,
+        "description": "Original SQLite database for recipe application",
+        "connections": ["Flask Application"]
+      },
+      {
+        "name": "Auth Database",
+        "type": "database",
+        "file": "database_auth.py",
+        "line": 9,
+        "description": "SQLite database with authentication tables",
+        "connections": ["Flask Application", "All Services"]
+      },
+      {
+        "name": "CSRF Protection",
+        "type": "security_middleware",
+        "file": "app_auth.py",
+        "line": 29,
+        "description": "Flask-WTF CSRF token protection",
+        "connections": ["Flask Application"]
+      },
+      {
+        "name": "Security Headers Middleware",
+        "type": "security_middleware",
+        "file": "app_auth.py",
+        "line": 53,
+        "description": "Applies security headers to all responses",
+        "connections": ["Flask Application", "SecurityHeadersUtil"]
+      }
+    ],
+    "trust_boundaries": [
+      {
+        "name": "Internet to Application",
+        "description": "External users accessing application",
+        "controls": ["HTTPS", "HSTS", "CSP", "CSRF tokens", "Rate limiting"]
+      },
+      {
+        "name": "Application to Database",
+        "description": "Internal application database access",
+        "controls": ["Parameterized queries", "Transaction isolation"]
+      },
+      {
+        "name": "OAuth2 Client to Authorization Server",
+        "description": "Third-party applications requesting authorization",
+        "controls": ["PKCE", "Client authentication", "Redirect URI validation"]
+      }
+    ],
+    "external_services": [
+      {
+        "name": "Google reCAPTCHA",
+        "type": "captcha_service",
+        "file": "utils/recaptcha.py",
+        "line": 10,
+        "purpose": "Bot prevention after failed login attempts",
+        "api_endpoint": "https://www.google.com/recaptcha/api/siteverify"
+      },
+      {
+        "name": "HaveIBeenPwned API",
+        "type": "breach_detection",
+        "file": "utils/validators.py",
+        "line": 82,
+        "purpose": "Check if passwords appear in known data breaches",
+        "api_endpoint": "https://api.pwnedpasswords.com/range/{prefix}"
+      }
+    ]
+  },
+  "class_diagram": {
+    "services": [
+      {
+        "name": "AuthService",
+        "file": "services/auth_service.py",
+        "line": 13,
+        "methods": [
+          {"name": "__init__", "line": 19, "description": "Initialize with Argon2id hasher"},
+          {"name": "register_user", "line": 30, "description": "Register new user with password hashing and validation"},
+          {"name": "authenticate", "line": 97, "description": "Authenticate user with timing-safe verification"},
+          {"name": "change_password", "line": 161, "description": "Change user password with verification"},
+          {"name": "get_user_by_id", "line": 210, "description": "Retrieve user by ID"},
+          {"name": "get_user_by_username", "line": 229, "description": "Retrieve user by username"}
+        ],
+        "dependencies": ["PasswordHasher (argon2)", "PasswordValidator", "UsernameValidator", "EmailValidator", "Database"]
+      },
+      {
+        "name": "OAuth2Service",
+        "file": "services/oauth2_service.py",
+        "line": 14,
+        "methods": [
+          {"name": "get_client", "line": 29, "description": "Get OAuth2 client by client_id"},
+          {"name": "validate_client", "line": 48, "description": "Validate client credentials"},
+          {"name": "validate_redirect_uri", "line": 76, "description": "Validate redirect URI with exact match"},
+          {"name": "validate_pkce", "line": 98, "description": "Validate PKCE code_verifier against code_challenge"},
+          {"name": "generate_authorization_code", "line": 124, "description": "Generate authorization code with PKCE"},
+          {"name": "validate_authorization_code", "line": 161, "description": "Validate and consume authorization code (single-use)"},
+          {"name": "generate_tokens", "line": 211, "description": "Generate access and refresh tokens"},
+          {"name": "validate_access_token", "line": 261, "description": "Validate access token"},
+          {"name": "refresh_access_token", "line": 290, "description": "Refresh access token with rotation"},
+          {"name": "revoke_token", "line": 366, "description": "Revoke access or refresh token"},
+          {"name": "_revoke_token_family", "line": 397, "description": "Revoke all tokens in family (reuse detection)"},
+          {"name": "get_user_info", "line": 418, "description": "Get user info for userinfo endpoint"}
+        ],
+        "dependencies": ["Database", "secrets", "hashlib", "base64"]
+      },
+      {
+        "name": "TOTPService",
+        "file": "services/totp_service.py",
+        "line": 16,
+        "methods": [
+          {"name": "__init__", "line": 22, "description": "Initialize with encryption service"},
+          {"name": "generate_secret", "line": 27, "description": "Generate new TOTP secret"},
+          {"name": "generate_qr_code", "line": 36, "description": "Generate QR code for authenticator app"},
+          {"name": "enable_2fa", "line": 75, "description": "Enable 2FA and generate backup codes"},
+          {"name": "disable_2fa", "line": 109, "description": "Disable 2FA for user"},
+          {"name": "verify_totp", "line": 130, "description": "Verify TOTP code with replay prevention"},
+          {"name": "verify_backup_code", "line": 179, "description": "Verify and consume backup code"},
+          {"name": "_generate_backup_code", "line": 222, "description": "Generate backup code in format XXXX-XXXX"},
+          {"name": "_cleanup_used_codes", "line": 233, "description": "Clean up old used codes from cache"}
+        ],
+        "dependencies": ["pyotp", "qrcode", "EncryptionService", "Database"]
+      },
+      {
+        "name": "RateLimiter",
+        "file": "services/rate_limiter.py",
+        "line": 11,
+        "methods": [
+          {"name": "__init__", "line": 17, "description": "Initialize rate limiter with window configuration"},
+          {"name": "is_rate_limited", "line": 28, "description": "Check if key is rate limited for endpoint"},
+          {"name": "record_request", "line": 77, "description": "Record a request with transaction lock"},
+          {"name": "limit", "line": 129, "description": "Decorator for rate limiting routes"}
+        ],
+        "dependencies": ["Database", "Flask"]
+      },
+      {
+        "name": "SecurityService",
+        "file": "services/security_service.py",
+        "line": 9,
+        "methods": [
+          {"name": "log_security_event", "line": 24, "description": "Log security event to audit log"},
+          {"name": "log_login_attempt", "line": 63, "description": "Log login attempt"},
+          {"name": "check_account_lockout", "line": 104, "description": "Check if account is currently locked"},
+          {"name": "get_recent_failures", "line": 135, "description": "Get count of recent failed login attempts"},
+          {"name": "apply_account_lockout", "line": 159, "description": "Apply account lockout with transaction"},
+          {"name": "clear_account_lockout", "line": 219, "description": "Clear account lockout after successful login"},
+          {"name": "requires_captcha", "line": 247, "description": "Check if CAPTCHA is required for user"},
+          {"name": "get_login_statistics", "line": 260, "description": "Get login statistics"}
+        ],
+        "dependencies": ["Database"],
+        "constants": [
+          {"name": "LOCKOUT_THRESHOLD", "line": 16, "value": 3},
+          {"name": "LOCKOUT_DURATION", "line": 17, "value": "timedelta(minutes=15)"},
+          {"name": "CAPTCHA_THRESHOLD", "line": 18, "value": 3}
+        ]
+      },
+      {
+        "name": "EncryptionService",
+        "file": "utils/encryption.py",
+        "line": 16,
+        "methods": [
+          {"name": "__init__", "line": 22, "description": "Initialize with Fernet cipher"},
+          {"name": "_derive_key", "line": 37, "description": "Derive Fernet key from password using PBKDF2"},
+          {"name": "encrypt", "line": 88, "description": "Encrypt plaintext string"},
+          {"name": "decrypt", "line": 104, "description": "Decrypt ciphertext string"},
+          {"name": "generate_key", "line": 124, "description": "Generate new Fernet encryption key"}
+        ],
+        "dependencies": ["cryptography.fernet.Fernet", "PBKDF2HMAC"]
+      }
+    ],
+    "utilities": [
+      {
+        "name": "PasswordValidator",
+        "file": "utils/validators.py",
+        "line": 9,
+        "methods": [
+          {"name": "validate", "line": 27, "description": "Validate password against NIST guidelines"},
+          {"name": "check_breach", "line": 64, "description": "Check if password appears in known data breaches"}
+        ],
+        "constants": [
+          {"name": "MIN_LENGTH", "line": 15, "value": 12},
+          {"name": "MAX_LENGTH", "line": 16, "value": 128}
+        ]
+      },
+      {
+        "name": "EmailValidator",
+        "file": "utils/validators.py",
+        "line": 100,
+        "methods": [
+          {"name": "validate", "line": 108, "description": "Validate email format"}
+        ]
+      },
+      {
+        "name": "UsernameValidator",
+        "file": "utils/validators.py",
+        "line": 135,
+        "methods": [
+          {"name": "validate", "line": 142, "description": "Validate username format"}
+        ],
+        "constants": [
+          {"name": "MIN_LENGTH", "line": 138, "value": 3},
+          {"name": "MAX_LENGTH", "line": 139, "value": 30}
+        ]
+      },
+      {
+        "name": "ReCaptchaService",
+        "file": "utils/recaptcha.py",
+        "line": 10,
+        "methods": [
+          {"name": "get_site_key", "line": 24, "description": "Get reCAPTCHA site key for frontend"},
+          {"name": "is_enabled", "line": 33, "description": "Check if reCAPTCHA is configured"},
+          {"name": "verify_response", "line": 42, "description": "Verify reCAPTCHA response from user"},
+          {"name": "_translate_error_codes", "line": 98, "description": "Translate Google error codes to user-friendly messages"}
+        ]
+      },
+      {
+        "name": "SecurityHeaders",
+        "file": "utils/security_headers.py",
+        "line": 7,
+        "function": "set_security_headers",
+        "description": "Add security headers to Flask response (CSP, X-Frame-Options, HSTS, etc.)"
+      },
+      {
+        "name": "Sanitization",
+        "file": "utils/sanitization.py",
+        "line": 8,
+        "functions": [
+          {"name": "sanitize_html_input", "line": 8, "description": "Sanitize user input to prevent XSS"},
+          {"name": "sanitize_comment", "line": 32, "description": "Sanitize user comment - strips all HTML tags"}
+        ]
+      }
+    ],
+    "decorators": [
+      {
+        "name": "login_required",
+        "file": "utils/decorators.py",
+        "line": 8,
+        "description": "Require user login for protected routes",
+        "usage": "Checks if user_id exists in session"
+      },
+      {
+        "name": "regenerate_session",
+        "file": "utils/decorators.py",
+        "line": 23,
+        "description": "Regenerate session ID to prevent session fixation attacks",
+        "usage": "Called after password authentication and 2FA verification"
+      },
+      {
+        "name": "csrf_exempt",
+        "file": "routes/oauth_routes.py",
+        "line": 14,
+        "description": "Mark route as CSRF exempt for OAuth2 endpoints",
+        "usage": "OAuth2 token and revoke endpoints use client authentication instead of CSRF"
+      },
+      {
+        "name": "rate_limiter.limit",
+        "file": "services/rate_limiter.py",
+        "line": 129,
+        "description": "Decorator for rate limiting routes",
+        "parameters": ["requests_per_minute", "per_user"]
+      }
+    ]
+  },
+  "database_schema": {
+    "tables": [
+      {
+        "name": "users",
+        "file": "database_auth.py",
+        "line": 22,
+        "description": "Enhanced users table with authentication columns",
+        "columns": [
+          {"name": "id", "type": "INTEGER", "constraints": ["PRIMARY KEY", "AUTOINCREMENT"]},
+          {"name": "username", "type": "TEXT", "constraints": ["UNIQUE", "NOT NULL"]},
+          {"name": "email", "type": "TEXT", "constraints": ["UNIQUE", "NOT NULL"]},
+          {"name": "password", "type": "TEXT", "constraints": ["NOT NULL"], "description": "Argon2id hash"},
+          {"name": "password_salt", "type": "TEXT", "line": 26},
+          {"name": "password_version", "type": "INTEGER", "line": 31, "default": 1},
+          {"name": "is_active", "type": "INTEGER", "line": 36, "default": 1},
+          {"name": "email_verified", "type": "INTEGER", "line": 41, "default": 0},
+          {"name": "totp_secret", "type": "TEXT", "line": 47, "description": "Encrypted TOTP secret"},
+          {"name": "totp_enabled", "type": "INTEGER", "line": 52, "default": 0},
+          {"name": "backup_codes", "type": "TEXT", "line": 57, "description": "JSON array of hashed backup codes"},
+          {"name": "oauth_provider", "type": "TEXT", "line": 63},
+          {"name": "oauth_user_id", "type": "TEXT", "line": 68},
+          {"name": "oauth_linked", "type": "INTEGER", "line": 73, "default": 0},
+          {"name": "last_login", "type": "TIMESTAMP", "line": 78}
+        ],
+        "indexes": [],
+        "foreign_keys": []
+      },
+      {
+        "name": "login_attempts",
+        "file": "database_auth.py",
+        "line": 87,
+        "description": "Brute force tracking table",
+        "columns": [
+          {"name": "id", "type": "INTEGER", "constraints": ["PRIMARY KEY", "AUTOINCREMENT"]},
+          {"name": "username", "type": "TEXT", "constraints": ["NOT NULL"]},
+          {"name": "ip_address", "type": "TEXT", "constraints": ["NOT NULL"]},
+          {"name": "user_agent", "type": "TEXT"},
+          {"name": "success", "type": "INTEGER", "default": 0},
+          {"name": "failure_reason", "type": "TEXT"},
+          {"name": "timestamp", "type": "TIMESTAMP", "default": "CURRENT_TIMESTAMP"}
+        ],
+        "indexes": [
+          {"name": "idx_login_attempts_username", "columns": ["username", "timestamp"], "line": 100},
+          {"name": "idx_login_attempts_ip", "columns": ["ip_address", "timestamp"], "line": 105}
+        ],
+        "foreign_keys": []
+      },
+      {
+        "name": "account_lockouts",
+        "file": "database_auth.py",
+        "line": 113,
+        "description": "Account lockout tracking",
+        "columns": [
+          {"name": "id", "type": "INTEGER", "constraints": ["PRIMARY KEY", "AUTOINCREMENT"]},
+          {"name": "username", "type": "TEXT", "constraints": ["UNIQUE", "NOT NULL"]},
+          {"name": "locked_until", "type": "TIMESTAMP", "constraints": ["NOT NULL"]},
+          {"name": "failed_attempts", "type": "INTEGER", "default": 0},
+          {"name": "lockout_reason", "type": "TEXT"},
+          {"name": "locked_at", "type": "TIMESTAMP", "default": "CURRENT_TIMESTAMP"},
+          {"name": "locked_by", "type": "TEXT", "default": "'system'"}
+        ],
+        "indexes": [
+          {"name": "idx_lockouts_until", "columns": ["locked_until"], "line": 126}
+        ],
+        "foreign_keys": []
+      },
+      {
+        "name": "rate_limits",
+        "file": "database_auth.py",
+        "line": 133,
+        "description": "Database-based rate limiting (no Redis)",
+        "columns": [
+          {"name": "id", "type": "INTEGER", "constraints": ["PRIMARY KEY", "AUTOINCREMENT"]},
+          {"name": "key", "type": "TEXT", "constraints": ["NOT NULL"]},
+          {"name": "endpoint", "type": "TEXT", "constraints": ["NOT NULL"]},
+          {"name": "request_count", "type": "INTEGER", "default": 1},
+          {"name": "window_start", "type": "TIMESTAMP", "default": "CURRENT_TIMESTAMP"},
+          {"name": "window_end", "type": "TIMESTAMP", "constraints": ["NOT NULL"]},
+          {"name": "UNIQUE", "columns": ["key", "endpoint", "window_start"]}
+        ],
+        "indexes": [
+          {"name": "idx_rate_limit_key", "columns": ["key", "endpoint", "window_end"], "line": 145}
+        ],
+        "foreign_keys": []
+      },
+      {
+        "name": "security_events",
+        "file": "database_auth.py",
+        "line": 153,
+        "description": "Security audit log",
+        "columns": [
+          {"name": "id", "type": "INTEGER", "constraints": ["PRIMARY KEY", "AUTOINCREMENT"]},
+          {"name": "event_type", "type": "TEXT", "constraints": ["NOT NULL"]},
+          {"name": "severity", "type": "TEXT", "default": "'info'"},
+          {"name": "username", "type": "TEXT"},
+          {"name": "ip_address", "type": "TEXT"},
+          {"name": "user_agent", "type": "TEXT"},
+          {"name": "endpoint", "type": "TEXT"},
+          {"name": "metadata", "type": "TEXT", "description": "JSON metadata"},
+          {"name": "timestamp", "type": "TIMESTAMP", "default": "CURRENT_TIMESTAMP"}
+        ],
+        "indexes": [
+          {"name": "idx_security_events_type", "columns": ["event_type", "timestamp"], "line": 167},
+          {"name": "idx_security_events_username", "columns": ["username", "timestamp"], "line": 172}
+        ],
+        "foreign_keys": []
+      },
+      {
+        "name": "oauth2_clients",
+        "file": "database_auth.py",
+        "line": 180,
+        "description": "OAuth2 registered clients",
+        "columns": [
+          {"name": "id", "type": "INTEGER", "constraints": ["PRIMARY KEY", "AUTOINCREMENT"]},
+          {"name": "client_id", "type": "TEXT", "constraints": ["UNIQUE", "NOT NULL"]},
+          {"name": "client_secret_hash", "type": "TEXT", "constraints": ["NOT NULL"]},
+          {"name": "client_name", "type": "TEXT", "constraints": ["NOT NULL"]},
+          {"name": "redirect_uris", "type": "TEXT", "constraints": ["NOT NULL"], "description": "JSON array"},
+          {"name": "default_redirect_uri", "type": "TEXT"},
+          {"name": "grant_types", "type": "TEXT", "default": "'authorization_code refresh_token'"},
+          {"name": "response_types", "type": "TEXT", "default": "'code'"},
+          {"name": "scope", "type": "TEXT", "default": "'profile email'"},
+          {"name": "token_endpoint_auth_method", "type": "TEXT", "default": "'client_secret_post'"},
+          {"name": "require_pkce", "type": "INTEGER", "default": 1},
+          {"name": "public_key", "type": "TEXT"},
+          {"name": "user_id", "type": "INTEGER"},
+          {"name": "created_at", "type": "TIMESTAMP", "default": "CURRENT_TIMESTAMP"},
+          {"name": "updated_at", "type": "TIMESTAMP", "default": "CURRENT_TIMESTAMP"}
+        ],
+        "indexes": [
+          {"name": "idx_oauth_client_id", "columns": ["client_id"], "line": 201}
+        ],
+        "foreign_keys": [
+          {"column": "user_id", "references": "users(id)", "on_delete": "CASCADE", "line": 197}
+        ]
+      },
+      {
+        "name": "oauth2_authorization_codes",
+        "file": "database_auth.py",
+        "line": 209,
+        "description": "OAuth2 authorization codes with PKCE",
+        "columns": [
+          {"name": "id", "type": "INTEGER", "constraints": ["PRIMARY KEY", "AUTOINCREMENT"]},
+          {"name": "code", "type": "TEXT", "constraints": ["UNIQUE", "NOT NULL"]},
+          {"name": "client_id", "type": "TEXT", "constraints": ["NOT NULL"]},
+          {"name": "user_id", "type": "INTEGER", "constraints": ["NOT NULL"]},
+          {"name": "redirect_uri", "type": "TEXT", "constraints": ["NOT NULL"]},
+          {"name": "scope", "type": "TEXT"},
+          {"name": "code_challenge", "type": "TEXT"},
+          {"name": "code_challenge_method", "type": "TEXT"},
+          {"name": "used", "type": "INTEGER", "default": 0},
+          {"name": "expires_at", "type": "TIMESTAMP", "constraints": ["NOT NULL"]},
+          {"name": "created_at", "type": "TIMESTAMP", "default": "CURRENT_TIMESTAMP"}
+        ],
+        "indexes": [
+          {"name": "idx_auth_code", "columns": ["code"], "line": 227}
+        ],
+        "foreign_keys": [
+          {"column": "client_id", "references": "oauth2_clients(client_id)", "on_delete": "CASCADE", "line": 222},
+          {"column": "user_id", "references": "users(id)", "on_delete": "CASCADE", "line": 223}
+        ]
+      },
+      {
+        "name": "oauth2_tokens",
+        "file": "database_auth.py",
+        "line": 235,
+        "description": "OAuth2 access and refresh tokens",
+        "columns": [
+          {"name": "id", "type": "INTEGER", "constraints": ["PRIMARY KEY", "AUTOINCREMENT"]},
+          {"name": "access_token", "type": "TEXT", "constraints": ["UNIQUE", "NOT NULL"]},
+          {"name": "refresh_token", "type": "TEXT", "constraints": ["UNIQUE"]},
+          {"name": "token_type", "type": "TEXT", "default": "'Bearer'"},
+          {"name": "client_id", "type": "TEXT", "constraints": ["NOT NULL"]},
+          {"name": "user_id", "type": "INTEGER", "constraints": ["NOT NULL"]},
+          {"name": "scope", "type": "TEXT"},
+          {"name": "token_family_id", "type": "TEXT", "constraints": ["NOT NULL"], "description": "For refresh token rotation"},
+          {"name": "refresh_token_used", "type": "INTEGER", "default": 0},
+          {"name": "revoked", "type": "INTEGER", "default": 0},
+          {"name": "revoked_at", "type": "TIMESTAMP"},
+          {"name": "issued_at", "type": "INTEGER", "constraints": ["NOT NULL"]},
+          {"name": "expires_in", "type": "INTEGER", "constraints": ["NOT NULL"]},
+          {"name": "refresh_token_expires_at", "type": "INTEGER"}
+        ],
+        "indexes": [
+          {"name": "idx_token_access", "columns": ["access_token"], "line": 256},
+          {"name": "idx_token_refresh", "columns": ["refresh_token"], "line": 261},
+          {"name": "idx_token_family", "columns": ["token_family_id"], "line": 266}
+        ],
+        "foreign_keys": [
+          {"column": "client_id", "references": "oauth2_clients(client_id)", "on_delete": "CASCADE", "line": 251},
+          {"column": "user_id", "references": "users(id)", "on_delete": "CASCADE", "line": 252}
+        ]
+      },
+      {
+        "name": "sessions",
+        "file": "database_auth.py",
+        "line": 274,
+        "description": "User session tracking",
+        "columns": [
+          {"name": "id", "type": "INTEGER", "constraints": ["PRIMARY KEY", "AUTOINCREMENT"]},
+          {"name": "session_id", "type": "TEXT", "constraints": ["UNIQUE", "NOT NULL"]},
+          {"name": "user_id", "type": "INTEGER", "constraints": ["NOT NULL"]},
+          {"name": "session_data", "type": "TEXT"},
+          {"name": "ip_address", "type": "TEXT"},
+          {"name": "user_agent", "type": "TEXT"},
+          {"name": "device_fingerprint", "type": "TEXT"},
+          {"name": "is_active", "type": "INTEGER", "default": 1},
+          {"name": "created_at", "type": "TIMESTAMP", "default": "CURRENT_TIMESTAMP"},
+          {"name": "last_activity", "type": "TIMESTAMP", "default": "CURRENT_TIMESTAMP"},
+          {"name": "expires_at", "type": "TIMESTAMP", "constraints": ["NOT NULL"]}
+        ],
+        "indexes": [
+          {"name": "idx_sessions_id", "columns": ["session_id"], "line": 291},
+          {"name": "idx_sessions_user", "columns": ["user_id", "is_active"], "line": 296}
+        ],
+        "foreign_keys": [
+          {"column": "user_id", "references": "users(id)", "on_delete": "CASCADE", "line": 287}
+        ]
+      }
+    ]
+  },
+  "oauth2_flow": {
+    "steps": [
+      {
+        "step": 1,
+        "name": "Authorization Request",
+        "file": "routes/oauth_routes.py",
+        "line": 35,
+        "description": "Client initiates authorization with code_challenge (PKCE)",
+        "security_checks": [
+          "Validate client_id exists (line 46-51)",
+          "Validate redirect_uri exact match (line 54-55)",
+          "Validate response_type is 'code' (line 58-59)",
+          "Validate PKCE code_challenge is present (line 62-63)",
+          "Check user is logged in (line 66-70)"
+        ]
+      },
+      {
+        "step": 2,
+        "name": "User Authorization",
+        "file": "routes/oauth_routes.py",
+        "line": 83,
+        "description": "Show consent screen to user",
+        "security_checks": [
+          "Store OAuth request in session (line 73-80)",
+          "Display client name and requested scopes (line 83-85)"
+        ]
+      },
+      {
+        "step": 3,
+        "name": "Authorization Grant",
+        "file": "routes/oauth_routes.py",
+        "line": 88,
+        "description": "User approves or denies authorization",
+        "security_checks": [
+          "Check user approval (line 88-99)",
+          "Generate cryptographically secure authorization code (oauth2_service.py line 141)",
+          "Store code_challenge for later verification (oauth2_service.py line 148-154)",
+          "Log authorization event (line 112-118)",
+          "Redirect with code and state (line 121-122)"
+        ]
+      },
+      {
+        "step": 4,
+        "name": "Token Request",
+        "file": "routes/oauth_routes.py",
+        "line": 133,
+        "description": "Exchange authorization code for tokens",
+        "security_checks": [
+          "Validate client credentials (line 142-144)",
+          "Validate authorization code is unused (oauth2_service.py line 180-183)",
+          "Check code expiration (oauth2_service.py line 191-194)",
+          "Validate redirect_uri matches (line 152-153)",
+          "Validate PKCE code_verifier (line 156-164)",
+          "Mark code as used (single-use enforcement, oauth2_service.py line 197-199)",
+          "Use BEGIN IMMEDIATE transaction (oauth2_service.py line 178)"
+        ]
+      },
+      {
+        "step": 5,
+        "name": "Token Response",
+        "file": "routes/oauth_routes.py",
+        "line": 166,
+        "description": "Return access and refresh tokens",
+        "security_checks": [
+          "Generate cryptographically secure tokens (oauth2_service.py line 225-227)",
+          "Create token family for refresh rotation (oauth2_service.py line 227)",
+          "Set token expiration times (oauth2_service.py line 21-23)",
+          "Log token issuance event (line 174-180)"
+        ]
+      },
+      {
+        "step": 6,
+        "name": "Resource Access",
+        "file": "routes/oauth_routes.py",
+        "line": 214,
+        "description": "Access protected resources with Bearer token",
+        "security_checks": [
+          "Extract Bearer token from Authorization header (line 221-226)",
+          "Validate access token not expired (oauth2_service.py line 282-285)",
+          "Check token not revoked (oauth2_service.py line 274)",
+          "Return user info (line 235-240)"
+        ]
+      },
+      {
+        "step": 7,
+        "name": "Token Refresh",
+        "file": "routes/oauth_routes.py",
+        "line": 184,
+        "description": "Refresh access token using refresh token",
+        "security_checks": [
+          "Validate client credentials (line 191-193)",
+          "Check refresh token reuse (oauth2_service.py line 320-325)",
+          "Revoke entire token family if reuse detected (oauth2_service.py line 324)",
+          "Mark old refresh token as used (oauth2_service.py line 334-338)",
+          "Generate new tokens with rotation (oauth2_service.py line 341-346)",
+          "Use BEGIN IMMEDIATE transaction (oauth2_service.py line 307)",
+          "Log token refresh event (line 199-205)"
+        ]
+      },
+      {
+        "step": 8,
+        "name": "Token Revocation",
+        "file": "routes/oauth_routes.py",
+        "line": 242,
+        "description": "Revoke access or refresh token",
+        "security_checks": [
+          "Validate client credentials (line 254-256)",
+          "Mark token as revoked with timestamp (oauth2_service.py line 378-390)",
+          "Log revocation event (line 264-270)",
+          "Return 200 even if token doesn't exist (RFC 7009, line 273)"
+        ]
+      }
+    ],
+    "pkce_implementation": {
+      "file": "services/oauth2_service.py",
+      "line": 98,
+      "method": "S256",
+      "description": "SHA-256 hashing of code_verifier",
+      "enforcement": "Mandatory - code_challenge required in authorization request (oauth_routes.py line 62)"
+    },
+    "token_lifecycle": [
+      {
+        "token_type": "authorization_code",
+        "expiration": "10 minutes",
+        "file": "services/oauth2_service.py",
+        "line": 23,
+        "single_use": true,
+        "enforcement_line": 197
+      },
+      {
+        "token_type": "access_token",
+        "expiration": "1 hour (3600 seconds)",
+        "file": "services/oauth2_service.py",
+        "line": 21,
+        "revocable": true
+      },
+      {
+        "token_type": "refresh_token",
+        "expiration": "30 days (2592000 seconds)",
+        "file": "services/oauth2_service.py",
+        "line": 22,
+        "revocable": true,
+        "rotation": true
+      }
+    ],
+    "refresh_rotation": {
+      "file": "services/oauth2_service.py",
+      "line": 290,
+      "strategy": "Token family rotation with reuse detection",
+      "implementation": [
+        "Each token belongs to a token_family_id (line 227)",
+        "Old refresh token marked as 'used' not 'revoked' (line 334-338)",
+        "If used token is reused, entire family revoked (line 320-325)",
+        "New tokens inherit token_family_id (line 349-353)",
+        "Transaction prevents concurrent refresh (line 307)"
+      ]
+    }
+  },
+  "twofa_flow": {
+    "setup_steps": [
+      {
+        "step": 1,
+        "name": "Initiate Setup",
+        "file": "routes/twofa_routes.py",
+        "line": 73,
+        "description": "Generate TOTP secret and QR code",
+        "security": "Rate limited to 5 requests/minute (line 21)"
+      },
+      {
+        "step": 2,
+        "name": "Generate Secret",
+        "file": "services/totp_service.py",
+        "line": 27,
+        "description": "Generate Base32-encoded TOTP secret using pyotp"
+      },
+      {
+        "step": 3,
+        "name": "Generate QR Code",
+        "file": "services/totp_service.py",
+        "line": 36,
+        "description": "Create QR code with provisioning URI for authenticator apps",
+        "details": "Includes username and issuer name (line 48-53)"
+      },
+      {
+        "step": 4,
+        "name": "Verify Setup",
+        "file": "routes/twofa_routes.py",
+        "line": 34,
+        "description": "User scans QR and submits verification code",
+        "security": "Verify code with ±1 window tolerance (line 46)"
+      },
+      {
+        "step": 5,
+        "name": "Enable 2FA",
+        "file": "services/totp_service.py",
+        "line": 75,
+        "description": "Encrypt secret and generate backup codes",
+        "details": [
+          "Encrypt TOTP secret with Fernet (line 87)",
+          "Generate 10 backup codes (line 90)",
+          "Hash backup codes with SHA-256 before storing (line 92-96)",
+          "Store in database (line 99-105)"
+        ]
+      },
+      {
+        "step": 6,
+        "name": "Display Backup Codes",
+        "file": "routes/twofa_routes.py",
+        "line": 64,
+        "description": "Show backup codes once for user to save",
+        "security": "Codes removed from session after display (line 162)"
+      }
+    ],
+    "verification_steps": [
+      {
+        "step": 1,
+        "name": "Password Authentication",
+        "file": "routes/auth_routes.py",
+        "line": 97,
+        "description": "User enters username and password",
+        "security": "Session regenerated after successful password auth (line 116)"
+      },
+      {
+        "step": 2,
+        "name": "Check 2FA Enabled",
+        "file": "routes/auth_routes.py",
+        "line": 119,
+        "description": "Check if user has 2FA enabled",
+        "flow": "If enabled, redirect to 2FA verification (line 121-123)"
+      },
+      {
+        "step": 3,
+        "name": "2FA Challenge",
+        "file": "routes/twofa_routes.py",
+        "line": 82,
+        "description": "Show 2FA verification page",
+        "security": "Rate limited to 5 requests/minute per IP (line 83)"
+      },
+      {
+        "step": 4,
+        "name": "Verify TOTP Code",
+        "file": "services/totp_service.py",
+        "line": 130,
+        "description": "Verify 6-digit TOTP code with replay prevention",
+        "security": [
+          "Decrypt stored TOTP secret (line 152-153)",
+          "Check code replay cache (line 159-163)",
+          "Verify with ±1 window tolerance (line 168)",
+          "Mark code as used in cache (line 170)",
+          "Clean old entries from cache (line 173)"
+        ]
+      },
+      {
+        "step": 5,
+        "name": "Backup Code Verification",
+        "file": "services/totp_service.py",
+        "line": 179,
+        "description": "Alternative: verify backup code",
+        "security": [
+          "Hash provided code with SHA-256 (line 201)",
+          "Check against stored hashes (line 206)",
+          "Remove used code from database (line 208-215)",
+          "Return remaining code count (line 217)"
+        ]
+      },
+      {
+        "step": 6,
+        "name": "Complete Login",
+        "file": "routes/twofa_routes.py",
+        "line": 103,
+        "description": "After successful 2FA, complete login",
+        "security": "Session regenerated again after 2FA (line 106, 133)"
+      }
+    ],
+    "backup_codes": {
+      "file": "services/totp_service.py",
+      "line": 222,
+      "format": "XXXX-XXXX (8 alphanumeric characters)",
+      "storage": "SHA-256 hashed in database (line 93-96)",
+      "count": 10,
+      "single_use": true
+    },
+    "session_regeneration": [
+      {
+        "trigger": "After password authentication",
+        "file": "routes/auth_routes.py",
+        "line": 116,
+        "purpose": "Prevent session fixation attack (first regeneration)"
+      },
+      {
+        "trigger": "After successful 2FA verification",
+        "file": "routes/twofa_routes.py",
+        "line": 106,
+        "purpose": "Prevent session fixation attack (second regeneration)"
+      },
+      {
+        "trigger": "After backup code verification",
+        "file": "routes/twofa_routes.py",
+        "line": 106,
+        "purpose": "Prevent session fixation attack (second regeneration)"
+      }
+    ]
+  },
+  "brute_force_protection": {
+    "rate_limits": [
+      {
+        "endpoint": "/auth/login",
+        "limit": "5 requests per minute",
+        "scope": "per username",
+        "file": "routes/auth_routes.py",
+        "line": 60,
+        "implementation": "rate_limiter.limit decorator with per_user=True"
+      },
+      {
+        "endpoint": "/twofa/setup-2fa",
+        "limit": "5 requests per minute",
+        "scope": "per user",
+        "file": "routes/twofa_routes.py",
+        "line": 21,
+        "purpose": "Prevent code brute force during setup"
+      },
+      {
+        "endpoint": "/twofa/verify-2fa",
+        "limit": "5 requests per minute",
+        "scope": "per IP",
+        "file": "routes/twofa_routes.py",
+        "line": 83,
+        "purpose": "Prevent TOTP code brute force"
+      },
+      {
+        "endpoint": "/twofa/disable-2fa",
+        "limit": "3 requests per minute",
+        "scope": "per user",
+        "file": "routes/twofa_routes.py",
+        "line": 171,
+        "purpose": "Prevent password brute force on disable"
+      }
+    ],
+    "lockout_policy": {
+      "threshold": 3,
+      "duration": "15 minutes",
+      "file": "services/security_service.py",
+      "line": 16,
+      "implementation": "Apply lockout after threshold failures (line 136-137)"
+    },
+    "per_ip_throttling": {
+      "file": "services/rate_limiter.py",
+      "line": 148,
+      "key_format": "ip:{request.remote_addr}",
+      "description": "Track requests per IP address when per_user=False"
+    },
+    "per_account_throttling": {
+      "file": "services/rate_limiter.py",
+      "line": 147,
+      "key_format": "user:{username}",
+      "description": "Track requests per username when per_user=True"
+    },
+    "captcha_integration": {
+      "trigger": "After 3 failed login attempts",
+      "file": "services/security_service.py",
+      "line": 18,
+      "implementation": "requires_captcha method (line 247-258)",
+      "verification": "routes/auth_routes.py line 78-94"
+    },
+    "timing_attack_prevention": {
+      "file": "services/auth_service.py",
+      "line": 141,
+      "description": "Dummy hash verification on invalid credentials",
+      "purpose": "Make authentication timing consistent (line 142-156)"
+    },
+    "database_locks": {
+      "description": "Transaction-based race condition prevention",
+      "implementations": [
+        {
+          "operation": "Authorization code validation",
+          "file": "services/oauth2_service.py",
+          "line": 178,
+          "lock_type": "BEGIN IMMEDIATE"
+        },
+        {
+          "operation": "Refresh token rotation",
+          "file": "services/oauth2_service.py",
+          "line": 307,
+          "lock_type": "BEGIN IMMEDIATE"
+        },
+        {
+          "operation": "Rate limit recording",
+          "file": "services/rate_limiter.py",
+          "line": 96,
+          "lock_type": "BEGIN IMMEDIATE"
+        },
+        {
+          "operation": "Account lockout",
+          "file": "services/security_service.py",
+          "line": 178,
+          "lock_type": "BEGIN IMMEDIATE"
+        }
+      ]
+    }
+  },
+  "security_layers": {
+    "prevent": [
+      {
+        "mechanism": "Argon2id Password Hashing",
+        "file": "services/auth_service.py",
+        "line": 22,
+        "description": "OWASP recommended parameters: time_cost=2, memory_cost=19456, parallelism=1"
+      },
+      {
+        "mechanism": "Password Validation",
+        "file": "utils/validators.py",
+        "line": 28,
+        "description": "NIST SP 800-63B compliant: min 12 chars, max 128, diversity check, common password block"
+      },
+      {
+        "mechanism": "Breach Detection",
+        "file": "utils/validators.py",
+        "line": 65,
+        "description": "HaveIBeenPwned API integration with k-anonymity model"
+      },
+      {
+        "mechanism": "CSRF Protection",
+        "file": "app_auth.py",
+        "line": 29,
+        "description": "Flask-WTF CSRF tokens on all state-changing requests"
+      },
+      {
+        "mechanism": "Content Security Policy",
+        "file": "utils/security_headers.py",
+        "line": 24,
+        "description": "Strict CSP with self-origin and whitelisted CDNs"
+      },
+      {
+        "mechanism": "XSS Prevention",
+        "file": "utils/sanitization.py",
+        "line": 8,
+        "description": "HTML sanitization with bleach library"
+      },
+      {
+        "mechanism": "Session Security",
+        "file": "app_auth.py",
+        "line": 24,
+        "description": "Secure, HttpOnly, SameSite=Lax cookies"
+      },
+      {
+        "mechanism": "Session Fixation Prevention",
+        "file": "utils/decorators.py",
+        "line": 23,
+        "description": "Session ID regeneration after authentication"
+      },
+      {
+        "mechanism": "TOTP Secret Encryption",
+        "file": "services/totp_service.py",
+        "line": 87,
+        "description": "Fernet symmetric encryption with PBKDF2-derived keys"
+      },
+      {
+        "mechanism": "PKCE for OAuth2",
+        "file": "services/oauth2_service.py",
+        "line": 98,
+        "description": "Mandatory S256 code challenge method"
+      },
+      {
+        "mechanism": "Exact Redirect URI Matching",
+        "file": "services/oauth2_service.py",
+        "line": 96,
+        "description": "No wildcards or pattern matching allowed"
+      },
+      {
+        "mechanism": "HSTS Header",
+        "file": "utils/security_headers.py",
+        "line": 36,
+        "description": "1 year max-age with includeSubDomains"
+      },
+      {
+        "mechanism": "X-Frame-Options",
+        "file": "utils/security_headers.py",
+        "line": 34,
+        "description": "DENY to prevent clickjacking"
+      },
+      {
+        "mechanism": "X-Content-Type-Options",
+        "file": "utils/security_headers.py",
+        "line": 33,
+        "description": "nosniff to prevent MIME sniffing"
+      }
+    ],
+    "detect": [
+      {
+        "mechanism": "Login Attempt Tracking",
+        "file": "services/security_service.py",
+        "line": 63,
+        "description": "Log all login attempts with timestamp, IP, user agent"
+      },
+      {
+        "mechanism": "Security Event Logging",
+        "file": "services/security_service.py",
+        "line": 24,
+        "description": "Comprehensive audit log with severity levels"
+      },
+      {
+        "mechanism": "Failed Login Counting",
+        "file": "services/security_service.py",
+        "line": 135,
+        "description": "Count recent failures within lockout window"
+      },
+      {
+        "mechanism": "TOTP Replay Detection",
+        "file": "services/totp_service.py",
+        "line": 159,
+        "description": "In-memory cache of used codes per time window"
+      },
+      {
+        "mechanism": "Refresh Token Reuse Detection",
+        "file": "services/oauth2_service.py",
+        "line": 320,
+        "description": "Track refresh_token_used flag, revoke family on reuse"
+      },
+      {
+        "mechanism": "Authorization Code Single-Use Enforcement",
+        "file": "services/oauth2_service.py",
+        "line": 197,
+        "description": "Mark code as used in transaction, reject if already used"
+      }
+    ],
+    "respond": [
+      {
+        "mechanism": "Account Lockout",
+        "file": "services/security_service.py",
+        "line": 159,
+        "description": "15-minute lockout after 3 failed attempts"
+      },
+      {
+        "mechanism": "CAPTCHA Challenge",
+        "file": "routes/auth_routes.py",
+        "line": 78,
+        "description": "Google reCAPTCHA v2 after 3 failures"
+      },
+      {
+        "mechanism": "Rate Limiting",
+        "file": "services/rate_limiter.py",
+        "line": 28,
+        "description": "429 response when rate limit exceeded"
+      },
+      {
+        "mechanism": "Token Family Revocation",
+        "file": "services/oauth2_service.py",
+        "line": 397,
+        "description": "Revoke all tokens in family if reuse detected"
+      },
+      {
+        "mechanism": "Lockout Clearing",
+        "file": "services/security_service.py",
+        "line": 219,
+        "description": "Clear lockout after successful login"
+      },
+      {
+        "mechanism": "Backup Code Depletion Warning",
+        "file": "routes/twofa_routes.py",
+        "line": 120,
+        "description": "Show remaining backup codes after use"
+      }
+    ]
+  },
+  "missing_diagrams": [
+    "8. Rate Limiting Flow Diagram - Show database-based rate limiting with BEGIN IMMEDIATE transactions and cleanup process",
+    "9. Session Management Lifecycle - Show session creation, regeneration points, and expiration handling",
+    "10. Encryption Service Architecture - Show PBKDF2 key derivation and Fernet encryption for TOTP secrets",
+    "11. Security Event Audit Flow - Show event logging pipeline with severity levels and metadata storage",
+    "12. Password Validation Pipeline - Show NIST validation, breach checking, and timing-safe verification",
+    "13. Account Lockout State Machine - Show transitions between normal, warning (CAPTCHA), and locked states",
+    "14. Token Family Rotation - Show refresh token lifecycle with reuse detection and family revocation"
+  ]
+}

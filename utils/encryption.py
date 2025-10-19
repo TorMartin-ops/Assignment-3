@@ -117,8 +117,8 @@ class EncryptionService:
         try:
             decrypted_bytes = self.cipher.decrypt(ciphertext.encode('utf-8'))
             return decrypted_bytes.decode('utf-8')
-        except Exception as e:
-            print(f"Decryption error: {e}")
+        except Exception:
+            # Decryption failed: invalid ciphertext or wrong key
             return None
 
     @staticmethod

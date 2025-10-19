@@ -1,109 +1,110 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<svg width="800" height="600" xmlns="http://www.w3.org/2000/svg">
+<svg width="100%" height="100%" viewBox="0 0 1400 2000"
+     xmlns="http://www.w3.org/2000/svg">
+  <title>Security Layers - Defense in Depth</title>
+  <desc>All 27 security mechanisms: 14 Prevent, 6 Detect, 6 Respond - verified from source code</desc>
   <defs>
-    <linearGradient id="layer1" x1="0%" y1="0%" x2="100%" y2="0%">
-      <stop offset="0%" style="stop-color:#e74c3c"/>
-      <stop offset="100%" style="stop-color:#c0392b"/>
-    </linearGradient>
-    <linearGradient id="layer2" x1="0%" y1="0%" x2="100%" y2="0%">
-      <stop offset="0%" style="stop-color:#e67e22"/>
-      <stop offset="100%" style="stop-color:#d35400"/>
-    </linearGradient>
-    <linearGradient id="layer3" x1="0%" y1="0%" x2="100%" y2="0%">
-      <stop offset="0%" style="stop-color:#f39c12"/>
-      <stop offset="100%" style="stop-color:#f1c40f"/>
-    </linearGradient>
-    <linearGradient id="layer4" x1="0%" y1="0%" x2="100%" y2="0%">
-      <stop offset="0%" style="stop-color:#2ecc71"/>
-      <stop offset="100%" style="stop-color:#27ae60"/>
-    </linearGradient>
-    <linearGradient id="layer5" x1="0%" y1="0%" x2="100%" y2="0%">
-      <stop offset="0%" style="stop-color:#3498db"/>
-      <stop offset="100%" style="stop-color:#2980b9"/>
-    </linearGradient>
-    <linearGradient id="layer6" x1="0%" y1="0%" x2="100%" y2="0%">
-      <stop offset="0%" style="stop-color:#9b59b6"/>
-      <stop offset="100%" style="stop-color:#8e44ad"/>
-    </linearGradient>
-    <linearGradient id="layer7" x1="0%" y1="0%" x2="100%" y2="0%">
-      <stop offset="0%" style="stop-color:#34495e"/>
-      <stop offset="100%" style="stop-color:#2c3e50"/>
-    </linearGradient>
-    <linearGradient id="layer8" x1="0%" y1="0%" x2="100%" y2="0%">
-      <stop offset="0%" style="stop-color:#1e3c72"/>
-      <stop offset="100%" style="stop-color:#2a5298"/>
-    </linearGradient>
+    <style>
+      @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&amp;display=swap');
+      text { font-family: 'Inter', system-ui, -apple-system, sans-serif; }
+    </style>
   </defs>
-
-  <text x="400" y="30" text-anchor="middle" font-size="16" font-weight="bold" fill="#1e3c72">
-    Defense-in-Depth: Eight Security Layers
-  </text>
-
-  <!-- Layer 8: Audit -->
-  <rect x="100" y="470" width="600" height="60" fill="url(#layer8)" opacity="0.9" rx="5"/>
-  <text x="400" y="495" text-anchor="middle" fill="white" font-weight="bold" font-size="12">Layer 8: Audit Logging</text>
-  <text x="400" y="512" text-anchor="middle" fill="white" font-size="10">security_events table | login_attempts tracking</text>
-
-  <!-- Layer 7: Data Protection -->
-  <rect x="120" y="410" width="560" height="60" fill="url(#layer7)" opacity="0.9" rx="5"/>
-  <text x="400" y="435" text-anchor="middle" fill="white" font-weight="bold" font-size="12">Layer 7: Data Protection</text>
-  <text x="400" y="452" text-anchor="middle" fill="white" font-size="10">Fernet encryption | Parameterized queries | Backup code hashing</text>
-
-  <!-- Layer 6: Session Security -->
-  <rect x="140" y="350" width="520" height="60" fill="url(#layer6)" opacity="0.9" rx="5"/>
-  <text x="400" y="375" text-anchor="middle" fill="white" font-weight="bold" font-size="12">Layer 6: Session Security</text>
-  <text x="400" y="392" text-anchor="middle" fill="white" font-size="10">Encrypted cookies | CSRF tokens | SameSite attributes</text>
-
-  <!-- Layer 5: Rate Limiting -->
-  <rect x="160" y="290" width="480" height="60" fill="url(#layer5)" opacity="0.9" rx="5"/>
-  <text x="400" y="315" text-anchor="middle" fill="white" font-weight="bold" font-size="12">Layer 5: Rate Limiting & Lockout</text>
-  <text x="400" y="332" text-anchor="middle" fill="white" font-size="10">5 req/min throttling | 3-failure lockout | reCAPTCHA</text>
-
-  <!-- Layer 4: 2FA -->
-  <rect x="180" y="230" width="440" height="60" fill="url(#layer4)" opacity="0.9" rx="5"/>
-  <text x="400" y="255" text-anchor="middle" fill="white" font-weight="bold" font-size="12">Layer 4: Two-Factor Authentication</text>
-  <text x="400" y="272" text-anchor="middle" fill="white" font-size="10">TOTP (RFC 6238) | Replay prevention | Backup codes</text>
-
-  <!-- Layer 3: Authentication -->
-  <rect x="200" y="170" width="400" height="60" fill="url(#layer3)" opacity="0.9" rx="5"/>
-  <text x="400" y="195" text-anchor="middle" fill="white" font-weight="bold" font-size="12">Layer 3: Authentication</text>
-  <text x="400" y="212" text-anchor="middle" fill="white" font-size="10">Argon2id (19 MiB) | Timing-safe verification | Breach detection</text>
-
-  <!-- Layer 2: Input Validation -->
-  <rect x="220" y="110" width="360" height="60" fill="url(#layer2)" opacity="0.9" rx="5"/>
-  <text x="400" y="135" text-anchor="middle" fill="white" font-weight="bold" font-size="12">Layer 2: Input Validation</text>
-  <text x="400" y="152" text-anchor="middle" fill="white" font-size="10">Regex validation | Length checks | XSS sanitization (bleach)</text>
-
-  <!-- Layer 1: Transport Security -->
-  <rect x="240" y="50" width="320" height="60" fill="url(#layer1)" opacity="0.9" rx="5"/>
-  <text x="400" y="75" text-anchor="middle" fill="white" font-weight="bold" font-size="12">Layer 1: Transport Security</text>
-  <text x="400" y="92" text-anchor="middle" fill="white" font-size="10">HSTS | CSP headers | X-Frame-Options | TLS enforcement</text>
-
-  <!-- Attack arrows (stopped at each layer) -->
-  <g opacity="0.6">
-    <line x1="50" y1="80" x2="240" y2="80" stroke="#dc3545" stroke-width="3" stroke-dasharray="10,5"/>
-    <polygon points="240 80, 230 75, 230 85" fill="#dc3545"/>
-    <text x="145" y="75" text-anchor="middle" font-size="10" fill="#dc3545" font-weight="bold">Attack</text>
-
-    <line x1="70" y1="140" x2="220" y2="140" stroke="#dc3545" stroke-width="3" stroke-dasharray="10,5"/>
-    <polygon points="220 140, 210 135, 210 145" fill="#dc3545"/>
-
-    <line x1="90" y1="200" x2="200" y2="200" stroke="#dc3545" stroke-width="3" stroke-dasharray="10,5"/>
-    <polygon points="200 200, 190 195, 190 205" fill="#dc3545"/>
-  </g>
-
-  <!-- Labels -->
-  <text x="50" y="550" font-size="10" font-weight="bold">Attacker Entry Points:</text>
-  <text x="50" y="568" font-size="9">• HTTP requests intercepted (Layer 1)</text>
-  <text x="50" y="583" font-size="9">• Malicious input submitted (Layer 2)</text>
-  <text x="250" y="568" font-size="9">• Stolen passwords used (Layer 3)</text>
-  <text x="250" y="583" font-size="9">• Phishing attacks (Layer 4)</text>
-  <text x="450" y="568" font-size="9">• Brute force attempts (Layer 5)</text>
-  <text x="450" y="583" font-size="9">• Session hijacking (Layer 6)</text>
-
-  <!-- Legend -->
-  <rect x="50" y="550" width="700" height="45" fill="#f8f9fa" stroke="#666"/>
-  <text x="60" y="568" font-size="10" font-weight="bold">Defense Principle:</text>
-  <text x="165" y="568" font-size="10">Each layer provides independent protection. Compromise of one layer does not compromise entire system.</text>
-  <text x="60" y="585" font-size="9">Total Controls: 28 mechanisms across 8 layers | Test Coverage: 16/16 attack tests passed</text>
+  <text x="700" y="50" font-size="22" fill="#1E3C72" font-weight="bold" text-anchor="middle">Security Layers (Defense in Depth)</text>
+  <text x="700" y="80" font-size="14" fill="#6B7280" font-weight="normal" text-anchor="middle">27 Evidence-Based Security Mechanisms</text>
+  <rect x="50" y="120" width="1300" height="820"
+        fill="#E8F5E9" stroke="#1E7E34" stroke-width="3"
+        rx="8" opacity="1"/>
+  <text x="70" y="160" font-size="18" fill="#1E7E34" font-weight="bold" text-anchor="start">🛡️ PREVENT - Proactive Security Controls (14 mechanisms)</text>
+  <text x="90" y="200" font-size="12" fill="#000000" font-weight="bold" text-anchor="start">1. Argon2id Password Hashing</text>
+  <text x="110" y="218" font-size="11" fill="#6B7280" font-weight="normal" text-anchor="start">📍 auth_service.py:22</text>
+  <text x="110" y="236" font-size="11" fill="#6B7280" font-weight="normal" text-anchor="start">OWASP params: time_cost=2, memory_cost=19456, parallelism=1</text>
+  <text x="90" y="258" font-size="12" fill="#000000" font-weight="bold" text-anchor="start">2. Password Validation</text>
+  <text x="110" y="276" font-size="11" fill="#6B7280" font-weight="normal" text-anchor="start">📍 validators.py:28</text>
+  <text x="110" y="294" font-size="11" fill="#6B7280" font-weight="normal" text-anchor="start">NIST SP 800-63B: min 12 chars, max 128, diversity check, common block</text>
+  <text x="90" y="316" font-size="12" fill="#000000" font-weight="bold" text-anchor="start">3. Breach Detection</text>
+  <text x="110" y="334" font-size="11" fill="#6B7280" font-weight="normal" text-anchor="start">📍 validators.py:65</text>
+  <text x="110" y="352" font-size="11" fill="#6B7280" font-weight="normal" text-anchor="start">HaveIBeenPwned API integration with k-anonymity model</text>
+  <text x="90" y="374" font-size="12" fill="#000000" font-weight="bold" text-anchor="start">4. CSRF Protection</text>
+  <text x="110" y="392" font-size="11" fill="#6B7280" font-weight="normal" text-anchor="start">📍 app_auth.py:29</text>
+  <text x="110" y="410" font-size="11" fill="#6B7280" font-weight="normal" text-anchor="start">Flask-WTF CSRF tokens on all state-changing requests</text>
+  <text x="90" y="432" font-size="12" fill="#000000" font-weight="bold" text-anchor="start">5. Content Security Policy</text>
+  <text x="110" y="450" font-size="11" fill="#6B7280" font-weight="normal" text-anchor="start">📍 security_headers.py:24</text>
+  <text x="110" y="468" font-size="11" fill="#6B7280" font-weight="normal" text-anchor="start">Strict CSP with self-origin and whitelisted CDNs</text>
+  <text x="90" y="490" font-size="12" fill="#000000" font-weight="bold" text-anchor="start">6. XSS Prevention</text>
+  <text x="110" y="508" font-size="11" fill="#6B7280" font-weight="normal" text-anchor="start">📍 sanitization.py:8</text>
+  <text x="110" y="526" font-size="11" fill="#6B7280" font-weight="normal" text-anchor="start">HTML sanitization with bleach library</text>
+  <text x="90" y="548" font-size="12" fill="#000000" font-weight="bold" text-anchor="start">7. Session Security</text>
+  <text x="110" y="566" font-size="11" fill="#6B7280" font-weight="normal" text-anchor="start">📍 app_auth.py:24</text>
+  <text x="110" y="584" font-size="11" fill="#6B7280" font-weight="normal" text-anchor="start">Secure, HttpOnly, SameSite=Lax cookies</text>
+  <text x="90" y="606" font-size="12" fill="#000000" font-weight="bold" text-anchor="start">8. Session Fixation Prevention</text>
+  <text x="110" y="624" font-size="11" fill="#6B7280" font-weight="normal" text-anchor="start">📍 decorators.py:23</text>
+  <text x="110" y="642" font-size="11" fill="#6B7280" font-weight="normal" text-anchor="start">Session ID regeneration after authentication</text>
+  <text x="90" y="664" font-size="12" fill="#000000" font-weight="bold" text-anchor="start">9. TOTP Secret Encryption</text>
+  <text x="110" y="682" font-size="11" fill="#6B7280" font-weight="normal" text-anchor="start">📍 totp_service.py:87</text>
+  <text x="110" y="700" font-size="11" fill="#6B7280" font-weight="normal" text-anchor="start">Fernet symmetric encryption with PBKDF2-derived keys</text>
+  <text x="90" y="722" font-size="12" fill="#000000" font-weight="bold" text-anchor="start">10. PKCE for OAuth2</text>
+  <text x="110" y="740" font-size="11" fill="#6B7280" font-weight="normal" text-anchor="start">📍 oauth2_service.py:98</text>
+  <text x="110" y="758" font-size="11" fill="#6B7280" font-weight="normal" text-anchor="start">Mandatory S256 code challenge method</text>
+  <text x="90" y="780" font-size="12" fill="#000000" font-weight="bold" text-anchor="start">11. Exact Redirect URI Matching</text>
+  <text x="110" y="798" font-size="11" fill="#6B7280" font-weight="normal" text-anchor="start">📍 oauth2_service.py:96</text>
+  <text x="110" y="816" font-size="11" fill="#6B7280" font-weight="normal" text-anchor="start">No wildcards or pattern matching allowed</text>
+  <text x="90" y="838" font-size="12" fill="#000000" font-weight="bold" text-anchor="start">12. HSTS Header</text>
+  <text x="110" y="856" font-size="11" fill="#6B7280" font-weight="normal" text-anchor="start">📍 security_headers.py:36</text>
+  <text x="110" y="874" font-size="11" fill="#6B7280" font-weight="normal" text-anchor="start">1 year max-age with includeSubDomains</text>
+  <text x="90" y="896" font-size="12" fill="#000000" font-weight="bold" text-anchor="start">13. X-Frame-Options</text>
+  <text x="110" y="914" font-size="11" fill="#6B7280" font-weight="normal" text-anchor="start">📍 security_headers.py:34</text>
+  <text x="110" y="932" font-size="11" fill="#6B7280" font-weight="normal" text-anchor="start">DENY to prevent clickjacking</text>
+  <text x="90" y="954" font-size="12" fill="#000000" font-weight="bold" text-anchor="start">14. X-Content-Type-Options</text>
+  <text x="110" y="972" font-size="11" fill="#6B7280" font-weight="normal" text-anchor="start">📍 security_headers.py:33</text>
+  <text x="110" y="990" font-size="11" fill="#6B7280" font-weight="normal" text-anchor="start">nosniff to prevent MIME sniffing</text>
+  <rect x="50" y="980" width="1300" height="400"
+        fill="#FFF3E0" stroke="#B36B00" stroke-width="3"
+        rx="8" opacity="1"/>
+  <text x="70" y="1020" font-size="18" fill="#B36B00" font-weight="bold" text-anchor="start">🔍 DETECT - Monitoring &amp; Alerting (6 mechanisms)</text>
+  <text x="90" y="1060" font-size="12" fill="#000000" font-weight="bold" text-anchor="start">1. Login Attempt Tracking</text>
+  <text x="110" y="1078" font-size="11" fill="#6B7280" font-weight="normal" text-anchor="start">📍 security_service.py:63</text>
+  <text x="110" y="1096" font-size="11" fill="#6B7280" font-weight="normal" text-anchor="start">Log all login attempts with timestamp, IP, user agent</text>
+  <text x="90" y="1118" font-size="12" fill="#000000" font-weight="bold" text-anchor="start">2. Security Event Logging</text>
+  <text x="110" y="1136" font-size="11" fill="#6B7280" font-weight="normal" text-anchor="start">📍 security_service.py:24</text>
+  <text x="110" y="1154" font-size="11" fill="#6B7280" font-weight="normal" text-anchor="start">Comprehensive audit log with severity levels</text>
+  <text x="90" y="1176" font-size="12" fill="#000000" font-weight="bold" text-anchor="start">3. Failed Login Counting</text>
+  <text x="110" y="1194" font-size="11" fill="#6B7280" font-weight="normal" text-anchor="start">📍 security_service.py:135</text>
+  <text x="110" y="1212" font-size="11" fill="#6B7280" font-weight="normal" text-anchor="start">Count recent failures within lockout window</text>
+  <text x="90" y="1234" font-size="12" fill="#000000" font-weight="bold" text-anchor="start">4. TOTP Replay Detection</text>
+  <text x="110" y="1252" font-size="11" fill="#6B7280" font-weight="normal" text-anchor="start">📍 totp_service.py:159</text>
+  <text x="110" y="1270" font-size="11" fill="#6B7280" font-weight="normal" text-anchor="start">In-memory cache of used codes per time window</text>
+  <text x="90" y="1292" font-size="12" fill="#000000" font-weight="bold" text-anchor="start">5. Refresh Token Reuse Detection</text>
+  <text x="110" y="1310" font-size="11" fill="#6B7280" font-weight="normal" text-anchor="start">📍 oauth2_service.py:320</text>
+  <text x="110" y="1328" font-size="11" fill="#6B7280" font-weight="normal" text-anchor="start">Track refresh_token_used flag, revoke family on reuse</text>
+  <text x="90" y="1350" font-size="12" fill="#000000" font-weight="bold" text-anchor="start">6. Authorization Code Single-Use</text>
+  <text x="110" y="1368" font-size="11" fill="#6B7280" font-weight="normal" text-anchor="start">📍 oauth2_service.py:197</text>
+  <text x="110" y="1386" font-size="11" fill="#6B7280" font-weight="normal" text-anchor="start">Mark code as used in transaction, reject if already used</text>
+  <rect x="50" y="1420" width="1300" height="400"
+        fill="#FFEBEE" stroke="#C82333" stroke-width="3"
+        rx="8" opacity="1"/>
+  <text x="70" y="1460" font-size="18" fill="#C82333" font-weight="bold" text-anchor="start">⚡ RESPOND - Incident Response (6 mechanisms)</text>
+  <text x="90" y="1500" font-size="12" fill="#000000" font-weight="bold" text-anchor="start">1. Account Lockout</text>
+  <text x="110" y="1518" font-size="11" fill="#6B7280" font-weight="normal" text-anchor="start">📍 security_service.py:159</text>
+  <text x="110" y="1536" font-size="11" fill="#6B7280" font-weight="normal" text-anchor="start">15-minute lockout after 3 failed attempts</text>
+  <text x="90" y="1558" font-size="12" fill="#000000" font-weight="bold" text-anchor="start">2. CAPTCHA Challenge</text>
+  <text x="110" y="1576" font-size="11" fill="#6B7280" font-weight="normal" text-anchor="start">📍 auth_routes.py:78</text>
+  <text x="110" y="1594" font-size="11" fill="#6B7280" font-weight="normal" text-anchor="start">Google reCAPTCHA v2 after 3 failures</text>
+  <text x="90" y="1616" font-size="12" fill="#000000" font-weight="bold" text-anchor="start">3. Rate Limiting</text>
+  <text x="110" y="1634" font-size="11" fill="#6B7280" font-weight="normal" text-anchor="start">📍 rate_limiter.py:28</text>
+  <text x="110" y="1652" font-size="11" fill="#6B7280" font-weight="normal" text-anchor="start">429 response when rate limit exceeded</text>
+  <text x="90" y="1674" font-size="12" fill="#000000" font-weight="bold" text-anchor="start">4. Token Family Revocation</text>
+  <text x="110" y="1692" font-size="11" fill="#6B7280" font-weight="normal" text-anchor="start">📍 oauth2_service.py:397</text>
+  <text x="110" y="1710" font-size="11" fill="#6B7280" font-weight="normal" text-anchor="start">Revoke all tokens in family if reuse detected</text>
+  <text x="90" y="1732" font-size="12" fill="#000000" font-weight="bold" text-anchor="start">5. Lockout Clearing</text>
+  <text x="110" y="1750" font-size="11" fill="#6B7280" font-weight="normal" text-anchor="start">📍 security_service.py:219</text>
+  <text x="110" y="1768" font-size="11" fill="#6B7280" font-weight="normal" text-anchor="start">Clear lockout after successful login</text>
+  <text x="90" y="1790" font-size="12" fill="#000000" font-weight="bold" text-anchor="start">6. Backup Code Depletion Warning</text>
+  <text x="110" y="1808" font-size="11" fill="#6B7280" font-weight="normal" text-anchor="start">📍 twofa_routes.py:120</text>
+  <text x="110" y="1826" font-size="11" fill="#6B7280" font-weight="normal" text-anchor="start">Show remaining backup codes after use</text>
+  <rect x="50" y="1860" width="1300" height="120"
+        fill="#F8FAFC" stroke="#1E3C72" stroke-width="2"
+        rx="8" opacity="1"/>
+  <text x="70" y="1900" font-size="14" fill="#1E3C72" font-weight="bold" text-anchor="start">🔄 Layered Defense Architecture</text>
+  <text x="90" y="1930" font-size="12" fill="#000000" font-weight="normal" text-anchor="start">Prevent → Detect → Respond: Each layer complements the others for defense in depth</text>
+  <text x="90" y="1955" font-size="11" fill="#6B7280" font-weight="normal" text-anchor="start">Transaction Safety: BEGIN IMMEDIATE used for race condition prevention in rate limiting, OAuth2 code validation, and token rotation</text>
 </svg>

@@ -1,134 +1,282 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<svg width="700" height="850" xmlns="http://www.w3.org/2000/svg">
+<svg width="100%" height="100%" viewBox="0 0 1600 2100"
+     xmlns="http://www.w3.org/2000/svg">
+  <title>Brute Force Protection - Activity Flow</title>
+  <desc>Complete login flow with rate limiting, account lockout, CAPTCHA, and timing attack prevention</desc>
   <defs>
-    <marker id="flow" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto">
-      <polygon points="0 0, 10 3, 0 6" fill="#2a5298"/>
+    <style>
+      @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&amp;display=swap');
+      text { font-family: 'Inter', system-ui, -apple-system, sans-serif; }
+    </style>
+    <marker id="arrowhead" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto">
+      <polygon points="0 0, 10 3, 0 6" fill="#6B7280" />
     </marker>
   </defs>
-
-  <text x="350" y="25" text-anchor="middle" font-size="16" font-weight="bold" fill="#1e3c72">
-    Activity Diagram - Brute Force Protection Logic
-  </text>
-
-  <!-- Start -->
-  <circle cx="350" cy="60" r="15" fill="#1e3c72"/>
-  <text x="350" y="67" text-anchor="middle" fill="white" font-weight="bold">START</text>
-
-  <line x1="350" y1="75" x2="350" y2="110" stroke="#2a5298" stroke-width="2" marker-end="url(#flow)"/>
-
-  <!-- Login Attempt -->
-  <rect x="250" y="110" width="200" height="50" fill="#e8f4f8" stroke="#2a5298" stroke-width="2" rx="25"/>
-  <text x="350" y="140" text-anchor="middle" font-size="11" font-weight="bold">Login Attempt Received</text>
-
-  <line x1="350" y1="160" x2="350" y2="195" stroke="#2a5298" stroke-width="2" marker-end="url(#flow)"/>
-
-  <!-- Decision: Account Locked? -->
-  <polygon points="350,195 450,245 350,295 250,245" fill="#fff3cd" stroke="#ffc107" stroke-width="2"/>
-  <text x="350" y="240" text-anchor="middle" font-size="10">Account</text>
-  <text x="350" y="254" text-anchor="middle" font-size="10">Locked?</text>
-
-  <!-- YES path -->
-  <line x1="450" y1="245" x2="550" y2="245" stroke="#dc3545" stroke-width="2" marker-end="url(#flow)"/>
-  <text x="500" y="240" font-size="10" fill="#dc3545" font-weight="bold">YES</text>
-
-  <rect x="550" y="220" width="130" height="50" fill="#f8d7da" stroke="#dc3545" stroke-width="2" rx="5"/>
-  <text x="615" y="242" text-anchor="middle" font-size="10">Return Error:</text>
-  <text x="615" y="258" text-anchor="middle" font-size="9">"Account locked</text>
-  <text x="615" y="270" text-anchor="middle" font-size="9">Try in Xm Ys"</text>
-
-  <line x1="615" y1="270" x2="615" y2="755" stroke="#dc3545" stroke-width="2"/>
-  <line x1="615" y1="755" x2="350" y2="755" stroke="#dc3545" stroke-width="2" marker-end="url(#flow)"/>
-
-  <!-- NO path -->
-  <line x1="350" y1="295" x2="350" y2="330" stroke="#2a5298" stroke-width="2" marker-end="url(#flow)"/>
-  <text x="360" y="315" font-size="10" fill="#28a745" font-weight="bold">NO</text>
-
-  <!-- Decision: Rate Limited? -->
-  <polygon points="350,330 450,380 350,430 250,380" fill="#fff3cd" stroke="#ffc107" stroke-width="2"/>
-  <text x="350" y="375" text-anchor="middle" font-size="10">Rate Limited?</text>
-  <text x="350" y="389" text-anchor="middle" font-size="9">(5 req/min)</text>
-
-  <!-- YES path (rate limited) -->
-  <line x1="450" y1="380" x2="550" y2="380" stroke="#dc3545" stroke-width="2" marker-end="url(#flow)"/>
-  <text x="500" y="375" font-size="10" fill="#dc3545" font-weight="bold">YES</text>
-
-  <rect x="550" y="355" width="130" height="50" fill="#f8d7da" stroke="#dc3545" stroke-width="2" rx="5"/>
-  <text x="615" y="375" text-anchor="middle" font-size="10">HTTP 429</text>
-  <text x="615" y="391" text-anchor="middle" font-size="9">Too Many Requests</text>
-
-  <line x1="615" y1="405" x2="615" y2="755" stroke="#dc3545" stroke-width="2"/>
-
-  <!-- NO path (not rate limited) -->
-  <line x1="350" y1="430" x2="350" y2="465" stroke="#2a5298" stroke-width="2" marker-end="url(#flow)"/>
-  <text x="360" y="450" font-size="10" fill="#28a745" font-weight="bold">NO</text>
-
-  <!-- Verify Password (Argon2id) -->
-  <rect x="250" y="465" width="200" height="60" fill="#d4edda" stroke="#28a745" stroke-width="2" rx="5"/>
-  <text x="350" y="490" text-anchor="middle" font-size="10" font-weight="bold">Verify Password</text>
-  <text x="350" y="505" text-anchor="middle" font-family="Consolas" font-size="9">Argon2id.verify()</text>
-  <text x="350" y="520" text-anchor="middle" font-size="8" fill="#666">~120ms timing-safe</text>
-
-  <line x1="350" y1="525" x2="350" y2="560" stroke="#2a5298" stroke-width="2" marker-end="url(#flow)"/>
-
-  <!-- Decision: Password Valid? -->
-  <polygon points="350,560 450,610 350,660 250,610" fill="#fff3cd" stroke="#ffc107" stroke-width="2"/>
-  <text x="350" y="605" text-anchor="middle" font-size="10">Password</text>
-  <text x="350" y="619" text-anchor="middle" font-size="10">Valid?</text>
-
-  <!-- NO (invalid password) -->
-  <line x1="250" y1="610" x2="150" y2="610" stroke="#dc3545" stroke-width="2" marker-end="url(#flow)"/>
-  <text x="200" y="605" font-size="10" fill="#dc3545" font-weight="bold">NO</text>
-
-  <rect x="50" y="585" width="100" height="50" fill="#f8d7da" stroke="#dc3545" stroke-width="2" rx="5"/>
-  <text x="100" y="605" text-anchor="middle" font-size="9">Log failure</text>
-  <text x="100" y="620" text-anchor="middle" font-size="9">Increment count</text>
-
-  <line x1="100" y1="635" x2="100" y2="670" stroke="#dc3545" stroke-width="2" marker-end="url(#flow)"/>
-
-  <!-- Decision: 3 Failures? -->
-  <polygon points="100,670 150,705 100,740 50,705" fill="#fff3cd" stroke="#ffc107" stroke-width="2"/>
-  <text x="100" y="705" text-anchor="middle" font-size="9">Failures</text>
-  <text x="100" y="717" text-anchor="middle" font-size="9">≥ 3?</text>
-
-  <line x1="150" y1="705" x2="200" y2="705" stroke="#dc3545" stroke-width="2" marker-end="url(#flow)"/>
-  <text x="175" y="700" font-size="9" fill="#dc3545" font-weight="bold">YES</text>
-
-  <rect x="200" y="680" width="120" height="50" fill="#f8d7da" stroke="#dc3545" stroke-width="2" rx="5"/>
-  <text x="260" y="700" text-anchor="middle" font-size="9">Apply Lockout</text>
-  <text x="260" y="715" text-anchor="middle" font-size="9" font-weight="bold">15 minutes</text>
-
-  <line x1="260" y1="730" x2="260" y2="755" stroke="#dc3545" stroke-width="2"/>
-  <line x1="260" y1="755" x2="350" y2="755" stroke="#dc3545" stroke-width="2" marker-end="url(#flow)"/>
-
-  <line x1="100" y1="740" x2="100" y2="755" stroke="#28a745" stroke-width="2"/>
-  <text x="110" y="748" font-size="9" fill="#28a745">NO</text>
-  <line x1="100" y1="755" x2="350" y2="755" stroke="#28a745" stroke-width="2" marker-end="url(#flow)"/>
-
-  <!-- YES (password valid) -->
-  <line x1="350" y1="660" x2="350" y2="695" stroke="#28a745" stroke-width="2" marker-end="url(#flow)"/>
-  <text x="360" y="680" font-size="10" fill="#28a745" font-weight="bold">YES</text>
-
-  <!-- Redirect to 2FA -->
-  <rect x="270" y="695" width="160" height="50" fill="#d4edda" stroke="#28a745" stroke-width="2" rx="5"/>
-  <text x="350" y="715" text-anchor="middle" font-size="10">Redirect to</text>
-  <text x="350" y="730" text-anchor="middle" font-size="10" font-weight="bold">/verify-2fa</text>
-
-  <!-- End -->
-  <circle cx="350" cy="780" r="15" fill="white" stroke="#1e3c72" stroke-width="3"/>
-  <circle cx="350" cy="780" r="10" fill="#1e3c72"/>
-  <text x="350" y="810" text-anchor="middle" font-size="11" font-weight="bold">END</text>
-
-  <!-- Legend -->
-  <rect x="50" y="805" width="600" height="40" fill="#f8f9fa" stroke="#666"/>
-  <text x="60" y="825" font-size="10" font-weight="bold">Activity Flow:</text>
-  <rect x="120" y="815" width="40" height="20" fill="#e8f4f8" stroke="#2a5298" rx="5"/>
-  <text x="165" y="828" font-size="9">Process</text>
-  <polygon points="230,825 255,817 280,825 255,833" fill="#fff3cd" stroke="#ffc107"/>
-  <text x="285" y="828" font-size="9">Decision</text>
-  <circle cx="355" cy="825" r="8" fill="#1e3c72"/>
-  <text x="370" y="828" font-size="9">Start/End</text>
-  <text x="430" y="828" font-size="9" fill="#28a745" font-weight="bold">Green</text>
-  <text x="470" y="828" font-size="9">=Success |</text>
-  <text x="520" y="828" font-size="9" fill="#dc3545" font-weight="bold">Red</text>
-  <text x="550" y="828" font-size="9">=Failure/Block</text>
+  <text x="800" y="50" font-size="18px" fill="#1E3C72"
+        font-weight="bold" text-anchor="middle">Brute Force Protection Activity Diagram</text>
+  <text x="800" y="75" font-size="11px" fill="#6B7280"
+        font-weight="normal" text-anchor="middle">Evidence: ground_truth_index.json → brute_force_protection</text>
+  <circle cx="800" cy="120" r="20" fill="#1E7E34" stroke="#1E7E34" stroke-width="2"/>
+  <text x="800" y="170" font-size="12px" fill="#000000"
+        font-weight="normal" text-anchor="middle">Login Request</text>
+  <line x1="800" y1="140" x2="800" y2="200" stroke="#6B7280" stroke-width="2" marker-end="url(#arrowhead)"/>
+  <polygon points="800,150.0 870.0,220 800,290.0 730.0,220" fill="#e7f3ff" stroke="#1E3C72" stroke-width="2"/>
+  <text x="800" y="205" font-size="13px" fill="#000000"
+        font-weight="bold" text-anchor="middle">Rate Limit</text>
+  <text x="800" y="221" font-size="13px" fill="#000000"
+        font-weight="bold" text-anchor="middle">Check</text>
+  <text x="800" y="240" font-size="11px" fill="#6B7280"
+        font-weight="normal" text-anchor="middle">per IP/endpoint</text>
+  <text x="800" y="255" font-size="11px" fill="#6B7280"
+        font-weight="normal" text-anchor="middle">rate_limiter.py:28</text>
+  <line x1="870" y1="220" x2="1100" y2="220" stroke="#C82333" stroke-width="2" marker-end="url(#arrowhead)"/>
+  <text x="1005.0" y="215.0" font-size="11px" fill="#C82333"
+        font-weight="bold" text-anchor="middle">> limit</text>
+  <rect x="1100" y="180" width="280" height="80"
+        fill="#f8d7da" stroke="#C82333" stroke-width="2" rx="8"/>
+  <text x="1190" y="210" font-size="12px" fill="#000000"
+        font-weight="bold" text-anchor="middle">Return 429</text>
+  <text x="1190" y="226" font-size="12px" fill="#000000"
+        font-weight="bold" text-anchor="middle">Too Many Requests</text>
+  <circle cx="1240" cy="300" r="15" fill="#C82333" stroke="#C82333" stroke-width="2"/>
+  <text x="1240" y="330" font-size="11px" fill="#6B7280"
+        font-weight="normal" text-anchor="middle">END</text>
+  <line x1="1240" y1="260" x2="1240" y2="285" stroke="#6B7280" stroke-width="2" marker-end="url(#arrowhead)"/>
+  <line x1="800" y1="290" x2="800" y2="340" stroke="#1E7E34" stroke-width="2" marker-end="url(#arrowhead)"/>
+  <text x="770.0" y="310.0" font-size="11px" fill="#1E7E34"
+        font-weight="bold" text-anchor="middle">≤ limit</text>
+  <rect x="650" y="360" width="300" height="80"
+        fill="#cfe2ff" stroke="#1E3C72" stroke-width="2" rx="8"/>
+  <text x="800" y="380" font-size="12px" fill="#000000"
+        font-weight="bold" text-anchor="middle">Record Request</text>
+  <text x="800" y="396" font-size="12px" fill="#000000"
+        font-weight="bold" text-anchor="middle">BEGIN IMMEDIATE</text>
+  <text x="800" y="412" font-size="12px" fill="#000000"
+        font-weight="bold" text-anchor="middle">rate_limiter.py:96</text>
+  <line x1="800" y1="440" x2="800" y2="480" stroke="#6B7280" stroke-width="2" marker-end="url(#arrowhead)"/>
+  <polygon points="800,430.0 870.0,500 800,570.0 730.0,500" fill="#e7f3ff" stroke="#B36B00" stroke-width="2"/>
+  <text x="800" y="490" font-size="13px" fill="#000000"
+        font-weight="bold" text-anchor="middle">Account</text>
+  <text x="800" y="506" font-size="13px" fill="#000000"
+        font-weight="bold" text-anchor="middle">Lockout?</text>
+  <text x="800" y="520" font-size="11px" fill="#6B7280"
+        font-weight="normal" text-anchor="middle">security_service.py:104</text>
+  <line x1="870" y1="500" x2="1000" y2="500" stroke="#C82333" stroke-width="2" marker-end="url(#arrowhead)"/>
+  <text x="945.0" y="495.0" font-size="11px" fill="#C82333"
+        font-weight="bold" text-anchor="middle">locked</text>
+  <polygon points="1100,450.0 1150.0,500 1100,550.0 1050.0,500" fill="#e7f3ff" stroke="#B36B00" stroke-width="2"/>
+  <text x="1100" y="490" font-size="11px" fill="#000000"
+        font-weight="bold" text-anchor="middle">Lockout</text>
+  <text x="1100" y="506" font-size="11px" fill="#000000"
+        font-weight="bold" text-anchor="middle">Expired?</text>
+  <line x1="1000" y1="500" x2="1050" y2="500" stroke="#6B7280" stroke-width="2" marker-end="url(#arrowhead)"/>
+  <line x1="1100" y1="450" x2="1100" y2="380" stroke="#C82333" stroke-width="2" marker-end="url(#arrowhead)"/>
+  <text x="1080.0" y="410.0" font-size="11px" fill="#C82333"
+        font-weight="bold" text-anchor="middle">No</text>
+  <rect x="980" y="340" width="240" height="80"
+        fill="#f8d7da" stroke="#C82333" stroke-width="2" rx="8"/>
+  <text x="1100" y="370" font-size="12px" fill="#000000"
+        font-weight="bold" text-anchor="middle">Return 401</text>
+  <text x="1100" y="386" font-size="12px" fill="#000000"
+        font-weight="bold" text-anchor="middle">Account Locked</text>
+  <text x="1100" y="402" font-size="12px" fill="#000000"
+        font-weight="bold" text-anchor="middle">Until: locked_until</text>
+  <circle cx="1100" cy="300" r="15" fill="#C82333" stroke="#C82333" stroke-width="2"/>
+  <line x1="1100" y1="340" x2="1100" y2="315" stroke="#6B7280" stroke-width="2" marker-end="url(#arrowhead)"/>
+  <line x1="1100" y1="550" x2="1100" y2="620" stroke="#1E7E34" stroke-width="2" marker-end="url(#arrowhead)"/>
+  <text x="1080.0" y="580.0" font-size="11px" fill="#1E7E34"
+        font-weight="bold" text-anchor="middle">Yes</text>
+  <rect x="980" y="620" width="240" height="60"
+        fill="#d4edda" stroke="#1E7E34" stroke-width="2" rx="8"/>
+  <text x="1100" y="645" font-size="11px" fill="#000000"
+        font-weight="normal" text-anchor="middle">Clear Lockout</text>
+  <text x="1100" y="661" font-size="11px" fill="#000000"
+        font-weight="normal" text-anchor="middle">security_service.py:219</text>
+  <line x1="980" y1="650" x2="800" y2="720" stroke="#6B7280" stroke-width="2" marker-end="url(#arrowhead)"/>
+  <line x1="800" y1="570" x2="800" y2="620" stroke="#1E7E34" stroke-width="2" marker-end="url(#arrowhead)"/>
+  <text x="760.0" y="590.0" font-size="11px" fill="#1E7E34"
+        font-weight="bold" text-anchor="middle">not locked</text>
+  <rect x="650" y="640" width="300" height="80"
+        fill="#cfe2ff" stroke="#1E3C72" stroke-width="2" rx="8"/>
+  <text x="800" y="660" font-size="12px" fill="#000000"
+        font-weight="bold" text-anchor="middle">Get Recent Failures</text>
+  <text x="800" y="676" font-size="12px" fill="#000000"
+        font-weight="bold" text-anchor="middle">Last 15 minutes</text>
+  <text x="800" y="692" font-size="12px" fill="#000000"
+        font-weight="bold" text-anchor="middle">security_service.py:135</text>
+  <line x1="800" y1="720" x2="800" y2="760" stroke="#6B7280" stroke-width="2" marker-end="url(#arrowhead)"/>
+  <polygon points="800,710.0 870.0,780 800,850.0 730.0,780" fill="#e7f3ff" stroke="#B36B00" stroke-width="2"/>
+  <text x="800" y="770" font-size="13px" fill="#000000"
+        font-weight="bold" text-anchor="middle">Failures ≥ 3?</text>
+  <text x="800" y="786" font-size="13px" fill="#000000"
+        font-weight="bold" text-anchor="middle">CAPTCHA_THRESHOLD</text>
+  <text x="800" y="800" font-size="11px" fill="#6B7280"
+        font-weight="normal" text-anchor="middle">security_service.py:18</text>
+  <line x1="870" y1="780" x2="1000" y2="780" stroke="#B36B00" stroke-width="2" marker-end="url(#arrowhead)"/>
+  <text x="945.0" y="775.0" font-size="11px" fill="#B36B00"
+        font-weight="bold" text-anchor="middle">Yes</text>
+  <rect x="1000" y="740" width="280" height="80"
+        fill="#fff3cd" stroke="#B36B00" stroke-width="2" rx="8"/>
+  <text x="1140" y="770" font-size="12px" fill="#000000"
+        font-weight="bold" text-anchor="middle">Show CAPTCHA</text>
+  <text x="1140" y="786" font-size="12px" fill="#000000"
+        font-weight="bold" text-anchor="middle">Google reCAPTCHA v2</text>
+  <text x="1140" y="802" font-size="12px" fill="#000000"
+        font-weight="bold" text-anchor="middle">auth_routes.py:78</text>
+  <line x1="1140" y1="820" x2="1140" y2="880" stroke="#6B7280" stroke-width="2" marker-end="url(#arrowhead)"/>
+  <polygon points="1140,870.0 1190.0,920 1140,970.0 1090.0,920" fill="#e7f3ff" stroke="#B36B00" stroke-width="2"/>
+  <text x="1140" y="910" font-size="11px" fill="#000000"
+        font-weight="bold" text-anchor="middle">Verify</text>
+  <text x="1140" y="926" font-size="11px" fill="#000000"
+        font-weight="bold" text-anchor="middle">CAPTCHA</text>
+  <text x="1140" y="935" font-size="11px" fill="#6B7280"
+        font-weight="normal" text-anchor="middle">recaptcha.py:42</text>
+  <line x1="1190" y1="920" x2="1300" y2="920" stroke="#C82333" stroke-width="2" marker-end="url(#arrowhead)"/>
+  <text x="1255.0" y="915.0" font-size="11px" fill="#C82333"
+        font-weight="bold" text-anchor="middle">Invalid</text>
+  <rect x="1300" y="880" width="200" height="80"
+        fill="#f8d7da" stroke="#C82333" stroke-width="2" rx="8"/>
+  <text x="1400" y="910" font-size="12px" fill="#000000"
+        font-weight="bold" text-anchor="middle">Return 401</text>
+  <text x="1400" y="926" font-size="12px" fill="#000000"
+        font-weight="bold" text-anchor="middle">CAPTCHA Failed</text>
+  <circle cx="1400" cy="980" r="15" fill="#C82333" stroke="#C82333" stroke-width="2"/>
+  <line x1="1400" y1="960" x2="1400" y2="965" stroke="#6B7280" stroke-width="2" marker-end="url(#arrowhead)"/>
+  <line x1="1140" y1="970" x2="1140" y2="1040" stroke="#1E7E34" stroke-width="2" marker-end="url(#arrowhead)"/>
+  <text x="1110.0" y="1000.0" font-size="11px" fill="#1E7E34"
+        font-weight="bold" text-anchor="middle">Valid</text>
+  <line x1="1140" y1="1040" x2="800" y2="1040" stroke="#6B7280" stroke-width="2" marker-end="url(#arrowhead)"/>
+  <line x1="800" y1="850" x2="800" y2="900" stroke="#1E7E34" stroke-width="2" marker-end="url(#arrowhead)"/>
+  <text x="780.0" y="870.0" font-size="11px" fill="#1E7E34"
+        font-weight="bold" text-anchor="middle">No</text>
+  <rect x="650" y="960" width="300" height="80"
+        fill="#cfe2ff" stroke="#1E3C72" stroke-width="2" rx="8"/>
+  <text x="800" y="980" font-size="12px" fill="#000000"
+        font-weight="bold" text-anchor="middle">Authenticate Password</text>
+  <text x="800" y="996" font-size="12px" fill="#000000"
+        font-weight="bold" text-anchor="middle">Argon2id Hash</text>
+  <text x="800" y="1012" font-size="12px" fill="#000000"
+        font-weight="bold" text-anchor="middle">auth_service.py:97</text>
+  <line x1="800" y1="1040" x2="800" y2="1080" stroke="#6B7280" stroke-width="2" marker-end="url(#arrowhead)"/>
+  <polygon points="800,1030.0 870.0,1100 800,1170.0 730.0,1100" fill="#e7f3ff" stroke="#1E3C72" stroke-width="2"/>
+  <text x="800" y="1090" font-size="13px" fill="#000000"
+        font-weight="bold" text-anchor="middle">Timing-Safe</text>
+  <text x="800" y="1106" font-size="13px" fill="#000000"
+        font-weight="bold" text-anchor="middle">Verification</text>
+  <text x="800" y="1120" font-size="11px" fill="#6B7280"
+        font-weight="normal" text-anchor="middle">auth_service.py:141</text>
+  <line x1="730" y1="1100" x2="400" y2="1100" stroke="#1E7E34" stroke-width="2" marker-end="url(#arrowhead)"/>
+  <text x="555.0" y="1095.0" font-size="11px" fill="#1E7E34"
+        font-weight="bold" text-anchor="middle">Valid</text>
+  <rect x="200" y="1060" width="200" height="60"
+        fill="#d4edda" stroke="#1E7E34" stroke-width="2" rx="8"/>
+  <text x="300" y="1085" font-size="12px" fill="#000000"
+        font-weight="bold" text-anchor="middle">Log Success</text>
+  <text x="300" y="1101" font-size="12px" fill="#000000"
+        font-weight="bold" text-anchor="middle">login_attempts</text>
+  <line x1="300" y1="1120" x2="300" y2="1160" stroke="#6B7280" stroke-width="2" marker-end="url(#arrowhead)"/>
+  <rect x="200" y="1180" width="200" height="60"
+        fill="#d4edda" stroke="#1E7E34" stroke-width="2" rx="8"/>
+  <text x="300" y="1205" font-size="11px" fill="#000000"
+        font-weight="normal" text-anchor="middle">Clear Lockout</text>
+  <text x="300" y="1221" font-size="11px" fill="#000000"
+        font-weight="normal" text-anchor="middle">security_service.py:219</text>
+  <line x1="300" y1="1240" x2="300" y2="1280" stroke="#6B7280" stroke-width="2" marker-end="url(#arrowhead)"/>
+  <rect x="200" y="1300" width="200" height="70"
+        fill="#d4edda" stroke="#1E7E34" stroke-width="2" rx="8"/>
+  <text x="300" y="1325" font-size="11px" fill="#000000"
+        font-weight="normal" text-anchor="middle">Regenerate Session</text>
+  <text x="300" y="1341" font-size="11px" fill="#000000"
+        font-weight="normal" text-anchor="middle">Prevent Session Fixation</text>
+  <text x="300" y="1357" font-size="11px" fill="#000000"
+        font-weight="normal" text-anchor="middle">decorators.py:23</text>
+  <line x1="300" y1="1370" x2="300" y2="1410" stroke="#6B7280" stroke-width="2" marker-end="url(#arrowhead)"/>
+  <polygon points="300,1380.0 350.0,1430 300,1480.0 250.0,1430" fill="#e7f3ff" stroke="#1E3C72" stroke-width="2"/>
+  <text x="300" y="1420" font-size="13px" fill="#000000"
+        font-weight="bold" text-anchor="middle">2FA</text>
+  <text x="300" y="1436" font-size="13px" fill="#000000"
+        font-weight="bold" text-anchor="middle">Enabled?</text>
+  <line x1="250" y1="1430" x2="150" y2="1430" stroke="#1E7E34" stroke-width="2" marker-end="url(#arrowhead)"/>
+  <text x="190.0" y="1425.0" font-size="11px" fill="#1E7E34"
+        font-weight="bold" text-anchor="middle">No</text>
+  <rect x="50" y="1390" width="100" height="80"
+        fill="#d4edda" stroke="#1E7E34" stroke-width="2" rx="8"/>
+  <text x="100" y="1425" font-size="12px" fill="#000000"
+        font-weight="bold" text-anchor="middle">Login</text>
+  <text x="100" y="1441" font-size="12px" fill="#000000"
+        font-weight="bold" text-anchor="middle">Complete</text>
+  <text x="100" y="1457" font-size="12px" fill="#000000"
+        font-weight="bold" text-anchor="middle">200 OK</text>
+  <circle cx="100" cy="1500" r="20" fill="#1E7E34" stroke="#1E7E34" stroke-width="2"/>
+  <line x1="100" y1="1470" x2="100" y2="1480" stroke="#6B7280" stroke-width="2" marker-end="url(#arrowhead)"/>
+  <line x1="300" y1="1480" x2="300" y2="1550" stroke="#1E3C72" stroke-width="2" marker-end="url(#arrowhead)"/>
+  <text x="280.0" y="1510.0" font-size="11px" fill="#1E3C72"
+        font-weight="bold" text-anchor="middle">Yes</text>
+  <rect x="200" y="1550" width="200" height="70"
+        fill="#cfe2ff" stroke="#1E3C72" stroke-width="2" rx="8"/>
+  <text x="300" y="1575" font-size="12px" fill="#000000"
+        font-weight="bold" text-anchor="middle">Redirect to 2FA</text>
+  <text x="300" y="1591" font-size="12px" fill="#000000"
+        font-weight="bold" text-anchor="middle">/twofa/verify-2fa</text>
+  <circle cx="300" cy="1650" r="15" fill="#1E3C72" stroke="#1E3C72" stroke-width="2"/>
+  <line x1="300" y1="1620" x2="300" y2="1635" stroke="#6B7280" stroke-width="2" marker-end="url(#arrowhead)"/>
+  <line x1="870" y1="1100" x2="1050" y2="1100" stroke="#C82333" stroke-width="2" marker-end="url(#arrowhead)"/>
+  <text x="970.0" y="1095.0" font-size="11px" fill="#C82333"
+        font-weight="bold" text-anchor="middle">Invalid</text>
+  <rect x="1050" y="1060" width="220" height="60"
+        fill="#cfe2ff" stroke="#6B7280" stroke-width="2" rx="8"/>
+  <text x="1160" y="1085" font-size="11px" fill="#000000"
+        font-weight="normal" text-anchor="middle">Dummy Hash Check</text>
+  <text x="1160" y="1101" font-size="11px" fill="#000000"
+        font-weight="normal" text-anchor="middle">Timing Attack Prevention</text>
+  <text x="1160" y="1117" font-size="11px" fill="#000000"
+        font-weight="normal" text-anchor="middle">auth_service.py:142-156</text>
+  <line x1="1160" y1="1120" x2="1160" y2="1160" stroke="#6B7280" stroke-width="2" marker-end="url(#arrowhead)"/>
+  <rect x="1050" y="1180" width="220" height="60"
+        fill="#f8d7da" stroke="#C82333" stroke-width="2" rx="8"/>
+  <text x="1160" y="1205" font-size="11px" fill="#000000"
+        font-weight="bold" text-anchor="middle">Log Failed Attempt</text>
+  <text x="1160" y="1221" font-size="11px" fill="#000000"
+        font-weight="bold" text-anchor="middle">login_attempts table</text>
+  <text x="1160" y="1237" font-size="11px" fill="#000000"
+        font-weight="bold" text-anchor="middle">security_service.py:63</text>
+  <line x1="1160" y1="1240" x2="1160" y2="1280" stroke="#6B7280" stroke-width="2" marker-end="url(#arrowhead)"/>
+  <rect x="1050" y="1300" width="220" height="50"
+        fill="#f8d7da" stroke="#C82333" stroke-width="2" rx="8"/>
+  <text x="1160" y="1325" font-size="12px" fill="#000000"
+        font-weight="bold" text-anchor="middle">Increment Failures</text>
+  <line x1="1160" y1="1350" x2="1160" y2="1390" stroke="#6B7280" stroke-width="2" marker-end="url(#arrowhead)"/>
+  <polygon points="1160,1350.0 1220.0,1410 1160,1470.0 1100.0,1410" fill="#e7f3ff" stroke="#B36B00" stroke-width="2"/>
+  <text x="1160" y="1400" font-size="13px" fill="#000000"
+        font-weight="bold" text-anchor="middle">Failures ≥ 3?</text>
+  <text x="1160" y="1416" font-size="13px" fill="#000000"
+        font-weight="bold" text-anchor="middle">LOCKOUT_THRESHOLD</text>
+  <text x="1160" y="1430" font-size="11px" fill="#6B7280"
+        font-weight="normal" text-anchor="middle">security_service.py:16</text>
+  <line x1="1220" y1="1410" x2="1350" y2="1410" stroke="#C82333" stroke-width="2" marker-end="url(#arrowhead)"/>
+  <text x="1295.0" y="1405.0" font-size="11px" fill="#C82333"
+        font-weight="bold" text-anchor="middle">Yes</text>
+  <rect x="1350" y="1360" width="220" height="100"
+        fill="#f8d7da" stroke="#C82333" stroke-width="2" rx="8"/>
+  <text x="1460" y="1390" font-size="11px" fill="#000000"
+        font-weight="bold" text-anchor="middle">Apply Lockout</text>
+  <text x="1460" y="1406" font-size="11px" fill="#000000"
+        font-weight="bold" text-anchor="middle">BEGIN IMMEDIATE</text>
+  <text x="1460" y="1422" font-size="11px" fill="#000000"
+        font-weight="bold" text-anchor="middle">15 min duration</text>
+  <text x="1460" y="1438" font-size="11px" fill="#000000"
+        font-weight="bold" text-anchor="middle">security_service.py:178</text>
+  <line x1="1460" y1="1460" x2="1460" y2="1500" stroke="#6B7280" stroke-width="2" marker-end="url(#arrowhead)"/>
+  <line x1="1160" y1="1470" x2="1160" y2="1540" stroke="#C82333" stroke-width="2" marker-end="url(#arrowhead)"/>
+  <text x="1140.0" y="1500.0" font-size="11px" fill="#C82333"
+        font-weight="bold" text-anchor="middle">No</text>
+  <line x1="1460" y1="1500" x2="1310" y2="1540" stroke="#6B7280" stroke-width="2" marker-end="url(#arrowhead)"/>
+  <rect x="1050" y="1540" width="260" height="60"
+        fill="#f8d7da" stroke="#C82333" stroke-width="2" rx="8"/>
+  <text x="1180" y="1565" font-size="12px" fill="#000000"
+        font-weight="bold" text-anchor="middle">Return 401</text>
+  <text x="1180" y="1581" font-size="12px" fill="#000000"
+        font-weight="bold" text-anchor="middle">Invalid Credentials</text>
+  <circle cx="1180" cy="1630" r="15" fill="#C82333" stroke="#C82333" stroke-width="2"/>
+  <line x1="1180" y1="1600" x2="1180" y2="1615" stroke="#6B7280" stroke-width="2" marker-end="url(#arrowhead)"/>
 </svg>

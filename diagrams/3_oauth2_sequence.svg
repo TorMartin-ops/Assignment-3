@@ -1,137 +1,354 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<svg width="1100" height="900" xmlns="http://www.w3.org/2000/svg">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1400 1990" width="1400" height="1990">
   <defs>
-    <marker id="msg" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto">
-      <polygon points="0 0, 10 3, 0 6" fill="#2a5298"/>
+    <style>
+      @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600&amp;display=swap');
+
+      text {
+        font-family: 'Inter', system-ui, -apple-system, sans-serif;
+        font-size: 12px;
+      }
+
+      .title {
+        font-size: 18px;
+        font-weight: 600;
+        fill: #1a1a1a;
+      }
+
+      .actor-text {
+        font-size: 13px;
+        font-weight: 600;
+        fill: #2c3e50;
+      }
+
+      .step-label {
+        font-size: 14px;
+        font-weight: 600;
+        fill: #2c5282;
+      }
+
+      .arrow-label {
+        font-size: 12px;
+        fill: #374151;
+      }
+
+      .note-text {
+        font-size: 12px;
+        fill: #dc2626;
+        font-weight: 600;
+      }
+
+      .actor-box {
+        fill: #e3f2fd;
+        stroke: #1976d2;
+        stroke-width: 2;
+        rx: 5;
+      }
+
+      .lifeline {
+        stroke: #cbd5e1;
+        stroke-width: 1.5;
+        stroke-dasharray: 5,5;
+      }
+
+      .arrow-request {
+        stroke: #2563eb;
+        stroke-width: 2;
+        fill: none;
+        marker-end: url(#arrowhead-blue);
+      }
+
+      .arrow-response {
+        stroke: #16a34a;
+        stroke-width: 2;
+        fill: none;
+        marker-end: url(#arrowhead-green);
+      }
+
+      .arrow-security {
+        stroke: #dc2626;
+        stroke-width: 2;
+        fill: none;
+        marker-end: url(#arrowhead-red);
+      }
+
+      .security-note {
+        fill: #fef3c7;
+        stroke: #f59e0b;
+        stroke-width: 1.5;
+        rx: 3;
+      }
+    </style>
+
+    <marker id="arrowhead-blue" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto">
+      <polygon points="0 0, 10 3, 0 6" fill="#2563eb"/>
     </marker>
-    <marker id="ret" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto">
-      <polygon points="0 0, 10 3, 0 6" fill="#666"/>
+
+    <marker id="arrowhead-green" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto">
+      <polygon points="0 0, 10 3, 0 6" fill="#16a34a"/>
+    </marker>
+
+    <marker id="arrowhead-red" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto">
+      <polygon points="0 0, 10 3, 0 6" fill="#dc2626"/>
     </marker>
   </defs>
 
-  <text x="550" y="25" text-anchor="middle" font-size="16" font-weight="bold" fill="#1e3c72">
-    OAuth2 Authorization Code Flow with PKCE (RFC 7636)
-  </text>
+  <!-- Title -->
+  <text class="title" x="700" y="30" text-anchor="middle">OAuth2 Authorization Code Flow with PKCE</text>
 
-  <!-- Participants -->
-  <rect x="40" y="50" width="110" height="40" fill="#1e3c72" rx="5"/>
-  <text x="95" y="75" text-anchor="middle" fill="white" font-weight="bold">Client App</text>
+  <!-- Actors (6) -->
+  <g id="actors">
+    <!-- Client -->
+    <rect class="actor-box" x="20" y="60" width="120" height="50"/>
+    <text class="actor-text" x="80" y="90" text-anchor="middle">Client</text>
 
-  <rect x="230" y="50" width="90" height="40" fill="#1e3c72" rx="5"/>
-  <text x="275" y="75" text-anchor="middle" fill="white" font-weight="bold">Browser</text>
+    <!-- User -->
+    <rect class="actor-box" x="200" y="60" width="120" height="50"/>
+    <text class="actor-text" x="260" y="90" text-anchor="middle">User</text>
 
-  <rect x="400" y="50" width="120" height="40" fill="#1e3c72" rx="5"/>
-  <text x="460" y="75" text-anchor="middle" fill="white" font-weight="bold">Auth Server</text>
+    <!-- Browser -->
+    <rect class="actor-box" x="380" y="60" width="120" height="50"/>
+    <text class="actor-text" x="440" y="90" text-anchor="middle">Browser</text>
 
-  <rect x="600" y="50" width="120" height="40" fill="#1e3c72" rx="5"/>
-  <text x="660" y="75" text-anchor="middle" fill="white" font-weight="bold">OAuth2Svc</text>
+    <!-- Auth Server -->
+    <rect class="actor-box" x="540" y="60" width="160" height="50"/>
+    <text class="actor-text" x="620" y="85" text-anchor="middle">Auth Server</text>
+    <text class="arrow-label" x="620" y="100" text-anchor="middle">/oauth/authorize</text>
 
-  <rect x="800" y="50" width="100" height="40" fill="#1e3c72" rx="5"/>
-  <text x="850" y="75" text-anchor="middle" fill="white" font-weight="bold">Database</text>
+    <!-- Token Endpoint -->
+    <rect class="actor-box" x="750" y="60" width="160" height="50"/>
+    <text class="actor-text" x="830" y="85" text-anchor="middle">Token Endpoint</text>
+    <text class="arrow-label" x="830" y="100" text-anchor="middle">/oauth/token</text>
 
-  <rect x="980" y="50" width="90" height="40" fill="#1e3c72" rx="5"/>
-  <text x="1025" y="75" text-anchor="middle" fill="white" font-weight="bold">User</text>
+    <!-- Database -->
+    <rect class="actor-box" x="960" y="60" width="120" height="50"/>
+    <text class="actor-text" x="1020" y="90" text-anchor="middle">Database</text>
+  </g>
 
   <!-- Lifelines -->
-  <line x1="95" y1="90" x2="95" y2="870" stroke="#ddd" stroke-width="1" stroke-dasharray="5,5"/>
-  <line x1="275" y1="90" x2="275" y2="870" stroke="#ddd" stroke-width="1" stroke-dasharray="5,5"/>
-  <line x1="460" y1="90" x2="460" y2="870" stroke="#ddd" stroke-width="1" stroke-dasharray="5,5"/>
-  <line x1="660" y1="90" x2="660" y2="870" stroke="#ddd" stroke-width="1" stroke-dasharray="5,5"/>
-  <line x1="850" y1="90" x2="850" y2="870" stroke="#ddd" stroke-width="1" stroke-dasharray="5,5"/>
-  <line x1="1025" y1="90" x2="1025" y2="870" stroke="#ddd" stroke-width="1" stroke-dasharray="5,5"/>
+  <line class="lifeline" x1="80" y1="110" x2="80" y2="1940"/>
+  <line class="lifeline" x1="260" y1="110" x2="260" y2="1940"/>
+  <line class="lifeline" x1="440" y1="110" x2="440" y2="1940"/>
+  <line class="lifeline" x1="620" y1="110" x2="620" y2="1940"/>
+  <line class="lifeline" x1="830" y1="110" x2="830" y2="1940"/>
+  <line class="lifeline" x1="1020" y1="110" x2="1020" y2="1940"/>
 
-  <!-- Phase 1: PKCE Generation -->
-  <rect x="30" y="110" width="130" height="30" fill="#fff3cd" stroke="#ffc107" stroke-width="2"/>
-  <text x="95" y="130" text-anchor="middle" font-size="11" font-weight="bold">1. Generate PKCE</text>
+  <!-- STEP 1-2: Authorization Request & Consent (200px) -->
+  <text class="step-label" x="40" y="150" font-weight="600">Step 1-2: Authorization Request → Consent</text>
 
-  <rect x="30" y="145" width="130" height="40" fill="white" stroke="#ddd"/>
-  <text x="95" y="160" text-anchor="middle" font-family="Consolas" font-size="9">verifier = random(128)</text>
-  <text x="95" y="175" text-anchor="middle" font-family="Consolas" font-size="9">challenge = SHA256(v)</text>
+  <!-- Client generates PKCE -->
+  <path class="arrow-request" d="M 80 170 L 80 195"/>
+  <text class="arrow-label" x="100" y="185">Generate code_verifier,</text>
+  <text class="arrow-label" x="100" y="197">code_challenge (S256)</text>
 
-  <!-- Message 1: Authorization Request -->
-  <line x1="95" y1="200" x2="275" y2="200" stroke="#2a5298" stroke-width="2" marker-end="url(#msg)"/>
-  <text x="185" y="195" font-size="10">GET /oauth/authorize</text>
-  <text x="185" y="220" font-size="9" fill="#666">+ code_challenge</text>
+  <!-- Client → Browser → Auth Server -->
+  <path class="arrow-request" d="M 80 210 L 440 210"/>
+  <text class="arrow-label" x="260" y="203">1. Redirect to /oauth/authorize</text>
 
-  <line x1="275" y1="235" x2="460" y2="235" stroke="#2a5298" stroke-width="2" marker-end="url(#msg)"/>
-  <text x="367" y="230" font-size="10">Request</text>
+  <path class="arrow-request" d="M 440 225 L 620 225"/>
+  <text class="arrow-label" x="530" y="218">GET + PKCE challenge + state</text>
 
-  <!-- Check user auth -->
-  <line x1="460" y1="260" x2="1025" y2="260" stroke="#2a5298" stroke-width="2" marker-end="url(#msg)"/>
-  <text x="742" y="255" font-size="10">Check login</text>
+  <!-- Auth Server → DB -->
+  <path class="arrow-request" d="M 620 240 L 1020 240"/>
+  <text class="arrow-label" x="820" y="233">Validate client_id</text>
 
-  <rect x="920" y="275" width="210" height="25" fill="#d4edda" stroke="#28a745"/>
-  <text x="1025" y="292" text-anchor="middle" font-size="9">User approves consent</text>
+  <path class="arrow-response" d="M 1020 255 L 620 255"/>
+  <text class="arrow-label" x="820" y="250">Client data</text>
 
-  <!-- Message 2: Generate Code -->
-  <line x1="460" y1="320" x2="660" y2="320" stroke="#2a5298" stroke-width="2" marker-end="url(#msg)"/>
-  <text x="560" y="315" font-size="10">generate_auth_code()</text>
+  <!-- Security note -->
+  <rect class="security-note" x="650" y="275" width="380" height="55"/>
+  <text class="note-text" x="840" y="295" text-anchor="middle">✓ PKCE S256 (oauth2_service.py:98)</text>
+  <text class="note-text" x="840" y="313" text-anchor="middle">✓ State validation (oauth_routes.py:46-70)</text>
 
-  <line x1="660" y1="345" x2="850" y2="345" stroke="#2a5298" stroke-width="2" marker-end="url(#msg)"/>
-  <text x="755" y="340" font-size="10">INSERT code</text>
-  <text x="755" y="360" font-size="9" fill="#666">+ code_challenge</text>
+  <!-- Consent screen -->
+  <path class="arrow-response" d="M 620 345 L 260 345"/>
+  <text class="arrow-label" x="440" y="338">2. Show consent screen</text>
 
-  <line x1="850" y1="375" x2="660" y2="375" stroke="#666" stroke-width="1.5" stroke-dasharray="3,3" marker-end="url(#ret)"/>
-  <text x="755" y="390" font-size="9">Stored</text>
+  <!-- STEP 3: Authorization Code Response (150px) -->
+  <text class="step-label" x="40" y="390" font-weight="600">Step 3: Authorization Code Response</text>
 
-  <line x1="660" y1="400" x2="460" y2="400" stroke="#666" stroke-width="1.5" stroke-dasharray="3,3" marker-end="url(#ret)"/>
-  <text x="560" y="415" font-size="9">code=ABC123</text>
+  <!-- User approves -->
+  <path class="arrow-request" d="M 260 410 L 620 410"/>
+  <text class="arrow-label" x="440" y="403">3. User approves</text>
 
-  <!-- Message 3: Redirect -->
-  <line x1="460" y1="430" x2="275" y2="430" stroke="#666" stroke-width="1.5" stroke-dasharray="3,3" marker-end="url(#ret)"/>
-  <text x="367" y="425" font-size="10">Redirect</text>
+  <!-- Generate code -->
+  <path class="arrow-request" d="M 620 425 L 1020 425"/>
+  <text class="arrow-label" x="820" y="418">Store authorization code</text>
 
-  <line x1="275" y1="455" x2="95" y2="455" stroke="#666" stroke-width="1.5" stroke-dasharray="3,3" marker-end="url(#ret)"/>
-  <text x="185" y="450" font-size="10">callback?code=ABC</text>
+  <!-- Redirect with code -->
+  <path class="arrow-response" d="M 620 445 L 440 445"/>
+  <text class="arrow-label" x="530" y="438">302 Redirect + code + state</text>
 
-  <!-- Phase 2: Token Exchange -->
-  <rect x="30" y="480" width="130" height="30" fill="#f8d7da" stroke="#dc3545" stroke-width="2"/>
-  <text x="95" y="500" text-anchor="middle" font-size="11" font-weight="bold">2. Token Exchange</text>
+  <path class="arrow-response" d="M 440 465 L 80 465"/>
+  <text class="arrow-label" x="260" y="458">Callback with code</text>
 
-  <line x1="95" y1="525" x2="460" y2="525" stroke="#dc3545" stroke-width="2.5" marker-end="url(#msg)"/>
-  <text x="277" y="520" font-size="10" font-weight="bold">POST /oauth/token</text>
-  <text x="277" y="545" font-size="9" fill="#666">code + code_verifier</text>
+  <!-- STEP 4: Token Request with PKCE (250px) -->
+  <text class="step-label" x="40" y="520" font-weight="600">Step 4: Token Request with PKCE</text>
 
-  <!-- Validate PKCE -->
-  <line x1="460" y1="565" x2="660" y2="565" stroke="#2a5298" stroke-width="2" marker-end="url(#msg)"/>
-  <text x="560" y="560" font-size="10">validate_pkce()</text>
+  <!-- Token request -->
+  <path class="arrow-request" d="M 80 540 L 830 540"/>
+  <text class="arrow-label" x="455" y="533">4. POST /oauth/token</text>
+  <text class="arrow-label" x="455" y="550">+ code + code_verifier</text>
 
-  <line x1="660" y1="590" x2="850" y2="590" stroke="#2a5298" stroke-width="2" marker-end="url(#msg)"/>
-  <text x="755" y="585" font-size="10">BEGIN IMMEDIATE</text>
+  <!-- Validate code -->
+  <path class="arrow-request" d="M 830 575 L 1020 575"/>
+  <text class="arrow-label" x="925" y="568">BEGIN TRANSACTION</text>
 
-  <line x1="850" y1="615" x2="660" y2="615" stroke="#666" stroke-width="1.5" stroke-dasharray="3,3" marker-end="url(#ret)"/>
-  <text x="755" y="630" font-size="9">code + challenge</text>
+  <path class="arrow-request" d="M 830 595 L 1020 595"/>
+  <text class="arrow-label" x="925" y="588">SELECT code WHERE used=0</text>
 
-  <!-- PKCE Validation Box -->
-  <rect x="600" y="640" width="120" height="55" fill="#fff3cd" stroke="#ffc107" stroke-width="2"/>
-  <text x="660" y="660" text-anchor="middle" font-family="Consolas" font-size="9">SHA256(verifier)</text>
-  <text x="660" y="675" text-anchor="middle" font-family="Consolas" font-size="9">== challenge?</text>
-  <text x="660" y="690" text-anchor="middle" font-size="10" font-weight="bold" fill="#28a745">VALID</text>
+  <path class="arrow-response" d="M 1020 610 L 830 610"/>
+  <text class="arrow-label" x="925" y="605">Code data</text>
 
-  <!-- Generate Tokens -->
-  <line x1="660" y1="710" x2="850" y2="710" stroke="#2a5298" stroke-width="2" marker-end="url(#msg)"/>
-  <text x="755" y="705" font-size="10">INSERT tokens</text>
-  <text x="755" y="725" font-size="9" fill="#666">+ family_id</text>
+  <!-- Security note -->
+  <rect class="security-note" x="650" y="630" width="380" height="75"/>
+  <text class="note-text" x="840" y="650" text-anchor="middle">✓ PKCE: SHA256(verifier)==challenge</text>
+  <text class="note-text" x="840" y="668" text-anchor="middle">✓ Code unused (oauth2_service.py:180)</text>
+  <text class="note-text" x="840" y="686" text-anchor="middle">✓ Single-use enforcement (line 197)</text>
 
-  <line x1="850" y1="740" x2="660" y2="740" stroke="#666" stroke-width="1.5" stroke-dasharray="3,3" marker-end="url(#ret)"/>
-  <text x="755" y="755" font-size="9">Tokens created</text>
+  <!-- Mark code as used -->
+  <path class="arrow-request" d="M 830 720 L 1020 720"/>
+  <text class="arrow-label" x="925" y="713">UPDATE code SET used=1</text>
 
-  <line x1="660" y1="765" x2="460" y2="765" stroke="#666" stroke-width="1.5" stroke-dasharray="3,3" marker-end="url(#ret)"/>
-  <text x="560" y="780" font-size="9">{access, refresh}</text>
+  <!-- STEP 5: Token Response (180px) -->
+  <text class="step-label" x="40" y="775" font-weight="600">Step 5: Token Response</text>
 
-  <line x1="460" y1="790" x2="95" y2="790" stroke="#666" stroke-width="1.5" stroke-dasharray="3,3" marker-end="url(#ret)"/>
-  <text x="277" y="785" font-size="10">JSON response</text>
+  <!-- Store tokens -->
+  <path class="arrow-request" d="M 830 795 L 1020 795"/>
+  <text class="arrow-label" x="925" y="788">INSERT tokens</text>
+  <text class="arrow-label" x="925" y="805">+ token_family_id</text>
 
-  <!-- Phase 3: API Access -->
-  <rect x="30" y="815" width="130" height="25" fill="#d4edda" stroke="#28a745" stroke-width="2"/>
-  <text x="95" y="832" text-anchor="middle" font-size="11" font-weight="bold">3. API Access</text>
+  <path class="arrow-response" d="M 1020 825 L 830 825"/>
+  <text class="arrow-label" x="925" y="820">COMMIT</text>
 
-  <line x1="95" y1="855" x2="460" y2="855" stroke="#28a745" stroke-width="2" marker-end="url(#msg)"/>
-  <text x="277" y="850" font-size="10">GET /oauth/userinfo</text>
-  <text x="277" y="870" font-size="9">Bearer: access_token</text>
+  <!-- Return tokens -->
+  <path class="arrow-response" d="M 830 845 L 80 845"/>
+  <text class="arrow-label" x="455" y="838">5. 200 OK: access_token,</text>
+  <text class="arrow-label" x="455" y="855">refresh_token (exp: 1h/30d)</text>
 
-  <!-- Legend -->
-  <rect x="50" y="865" width="550" height="30" fill="#f8f9fa" stroke="#ddd"/>
-  <text x="60" y="883" font-size="10" font-weight="bold">Security:</text>
-  <text x="120" y="883" font-size="9">PKCE prevents code theft | BEGIN IMMEDIATE prevents race | Token family tracks rotation</text>
+  <!-- STEP 6: Resource Access (150px) -->
+  <text class="step-label" x="40" y="910" font-weight="600">Step 6: Resource Access</text>
+
+  <!-- Access resource -->
+  <path class="arrow-request" d="M 80 930 L 830 930"/>
+  <text class="arrow-label" x="455" y="923">6. GET /oauth/userinfo</text>
+  <text class="arrow-label" x="455" y="940">Authorization: Bearer {token}</text>
+
+  <!-- Validate token -->
+  <path class="arrow-request" d="M 830 955 L 1020 955"/>
+  <text class="arrow-label" x="925" y="948">Validate access_token</text>
+
+  <path class="arrow-response" d="M 1020 970 L 830 970"/>
+  <text class="arrow-label" x="925" y="965">Token valid, user data</text>
+
+  <!-- Return user info -->
+  <path class="arrow-response" d="M 830 990 L 80 990"/>
+  <text class="arrow-label" x="455" y="985">200 OK: {sub, email, username}</text>
+
+  <!-- Security note -->
+  <rect class="security-note" x="300" y="1015" width="440" height="55"/>
+  <text class="note-text" x="520" y="1035" text-anchor="middle">✓ Token not expired (oauth2_service.py:282-285)</text>
+  <text class="note-text" x="520" y="1053" text-anchor="middle">✓ Token not revoked (line 274)</text>
+
+  <!-- STEP 7: Token Refresh with Rotation (250px) -->
+  <text class="step-label" x="40" y="1110" font-weight="600">Step 7: Token Refresh with Rotation</text>
+
+  <!-- Refresh request -->
+  <path class="arrow-request" d="M 80 1130 L 830 1130"/>
+  <text class="arrow-label" x="455" y="1123">7. POST /oauth/token</text>
+  <text class="arrow-label" x="455" y="1140">grant_type=refresh_token</text>
+
+  <!-- Check for reuse -->
+  <path class="arrow-request" d="M 830 1165 L 1020 1165"/>
+  <text class="arrow-label" x="925" y="1158">BEGIN TRANSACTION</text>
+
+  <path class="arrow-request" d="M 830 1185 L 1020 1185"/>
+  <text class="arrow-label" x="925" y="1178">SELECT refresh_token</text>
+
+  <path class="arrow-response" d="M 1020 1200 L 830 1200"/>
+  <text class="arrow-label" x="925" y="1195">Check refresh_token_used</text>
+
+  <!-- Security note - CRITICAL -->
+  <rect class="security-note" x="250" y="1220" width="600" height="85"/>
+  <text class="note-text" x="550" y="1240" text-anchor="middle" font-size="12px">🚨 REUSE DETECTION (oauth2_service.py:320)</text>
+  <text class="note-text" x="550" y="1260" text-anchor="middle">If refresh_token_used=1 → REVOKE ENTIRE FAMILY</text>
+  <text class="note-text" x="550" y="1280" text-anchor="middle">Else: Mark old token used, issue new tokens</text>
+  <text class="note-text" x="550" y="1295" text-anchor="middle">with SAME family_id</text>
+
+  <!-- Mark old token used -->
+  <path class="arrow-request" d="M 830 1320 L 1020 1320"/>
+  <text class="arrow-label" x="925" y="1313">UPDATE refresh_token_used=1</text>
+
+  <!-- Insert new tokens -->
+  <path class="arrow-request" d="M 830 1340 L 1020 1340"/>
+  <text class="arrow-label" x="925" y="1333">INSERT new tokens</text>
+  <text class="arrow-label" x="925" y="1350">(SAME token_family_id)</text>
+
+  <path class="arrow-response" d="M 1020 1370 L 830 1370"/>
+  <text class="arrow-label" x="925" y="1365">COMMIT</text>
+
+  <!-- Return new tokens -->
+  <path class="arrow-response" d="M 830 1390 L 80 1390"/>
+  <text class="arrow-label" x="455" y="1383">200 OK: new access_token,</text>
+  <text class="arrow-label" x="455" y="1400">new refresh_token</text>
+
+  <!-- STEP 8: Token Revocation (150px) -->
+  <text class="step-label" x="40" y="1455" font-weight="600">Step 8: Token Revocation</text>
+
+  <!-- Revoke request -->
+  <path class="arrow-request" d="M 80 1475 L 830 1475"/>
+  <text class="arrow-label" x="455" y="1468">8. POST /oauth/revoke</text>
+  <text class="arrow-label" x="455" y="1485">token={access_or_refresh}</text>
+
+  <!-- Mark revoked -->
+  <path class="arrow-request" d="M 830 1505 L 1020 1505"/>
+  <text class="arrow-label" x="925" y="1498">UPDATE SET revoked=1</text>
+
+  <path class="arrow-response" d="M 1020 1520 L 830 1520"/>
+  <text class="arrow-label" x="925" y="1515">Token revoked</text>
+
+  <!-- Return success -->
+  <path class="arrow-response" d="M 830 1540 L 80 1540"/>
+  <text class="arrow-label" x="455" y="1535">200 OK (RFC 7009)</text>
+
+  <!-- Security note -->
+  <rect class="security-note" x="300" y="1560" width="440" height="40"/>
+  <text class="note-text" x="520" y="1583" text-anchor="middle">Always return 200 even if token doesn't exist</text>
+
+  <!-- Summary Box -->
+  <rect fill="#f0f9ff" stroke="#0284c7" stroke-width="2" rx="5" x="50" y="1625" width="1020" height="240"/>
+  <text class="title" x="560" y="1650" text-anchor="middle" font-size="16px">Security Implementation Summary</text>
+
+  <text class="arrow-label" x="70" y="1680" font-weight="600">PKCE Implementation:</text>
+  <text class="arrow-label" x="90" y="1700">• S256 method mandatory (oauth2_service.py:98)</text>
+  <text class="arrow-label" x="90" y="1720">• code_challenge validated during token exchange (oauth_routes.py:156-164)</text>
+
+  <text class="arrow-label" x="70" y="1750" font-weight="600">Token Lifecycle:</text>
+  <text class="arrow-label" x="90" y="1770">• Authorization code: 10 minutes, single-use (line 23, 197)</text>
+  <text class="arrow-label" x="90" y="1790">• Access token: 1 hour, revocable (line 21)</text>
+  <text class="arrow-label" x="90" y="1810">• Refresh token: 30 days, rotation with family tracking (line 22, 227)</text>
+
+  <text class="arrow-label" x="560" y="1840" text-anchor="middle" font-weight="600" fill="#dc2626">🔒 Critical: Refresh token reuse detection revokes entire token family</text>
+  <text class="arrow-label" x="560" y="1855" text-anchor="middle" font-weight="600" fill="#dc2626">(oauth2_service.py:320-325)</text>
+
+  <!-- Bottom actors -->
+  <g id="actors-bottom">
+    <rect class="actor-box" x="20" y="1920" width="120" height="50"/>
+    <text class="actor-text" x="80" y="1950" text-anchor="middle">Client</text>
+
+    <rect class="actor-box" x="200" y="1920" width="120" height="50"/>
+    <text class="actor-text" x="260" y="1950" text-anchor="middle">User</text>
+
+    <rect class="actor-box" x="380" y="1920" width="120" height="50"/>
+    <text class="actor-text" x="440" y="1950" text-anchor="middle">Browser</text>
+
+    <rect class="actor-box" x="540" y="1920" width="160" height="50"/>
+    <text class="actor-text" x="620" y="1945" text-anchor="middle">Auth Server</text>
+
+    <rect class="actor-box" x="750" y="1920" width="160" height="50"/>
+    <text class="actor-text" x="830" y="1945" text-anchor="middle">Token Endpoint</text>
+
+    <rect class="actor-box" x="960" y="1920" width="120" height="50"/>
+    <text class="actor-text" x="1020" y="1950" text-anchor="middle">Database</text>
+  </g>
 </svg>
