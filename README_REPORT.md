@@ -1,81 +1,61 @@
-# Assignment 3 Report
+# Assignment 3 Report - Ready for Overleaf! ✅
 
-## 📄 Report File
-**Assignment_3_Report.tex** - Ready for Overleaf upload
+## 📄 Main File
+**Assignment_3_Report.tex** - Overleaf-compatible LaTeX report
 
-## 📊 Report Details
-- **Length**: ~12-15 pages (similar to Assignment 2's 11 pages)
-- **Format**: Academic LaTeX matching Assignment 2 style
-- **Authors**: Gruppe 2 (Bjarte, Brage, Matias, Tor Martin)
-- **Diagrams**: All 9 SVG diagrams embedded
-- **Screenshots**: 7 placeholders with capture instructions
+## 📊 Report Summary
+- **Length**: ~12-15 pages (matching Assignment 2's 11 pages)
+- **Format**: Academic LaTeX
+- **Authors**: Gruppe 2
+- **Diagrams**: All 9 diagrams (PDF format)
+- **Screenshots**: 7 placeholders with instructions
 
-## 🎯 All 5 Tasks Covered
-1. Database Integration - 9 tables with ER diagram
-2. Basic Authentication - Argon2id + HIBP
-3. Brute Force Protection - 3-layer defense
-4. Two-Factor Authentication - TOTP + QR codes
-5. OAuth2 - Authorization Code Flow + PKCE
+## 📁 Files to Upload to Overleaf
 
-## 📁 Upload to Overleaf
+### Required:
+1. `Assignment_3_Report.tex`
+2. `uia_logo.png` (you'll add this)
+3. `diagrams/` folder with 9 PDF files:
+   - 1_system_architecture.pdf
+   - 2_class_diagram_services.pdf
+   - 3_oauth2_sequence.pdf
+   - 4_database_er.pdf
+   - 5_2fa_login_sequence.pdf
+   - 6_brute_force_activity.pdf
+   - 7_security_layers.pdf
+   - 13_account_lockout_state_machine.pdf
+   - 14_token_family_rotation.pdf
+
+### Optional:
+4. Screenshot PNG files (see placeholders in .tex file)
+
+## 🚀 Overleaf Upload Steps
 
 1. Go to https://www.overleaf.com
-2. New Project → Upload Project → ZIP
-3. Or manually:
-   - Upload `Assignment_3_Report.tex`
-   - Create `diagrams/` folder
-   - Upload all 9 SVG files to `diagrams/` folder
-   - Upload `uia_logo.png`
-4. Compile and download PDF!
+2. Click "New Project" → "Blank Project"
+3. Name: "Assignment 3 - User Authentication"
+4. Upload `Assignment_3_Report.tex`
+5. Create folder: `diagrams`
+6. Upload all 9 PDF files to `diagrams/` folder
+7. Upload `uia_logo.png`
+8. Click "Recompile"
+9. Download PDF!
 
-## 📸 Screenshot Instructions
+## 📸 Screenshots (Optional)
 
 App running at: **http://127.0.0.1:5001**
 
-All screenshot placeholders have capture instructions inside the .tex file.
+7 screenshot placeholders with capture instructions in the .tex file.
 
-### Quick Capture (5 screenshots):
+**Minimum 3 screenshots**:
+1. 2FA QR Code (most impressive)
+2. Account Lockout (shows protection)
+3. Backup Codes (unique feature)
 
-**1. HIBP Breach Detection**
-- Go to /register, try password "password123"
+## ✅ Conversion Complete
 
-**2. Account Lockout**
-- Go to /login, fail 3 times
-
-**3. CAPTCHA Challenge**
-- After lockout expires, try login
-
-**4. 2FA QR Code**
-- Register account, go to /setup-2fa
-
-**5. Backup Codes**
-- Scan QR, verify code, see 10 codes
-
-**6. 2FA Verification**
-- Logout, login again, see TOTP input
-
-**7. OAuth Consent**
-- Use test_oauth2_teacher.py, visit /oauth/authorize
-
-## ✅ Files to Upload to Overleaf
-
-```
-Assignment_3_Report.tex
-uia_logo.png
-diagrams/
-  ├── 1_system_architecture.svg
-  ├── 2_class_diagram_services.svg
-  ├── 3_oauth2_sequence.svg
-  ├── 4_database_er.svg
-  ├── 5_2fa_login_sequence.svg
-  ├── 6_brute_force_activity.svg
-  ├── 7_security_layers.svg
-  ├── 13_account_lockout_state_machine.svg
-  └── 14_token_family_rotation.svg
-```
-
-(Optional: Add screenshot PNG files to root after capturing)
+All SVG diagrams converted to PDF format for maximum Overleaf compatibility!
 
 ---
 
-**Report is concise, properly formatted, and ready!** 🎓
+**Report is ready for Overleaf upload!** 🎓
