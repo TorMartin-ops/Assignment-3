@@ -182,7 +182,7 @@ for line in response.text.splitlines():
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=0.85\textwidth]{SCREENSHOTs/Register.png}
+    \includegraphics[width=0.85\textwidth]{screenshots/registration_hibp_breach.png}
     \caption{Registration form with HIBP password breach detection showing error message when user attempts to use a compromised password}
     \label{fig:hibp}
 \end{figure}
@@ -229,14 +229,14 @@ We implement rate limiting, account lockout, and CAPTCHA challenges as complemen
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=0.85\textwidth]{SCREENSHOTs/account locked.png}
+    \includegraphics[width=0.85\textwidth]{screenshots/account_lockout.png}
     \caption{Account lockout message after 5 failed login attempts}
     \label{fig:lockout_screen}
 \end{figure}
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=0.85\textwidth]{SCREENSHOTs/reCaptcha.png}
+    \includegraphics[width=0.85\textwidth]{screenshots/recaptcha_challenge.png}
     \caption{Google reCAPTCHA v2 checkbox challenge after 3 failed attempts}
     \label{fig:captcha}
 \end{figure}
@@ -284,14 +284,14 @@ if totp.verify(code, valid_window=1):  # ±30 seconds
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=0.85\textwidth]{SCREENSHOTs/2fa.png}
+    \includegraphics[width=0.85\textwidth]{screenshots/2fa_setup_qr.png}
     \caption{2FA setup page with QR code for Google Authenticator}
     \label{fig:2fa_setup}
 \end{figure}
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=0.85\textwidth]{SCREENSHOTs/backup codes.png}
+    \includegraphics[width=0.85\textwidth]{screenshots/backup_codes.png}
     \caption{Ten single-use backup codes after successful 2FA setup}
     \label{fig:backup}
 \end{figure}
@@ -315,7 +315,7 @@ if totp.verify(code, valid_window=1):
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=0.85\textwidth]{SCREENSHOTs/2fa login.png}
+    \includegraphics[width=0.85\textwidth]{screenshots/2fa_login_verification.png}
     \caption{2FA verification page requiring TOTP code or backup code}
     \label{fig:2fa_verify}
 \end{figure}
@@ -379,7 +379,7 @@ def validate_pkce(self, code_verifier, code_challenge,
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=0.85\textwidth]{SCREENSHOTs/oauth2_consent.png}
+    \includegraphics[width=0.85\textwidth]{screenshots/oauth2_consent.png}
     \caption{OAuth2 consent screen showing client application requesting access to user profile and email. The user (testuser) can authorize or deny the request, and can revoke access later from security settings.}
     \label{fig:oauth_consent}
 \end{figure}
