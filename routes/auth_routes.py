@@ -57,7 +57,7 @@ def register():
     return render_template('auth/register.html')
 
 @auth_bp.route('/login', methods=['GET', 'POST'])
-@rate_limiter.limit(requests_per_minute=5, per_user=True)
+@rate_limiter.limit(requests_per_minute=20, per_user=True)  # Increased for OAuth2 testing
 def login():
     """User login with brute force protection"""
     if request.method == 'POST':

@@ -85,7 +85,7 @@
   <text x="70" y="1460" font-size="18" fill="#C82333" font-weight="bold" text-anchor="start">⚡ RESPOND - Incident Response (6 mechanisms)</text>
   <text x="90" y="1500" font-size="12" fill="#000000" font-weight="bold" text-anchor="start">1. Account Lockout</text>
   <text x="110" y="1518" font-size="11" fill="#6B7280" font-weight="normal" text-anchor="start">📍 security_service.py:159</text>
-  <text x="110" y="1536" font-size="11" fill="#6B7280" font-weight="normal" text-anchor="start">15-minute lockout after 3 failed attempts</text>
+  <text x="110" y="1536" font-size="11" fill="#6B7280" font-weight="normal" text-anchor="start">15-minute lockout after 5 failed attempts</text>
   <text x="90" y="1558" font-size="12" fill="#000000" font-weight="bold" text-anchor="start">2. CAPTCHA Challenge</text>
   <text x="110" y="1576" font-size="11" fill="#6B7280" font-weight="normal" text-anchor="start">📍 auth_routes.py:78</text>
   <text x="110" y="1594" font-size="11" fill="#6B7280" font-weight="normal" text-anchor="start">Google reCAPTCHA v2 after 3 failures</text>

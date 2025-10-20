@@ -248,7 +248,7 @@
   <line x1="1160" y1="1350" x2="1160" y2="1390" stroke="#6B7280" stroke-width="2" marker-end="url(#arrowhead)"/>
   <polygon points="1160,1350.0 1220.0,1410 1160,1470.0 1100.0,1410" fill="#e7f3ff" stroke="#B36B00" stroke-width="2"/>
   <text x="1160" y="1400" font-size="13px" fill="#000000"
-        font-weight="bold" text-anchor="middle">Failures ≥ 3?</text>
+        font-weight="bold" text-anchor="middle">Failures ≥ 5?</text>
   <text x="1160" y="1416" font-size="13px" fill="#000000"
         font-weight="bold" text-anchor="middle">LOCKOUT_THRESHOLD</text>
   <text x="1160" y="1430" font-size="11px" fill="#6B7280"

@@ -3,21 +3,9 @@ OAuth2 Routes
 Handles OAuth2 Authorization Code Flow with PKCE
 """
 from flask import Blueprint, render_template, request, redirect, url_for, session, flash, jsonify
-from flask_wtf.csrf import CSRFProtect
 from services.oauth2_service import get_oauth2_service
 from services.security_service import get_security_service
 import secrets
-
-# CSRF exempt decorator for OAuth2 endpoints
-from functools import wraps
-
-def csrf_exempt(f):
-    """Mark route as CSRF exempt"""
-    @wraps(f)
-    def decorated(*args, **kwargs):
-        return f(*args, **kwargs)
-    decorated._csrf_exempt = True
-    return decorated
 
 oauth_bp = Blueprint('oauth', __name__, url_prefix='/oauth')
 
@@ -60,7 +48,14 @@ def authorize():
 
         # Validate PKCE (MANDATORY)
         if not code_challenge:
-            return redirect(f"{redirect_uri}?error=invalid_request&error_description=code_challenge required&state={state}")
+            from urllib.parse import urlencode
+            error_params = {
+                'error': 'invalid_request',
+                'error_description': 'code_challenge required'
+            }
+            if state:
+                error_params['state'] = state
+            return redirect(f"{redirect_uri}?{urlencode(error_params)}")
 
         # Check if user is logged in
         if 'user_id' not in session:
@@ -122,7 +117,6 @@ def authorize():
     return redirect(f"{redirect_uri}{separator}code={code}&state={state}")
 
 @oauth_bp.route('/token', methods=['POST'])
-@csrf_exempt  # OAuth2 token endpoint uses client authentication, not CSRF tokens
 def token():
     """
     OAuth2 token endpoint
@@ -240,7 +234,6 @@ def userinfo():
     return jsonify(user_info), 200
 
 @oauth_bp.route('/revoke', methods=['POST'])
-@csrf_exempt  # OAuth2 revocation endpoint uses token authentication, not CSRF tokens
 def revoke():
     """
     OAuth2 token revocation endpoint

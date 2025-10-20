@@ -21,12 +21,37 @@ app = Flask(__name__)
 app.secret_key = os.getenv('SECRET_KEY', 'dev-secret-key-change-in-production')
 
 # Session cookie security configuration
-app.config['SESSION_COOKIE_SECURE'] = True  # Only send over HTTPS
+# SESSION_COOKIE_SECURE = True for production (HTTPS only)
+# For development with HTTP, set to False
+app.config['SESSION_COOKIE_SECURE'] = os.getenv('FLASK_ENV') == 'production'
 app.config['SESSION_COOKIE_HTTPONLY'] = True  # Prevent JavaScript access
 app.config['SESSION_COOKIE_SAMESITE'] = 'Lax'  # CSRF protection
 
-# Initialize CSRF Protection
+# Initialize CSRF Protection with exemptions for OAuth2 endpoints
 csrf = CSRFProtect(app)
+
+# Configure CSRF to skip validation for OAuth2 API endpoints
+@csrf.exempt
+def csrf_protect_oauth():
+    """Custom CSRF protection that exempts OAuth2 endpoints"""
+    pass
+
+# Manually exempt OAuth2 endpoints after blueprint registration
+def init_csrf_exemptions():
+    """Initialize CSRF exemptions for OAuth2 endpoints"""
+    # These endpoints use client authentication, not CSRF tokens
+    csrf_exempt_endpoints = [
+        'oauth.token',
+        'oauth.revoke',
+        'oauth.userinfo'
+    ]
+    for endpoint in csrf_exempt_endpoints:
+        try:
+            view_func = app.view_functions.get(endpoint)
+            if view_func:
+                csrf.exempt(view_func)
+        except:
+            pass
 
 # Initialize databases
 init_database()  # Original recipe database
@@ -37,6 +62,9 @@ app.register_blueprint(auth_bp)
 app.register_blueprint(oauth_bp)
 app.register_blueprint(twofa_bp)
 app.register_blueprint(google_oauth_bp)
+
+# Initialize CSRF exemptions after blueprint registration
+init_csrf_exemptions()
 
 # Initialize reCAPTCHA
 recaptcha_service = get_recaptcha_service()

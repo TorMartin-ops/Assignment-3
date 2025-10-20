@@ -136,7 +136,7 @@
 
     <!-- Attributes -->
     <line x1="100" y1="1206" x2="590" y2="1206" stroke="#0284c7" stroke-width="1"/>
-    <text x="110" y="1222" class="method" fill="#1e293b">+ LOCKOUT_THRESHOLD: 3</text>
+    <text x="110" y="1222" class="method" fill="#1e293b">+ LOCKOUT_THRESHOLD: 5</text>
     <text x="110" y="1238" class="method" fill="#1e293b">+ LOCKOUT_DURATION: timedelta(minutes=15)</text>
     <text x="110" y="1254" class="method" fill="#1e293b">+ CAPTCHA_THRESHOLD: 3</text>
 

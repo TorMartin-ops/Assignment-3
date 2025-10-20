@@ -27,7 +27,7 @@ REDIRECT_URI = "http://localhost:5000/callback"
 
 # Test user credentials (create a test user first)
 TEST_USERNAME = "testuser"
-TEST_PASSWORD = "TestPassword123"
+TEST_PASSWORD = "SecureT3st!Pass@2024#OAuth2"
 
 # ============================================
 # PKCE HELPER FUNCTIONS
@@ -371,11 +371,14 @@ def test_oauth2_simple():
 
     if response.status_code == 302:
         redirect_location = response.headers.get('Location', '')
-        if 'error=invalid_request' in redirect_location and 'code_challenge required' in redirect_location:
+        from urllib.parse import unquote
+        decoded_location = unquote(redirect_location)
+        if 'error=invalid_request' in redirect_location and ('code_challenge' in decoded_location or 'code_challenge' in redirect_location):
             print(f"  ✅ PKCE correctly enforced - authorization rejected without code_challenge")
-            print(f"  Error: {redirect_location}")
+            print(f"  Error: {decoded_location}")
         else:
             print(f"  ❌ PKCE not enforced - authorization succeeded without code_challenge!")
+            print(f"  Redirect: {decoded_location}")
             return False
     else:
         print(f"  Status: {response.status_code}")
