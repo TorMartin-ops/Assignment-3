@@ -1,5 +1,6 @@
 \documentclass[12pt,a4paper]{article}
 \usepackage[utf8]{inputenc}
+\usepackage[norsk]{babel}  % Norwegian language support
 \usepackage[margin=1in]{geometry}
 \usepackage{graphicx}
 \usepackage{float}
@@ -7,10 +8,16 @@
 \usepackage{listings}
 \usepackage{xcolor}
 \usepackage{fancyhdr}
+\usepackage{pdflscape}  % For landscape pages
+\usepackage{afterpage}  % For better page breaks
+\usepackage{adjustbox}  % For better image scaling control
+
+% Fix headheight warning
+\setlength{\headheight}{14.49998pt}
 
 % Code listing settings
 \lstset{
-    basicstyle=\ttfamily\footnotesize,
+    basicstyle=\ttfamily\small,
     breaklines=true,
     frame=single,
     numbers=left,
@@ -41,8 +48,6 @@
 \begin{titlepage}
     \centering
     \vspace*{1cm}
-
-    \includegraphics[width=0.5\textwidth]{uia_logo.png}
 
     \vspace{1.5cm}
 
@@ -76,7 +81,7 @@
 
     \vfill
 
-    {\large Grimstad, Oktober 2025\par}
+    {\large Grimstad, oktober 2025\par}
 
 \end{titlepage}
 
@@ -93,7 +98,7 @@ The application is built with Flask and SQLite, organized into three route bluep
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=\textwidth]{diagrams/1_system_architecture.png}
+    \includegraphics[width=\textwidth,height=0.85\textheight,keepaspectratio]{diagrams/1_system_architecture.png}
     \caption{System Architecture with middleware stack, route blueprints, services, and external integrations}
     \label{fig:architecture}
 \end{figure}
@@ -108,7 +113,7 @@ We designed a SQLite database with 9 tables, 15 indexes, and 8 foreign key relat
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=\textwidth]{diagrams/4_database_er.png}
+    \includegraphics[width=\textwidth,height=0.9\textheight,keepaspectratio]{diagrams/4_database_er.png}
     \caption{Entity-Relationship Diagram showing all 9 tables with foreign key constraints}
     \label{fig:database}
 \end{figure}
@@ -144,7 +149,7 @@ Sensitive data is protected with multiple encryption methods:
 
 \subsection{Password Hashing with Argon2id}
 
-We use Argon2id with OWASP-recommended parameters. Argon2id won the Password Hashing Competition (2015) and is memory-hard, preventing GPU/ASIC acceleration.
+We use Argon2id with OWASP-recommended parameters \cite{owasp_password}. Argon2id won the Password Hashing Competition in 2015 \cite{biryukov2016} and is memory-hard, preventing GPU/ASIC acceleration.
 
 \begin{lstlisting}[language=Python]
 self.hasher = PasswordHasher(
@@ -183,8 +188,8 @@ for line in response.text.splitlines():
         \textbf{SCREENSHOT PLACEHOLDER}\\[0.2cm]
         \textit{Registration page with HIBP breach detection}\\[0.1cm]
         \small{1. Go to http://127.0.0.1:5001/register}\\
-        \small{2. Try password: "password123"}\\
-        \small{3. Screenshot error: "Password found in X data breaches!"}\\
+        \small{2. Try password: ``password123''}\\
+        \small{3. Screenshot error: ``Password found in X data breaches!''}\\
         \vspace{0.4cm}
     }}
     \caption{Registration page showing password breach detection}
@@ -213,7 +218,7 @@ We implement rate limiting, account lockout, and CAPTCHA challenges as complemen
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=\textwidth]{diagrams/6_brute_force_activity.png}
+    \includegraphics[width=\textwidth,height=0.85\textheight,keepaspectratio]{diagrams/6_brute_force_activity.png}
     \caption{Brute Force Protection Activity Diagram showing rate limiting, lockout checks, and CAPTCHA}
     \label{fig:brute_force}
 \end{figure}
@@ -224,7 +229,7 @@ We implement rate limiting, account lockout, and CAPTCHA challenges as complemen
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=0.65\textwidth]{diagrams/13_account_lockout_state_machine.png}
+    \includegraphics[width=\textwidth,keepaspectratio]{diagrams/13_account_lockout_state_machine.png}
     \caption{Account Lockout State Machine}
     \label{fig:lockout_state}
 \end{figure}
@@ -240,7 +245,7 @@ We implement rate limiting, account lockout, and CAPTCHA challenges as complemen
         \textit{Account lockout message}\\[0.1cm]
         \small{1. Go to http://127.0.0.1:5001/login}\\
         \small{2. Fail login 3 times with wrong password}\\
-        \small{3. Screenshot: "Account locked for 15 minutes"}\\
+        \small{3. Screenshot: ``Account locked for 15 minutes''}\\
         \vspace{0.4cm}
     }}
     \caption{Account locked message after 3 failed attempts}
@@ -280,11 +285,11 @@ Attackers could intentionally lock out legitimate users.
 
 \subsection{TOTP Implementation}
 
-We implement Time-based One-Time Passwords (RFC 6238) using the pyotp library. Users scan a QR code with Google Authenticator or similar apps. The complete 2FA flow is shown in Figure \ref{fig:2fa_flow}.
+We implement Time-based One-Time Passwords according to RFC 6238 \cite{mraihi2011} using the pyotp library. Users scan a QR code with Google Authenticator or similar apps. The complete 2FA flow is shown in Figure \ref{fig:2fa_flow}.
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=\textwidth]{diagrams/5_2fa_login_sequence.png}
+    \includegraphics[width=\textwidth,height=0.85\textheight,keepaspectratio]{diagrams/5_2fa_login_sequence.png}
     \caption{Complete 2FA login sequence showing password authentication, session regeneration, and TOTP verification}
     \label{fig:2fa_flow}
 \end{figure}
@@ -391,14 +396,16 @@ Server and client clocks might not be synchronized.
 
 \subsection{Authorization Code Flow with PKCE}
 
-We implement OAuth2 Authorization Code Flow with mandatory PKCE (Proof Key for Code Exchange) following RFC 7636. PKCE prevents authorization code interception attacks.
+We implement OAuth2 Authorization Code Flow with mandatory PKCE (Proof Key for Code Exchange) following RFC 7636 \cite{sakimura2015}. PKCE prevents authorization code interception attacks.
 
+\begin{landscape}
 \begin{figure}[H]
     \centering
-    \includegraphics[width=\textwidth]{diagrams/3_oauth2_sequence.png}
+    \includegraphics[width=\linewidth,height=0.85\textheight,keepaspectratio]{diagrams/3_oauth2_sequence.png}
     \caption{Complete OAuth2 flow with PKCE validation and token generation}
     \label{fig:oauth2}
 \end{figure}
+\end{landscape}
 
 \subsection{PKCE Process}
 
@@ -444,7 +451,7 @@ Modern OAuth2 security requires refresh token rotation to detect token theft. Fi
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=0.85\textwidth]{diagrams/14_token_family_rotation.png}
+    \includegraphics[width=\textwidth,height=0.85\textheight,keepaspectratio]{diagrams/14_token_family_rotation.png}
     \caption{Refresh token family rotation with reuse detection}
     \label{fig:token_rotation}
 \end{figure}
@@ -501,7 +508,7 @@ Our security architecture implements 27 evidence-based security mechanisms organ
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=\textwidth]{diagrams/7_security_layers.png}
+    \includegraphics[width=\textwidth,height=0.9\textheight,keepaspectratio]{diagrams/7_security_layers.png}
     \caption{Defense-in-depth architecture with 27 security mechanisms}
     \label{fig:security_layers}
 \end{figure}
@@ -512,12 +519,14 @@ The architecture includes 14 preventive controls (Argon2id, PKCE, CSRF, CSP, enc
 
 Figure \ref{fig:classes} shows our service layer implementing the Singleton pattern for lifecycle management.
 
+\begin{landscape}
 \begin{figure}[H]
     \centering
-    \includegraphics[width=\textwidth]{diagrams/2_class_diagram_services.png}
+    \includegraphics[width=\linewidth,height=0.85\textheight,keepaspectratio]{diagrams/2_class_diagram_services.png}
     \caption{Service layer class diagram with dependencies}
     \label{fig:classes}
 \end{figure}
+\end{landscape}
 
 Each service has a single global instance: AuthService (Argon2id hashing), OAuth2Service (PKCE, token rotation), TOTPService (2FA, QR codes), SecurityService (logging, lockout), RateLimiter (database-backed), and EncryptionService (Fernet encryption).
 
@@ -533,7 +542,7 @@ Each service has a single global instance: AuthService (Argon2id hashing), OAuth
 
 \subsection{Design Decisions}
 
-\textbf{Why Argon2id over bcrypt?} Argon2id is the current OWASP recommendation, memory-hard (prevents GPU attacks), and won the Password Hashing Competition.
+\textbf{Why Argon2id over bcrypt?} Argon2id is the current OWASP recommendation \cite{owasp_password}, memory-hard (prevents GPU attacks), and won the Password Hashing Competition \cite{biryukov2016}.
 
 \textbf{Why Database-Backed Rate Limiting?} In-memory solutions fail in multi-process deployments (Gunicorn, uWSGI). Database ensures consistent limits across all workers.
 
@@ -541,7 +550,7 @@ Each service has a single global instance: AuthService (Argon2id hashing), OAuth
 
 \subsection{Real-World Lessons}
 
-Authentication is harder than it looks. Simple mistakes like missing a session regeneration point or using wrong transaction types can create serious vulnerabilities. Following established standards (RFC 6238 for TOTP, RFC 7636 for PKCE, OWASP guidelines) prevented many subtle vulnerabilities we wouldn't have anticipated.
+Authentication is harder than it looks. Simple mistakes like missing a session regeneration point or using wrong transaction types can create serious vulnerabilities. Following established standards (RFC 6238 for TOTP \cite{mraihi2011}, RFC 7636 for PKCE \cite{sakimura2015}, OWASP guidelines \cite{owasp_password}) prevented many subtle vulnerabilities we wouldn't have anticipated.
 
 The defense-in-depth approach proved its value. When we accidentally left a timing-attack vulnerability in early testing, the rate limiting and account lockout still prevented exploitation. No single layer is perfect, but together they provide robust security.
 
@@ -551,27 +560,20 @@ We successfully implemented a production-quality authentication system combining
 
 The system implements 27 security mechanisms organized into prevent, detect, and respond categories. All components follow industry best practices (OWASP, RFC standards) and were tested against attack vectors. The comprehensive UML diagrams provide complete documentation with file:line references for maintainability and security audits.
 
+% IEEE Norwegian Bibliography Format
 \begin{thebibliography}{9}
 
-\bibitem{owasp}
-OWASP Foundation.
-\textit{Authentication Cheat Sheet}.
-\url{https://cheatsheetseries.owasp.org/}, 2023.
+\bibitem{owasp_password}
+OWASP Foundation, ``Password Storage Cheat Sheet,'' OWASP Cheat Sheet Series, 2023. [Internett]. Tilgjengelig: \url{https://cheatsheetseries.owasp.org/cheatsheets/Password_Storage_Cheat_Sheet.html}. [Lest: 19. okt. 2025].
 
-\bibitem{rfc6238}
-M'Raihi, D. et al.
-\textit{RFC 6238: TOTP Algorithm}.
-IETF, 2011.
+\bibitem{mraihi2011}
+D. M'Raihi, S. Machani, M. Pei, og J. Rydell, ``TOTP: Time-Based One-Time Password Algorithm,'' Internet Engineering Task Force, RFC 6238, mai 2011. [Internett]. Tilgjengelig: \url{https://datatracker.ietf.org/doc/html/rfc6238}. [Lest: 19. okt. 2025].
 
-\bibitem{rfc7636}
-Sakimura, N. et al.
-\textit{RFC 7636: PKCE for OAuth}.
-IETF, 2015.
+\bibitem{sakimura2015}
+N. Sakimura, J. Bradley, og N. Agarwal, ``Proof Key for Code Exchange by OAuth Public Clients,'' Internet Engineering Task Force, RFC 7636, sep. 2015. [Internett]. Tilgjengelig: \url{https://datatracker.ietf.org/doc/html/rfc7636}. [Lest: 19. okt. 2025].
 
-\bibitem{argon2}
-Biryukov, A. et al.
-\textit{Argon2: Memory-Hard Password Hashing}.
-Password Hashing Competition, 2015.
+\bibitem{biryukov2016}
+A. Biryukov, D. Dinu, og D. Khovratovich, ``Argon2: the memory-hard function for password hashing and other applications,'' i \textit{2016 IEEE European Symposium on Security and Privacy (EuroS\&P)}, 2016, s. 1--15. [Internett]. Tilgjengelig: \url{https://github.com/P-H-C/phc-winner-argon2}. [Lest: 19. okt. 2025].
 
 \end{thebibliography}
 
