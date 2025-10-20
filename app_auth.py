@@ -9,7 +9,7 @@ from flask import Flask, render_template, request, session, redirect, url_for, f
 from flask_wtf.csrf import CSRFProtect
 from database import get_db_connection, init_database
 from database_auth import initialize_auth_database
-from routes import auth_bp, oauth_bp, twofa_bp
+from routes import auth_bp, oauth_bp, twofa_bp, google_oauth_bp
 from utils import login_required, set_security_headers, sanitize_comment, get_recaptcha_service
 import os
 from dotenv import load_dotenv
@@ -36,17 +36,23 @@ initialize_auth_database()  # New auth tables
 app.register_blueprint(auth_bp)
 app.register_blueprint(oauth_bp)
 app.register_blueprint(twofa_bp)
+app.register_blueprint(google_oauth_bp)
 
 # Initialize reCAPTCHA
 recaptcha_service = get_recaptcha_service()
 
-# Make reCAPTCHA site key available to all templates
+# Make reCAPTCHA and OAuth configuration available to all templates
 @app.context_processor
-def inject_recaptcha():
-    """Inject reCAPTCHA site key into all templates"""
+def inject_global_config():
+    """Inject global configuration into all templates"""
+    google_client_id = os.getenv('GOOGLE_CLIENT_ID')
+    google_client_secret = os.getenv('GOOGLE_CLIENT_SECRET')
+    google_oauth_enabled = bool(google_client_id and google_client_secret)
+
     return {
         'recaptcha_site_key': recaptcha_service.get_site_key(),
-        'recaptcha_enabled': recaptcha_service.is_enabled()
+        'recaptcha_enabled': recaptcha_service.is_enabled(),
+        'google_oauth_enabled': google_oauth_enabled
     }
 
 # Security headers

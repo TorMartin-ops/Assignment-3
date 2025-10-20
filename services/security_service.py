@@ -13,7 +13,7 @@ class SecurityService:
     """
 
     # Configuration
-    LOCKOUT_THRESHOLD = 3  # Failed attempts before lockout
+    LOCKOUT_THRESHOLD = 5  # Failed attempts before lockout
     LOCKOUT_DURATION = timedelta(minutes=15)  # Lockout duration
     CAPTCHA_THRESHOLD = 3  # Show CAPTCHA after N failures
 

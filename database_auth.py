@@ -74,6 +74,17 @@ def create_auth_tables():
     except sqlite3.OperationalError:
         pass
 
+    # Social Login Integration (Google, GitHub, etc.)
+    try:
+        conn.execute('ALTER TABLE users ADD COLUMN google_id TEXT UNIQUE')
+    except sqlite3.OperationalError:
+        pass
+
+    try:
+        conn.execute('ALTER TABLE users ADD COLUMN github_id TEXT UNIQUE')
+    except sqlite3.OperationalError:
+        pass
+
     try:
         conn.execute('ALTER TABLE users ADD COLUMN last_login TIMESTAMP')
     except sqlite3.OperationalError:

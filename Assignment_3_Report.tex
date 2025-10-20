@@ -93,7 +93,7 @@ The application is built with Flask and SQLite, organized into three route bluep
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=\textwidth]{diagrams/1_system_architecture.pdf}
+    \includegraphics[width=\textwidth]{diagrams/1_system_architecture.png}
     \caption{System Architecture with middleware stack, route blueprints, services, and external integrations}
     \label{fig:architecture}
 \end{figure}
@@ -108,7 +108,7 @@ We designed a SQLite database with 9 tables, 15 indexes, and 8 foreign key relat
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=\textwidth]{diagrams/4_database_er.pdf}
+    \includegraphics[width=\textwidth]{diagrams/4_database_er.png}
     \caption{Entity-Relationship Diagram showing all 9 tables with foreign key constraints}
     \label{fig:database}
 \end{figure}
@@ -213,7 +213,7 @@ We implement rate limiting, account lockout, and CAPTCHA challenges as complemen
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=\textwidth]{diagrams/6_brute_force_activity.pdf}
+    \includegraphics[width=\textwidth]{diagrams/6_brute_force_activity.png}
     \caption{Brute Force Protection Activity Diagram showing rate limiting, lockout checks, and CAPTCHA}
     \label{fig:brute_force}
 \end{figure}
@@ -224,7 +224,7 @@ We implement rate limiting, account lockout, and CAPTCHA challenges as complemen
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=0.65\textwidth]{diagrams/13_account_lockout_state_machine.pdf}
+    \includegraphics[width=0.65\textwidth]{diagrams/13_account_lockout_state_machine.png}
     \caption{Account Lockout State Machine}
     \label{fig:lockout_state}
 \end{figure}
@@ -284,7 +284,7 @@ We implement Time-based One-Time Passwords (RFC 6238) using the pyotp library. U
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=\textwidth]{diagrams/5_2fa_login_sequence.pdf}
+    \includegraphics[width=\textwidth]{diagrams/5_2fa_login_sequence.png}
     \caption{Complete 2FA login sequence showing password authentication, session regeneration, and TOTP verification}
     \label{fig:2fa_flow}
 \end{figure}
@@ -395,7 +395,7 @@ We implement OAuth2 Authorization Code Flow with mandatory PKCE (Proof Key for C
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=\textwidth]{diagrams/3_oauth2_sequence.pdf}
+    \includegraphics[width=\textwidth]{diagrams/3_oauth2_sequence.png}
     \caption{Complete OAuth2 flow with PKCE validation and token generation}
     \label{fig:oauth2}
 \end{figure}
@@ -444,7 +444,7 @@ Modern OAuth2 security requires refresh token rotation to detect token theft. Fi
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=0.85\textwidth]{diagrams/14_token_family_rotation.pdf}
+    \includegraphics[width=0.85\textwidth]{diagrams/14_token_family_rotation.png}
     \caption{Refresh token family rotation with reuse detection}
     \label{fig:token_rotation}
 \end{figure}
@@ -501,7 +501,7 @@ Our security architecture implements 27 evidence-based security mechanisms organ
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=\textwidth]{diagrams/7_security_layers.pdf}
+    \includegraphics[width=\textwidth]{diagrams/7_security_layers.png}
     \caption{Defense-in-depth architecture with 27 security mechanisms}
     \label{fig:security_layers}
 \end{figure}
@@ -514,7 +514,7 @@ Figure \ref{fig:classes} shows our service layer implementing the Singleton patt
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=\textwidth]{diagrams/2_class_diagram_services.pdf}
+    \includegraphics[width=\textwidth]{diagrams/2_class_diagram_services.png}
     \caption{Service layer class diagram with dependencies}
     \label{fig:classes}
 \end{figure}

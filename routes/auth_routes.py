@@ -77,6 +77,10 @@ def login():
         # Check if CAPTCHA is required
         requires_captcha = security_service.requires_captcha(username)
 
+        # Debug logging
+        failures = security_service.get_recent_failures(username)
+        print(f"[DEBUG] Login attempt for '{username}': {failures} recent failures, CAPTCHA required: {requires_captcha}, reCAPTCHA enabled: {recaptcha_service.is_enabled()}")
+
         # Validate CAPTCHA if required
         if requires_captcha and recaptcha_service.is_enabled():
             is_valid, error = recaptcha_service.verify_response()

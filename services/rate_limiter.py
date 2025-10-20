@@ -66,7 +66,16 @@ class RateLimiter:
                 LIMIT 1
             ''', (key, endpoint, window_start)).fetchone()
 
-            reset_time = oldest_window['window_end'] if oldest_window else now
+            if oldest_window:
+                # Convert string to datetime if needed
+                reset_time_str = oldest_window['window_end']
+                if isinstance(reset_time_str, str):
+                    reset_time = datetime.fromisoformat(reset_time_str.replace('Z', '+00:00'))
+                else:
+                    reset_time = reset_time_str
+            else:
+                reset_time = now
+
             conn.close()
             return True, 0, reset_time
         else:
